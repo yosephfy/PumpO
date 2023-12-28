@@ -1,0 +1,93 @@
+@use '~/src/styles/theme';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .interactions {
+    border-top: 1px solid theme.$divider;
+    border-bottom: 1px solid theme.$divider;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .reply {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid theme.$divider;
+  }
+}
+
+.head {
+  font-weight: bold !important;
+  margin-bottom: -20px;
+  text-decoration: none;
+  color: black;
+}
+
+.date {
+  margin-top: -16px;
+  color: grey;
+  font-size: 15px;
+}
+
+.condensed {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  width: 100%;
+
+  &Interactions {
+    width: 100%;
+    margin-top: 15px;
+  }
+}
+
+.link {
+  text-decoration: none;
+  color: theme.$onBackground;
+}
+
+.postLink {
+  text-decoration: none;
+  color: black;
+}
+
+.tagStyle {
+  text-decoration: none;
+  color: #3281c9;
+}
+
+.handleStyle {
+  text-decoration: none;
+  color: #3281c9;
+}
+
+.postStyle {
+  text-decoration: none;
+  padding-top: 1rem;
+  padding: 10px;
+  border: 1px solid #afafaf;
+  border-radius: 25px;
+}
+
+.activity {
+  font-weight: bold;
+  a {
+    text-decoration: none;
+    color: black;
+  }
+}
+
+.link {
+  text-decoration: underline !important;
+  color: #3281c9 !important;
+  font-weight: 100;
+}
