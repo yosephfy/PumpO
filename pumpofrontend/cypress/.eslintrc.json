@@ -1,6 +1,0 @@
-{
-  "ignorePatterns": ["**/*.js"],
-  "rules": {
-    "no-unused-expressions": "off"
-  }
-}
