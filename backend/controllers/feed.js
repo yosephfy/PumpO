@@ -18,7 +18,7 @@ export const getFollowedFeed = (req, res) => {
   jwt.verify(token, "secretkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
 
-    const q = `SELECT p.*, u.username, u.profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId)
+    const q = `SELECT DISTINCT p.*, u.username, u.profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId)
     LEFT JOIN relationships AS r ON (p.userId = r.followedId) WHERE r.followerId= ? OR p.userId =?
     ORDER BY p.createdAt DESC`;
 
@@ -30,5 +30,3 @@ export const getFollowedFeed = (req, res) => {
     });
   });
 };
-
-

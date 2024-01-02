@@ -7,6 +7,7 @@ import feedRoutes from "./routes/feed.js";
 import commentRoutes from "./routes/comments.js";
 import postRoutes from "./routes/posts.js";
 import authRoutes from "./routes/auth.js";
+import storiesRoutes from "./routes/stories.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -15,7 +16,11 @@ import cookieParser from "cookie-parser";
 }); */
 
 app.use(express.json());
-app.use(cors());
+const corsConfig = {
+  credentials: true,
+  origin: true,
+};
+app.use(cors(corsConfig));
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
@@ -24,6 +29,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/likes", likeRoutes);
 app.use("/api/feed", feedRoutes);
+app.use("/api/stories", storiesRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

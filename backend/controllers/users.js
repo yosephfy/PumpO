@@ -15,6 +15,7 @@ export const getUserById = (req, res) => {
 
   db.query(q, [userId], (err, data) => {
     if (err) return res.status(500).json(err);
+    if (data.length == 0) return res.status(404).json("User Not found");
     const { password, ...info } = data[0];
     return res.json(info);
   });
@@ -26,6 +27,8 @@ export const getUserByUsername = (req, res) => {
 
   db.query(q, [username], (err, data) => {
     if (err) return res.status(500).json(err);
+    if (data.length == 0) return res.status(404).json("User Not found");
+
     const { password, ...info } = data[0];
     return res.json(info);
   });
@@ -37,6 +40,8 @@ export const getUserByEmail = (req, res) => {
 
   db.query(q, [email], (err, data) => {
     if (err) return res.status(500).json(err);
+    if (data.length == 0) return res.status(404).json("User Not found");
+
     const { password, ...info } = data[0];
     return res.json(info);
   });

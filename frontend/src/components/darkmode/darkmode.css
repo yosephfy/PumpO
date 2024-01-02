@@ -1,0 +1,7 @@
+.darkmode-icon {
+    transform: 0.3s ease
+}
+
+.darkmode-icon:hover {
+    transform: scale(1.2);
+}
