@@ -11,22 +11,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { makeRequest } from "../../Axios";
 
 export default function UserProfile() {
   const { id } = useParams();
 
-  const curr = {
-    id: 2,
-    name: "Brs bdmds bartholo",
-    username: "buddybo",
-    profileImg: reactIcon,
-    img: reactIcon,
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos incidunt impedit nam aliquid illo saepe perspiciatis inventore et fugit, nesciunt laborum tenetur maxime hic nisi molestias, fuga, vel cum nobis?",
-  };
-
-  const { isLoading, error, data } = useQuery({
+  const userQuery = useQuery({
     queryKey: ["userProfile"],
     queryFn: () =>
       makeRequest.get(`/users/findById/${id}`).then((res) => {
@@ -34,39 +25,75 @@ export default function UserProfile() {
       }),
   });
 
-  return error ? (
+  const userPostQuery = useQuery({
+    queryKey: ["userPosts"],
+    queryFn: () =>
+      makeRequest.get(`/posts/all/${id}`).then((res) => {
+        return res.data.length;
+      }),
+  });
+
+  const userRelationshipQuery = useQuery({
+    queryKey: ["userRelationships"],
+    queryFn: () =>
+      makeRequest.get(`/users/followers/${id}`).then((res) =>
+        makeRequest.get(`/users/followed/${id}`).then((res2) => {
+          return { followers: res.data.length, followed: res2.data.length };
+        })
+      ),
+  });
+
+  return userQuery.error ? (
     "Something went wrong"
-  ) : isLoading ? (
+  ) : userQuery.isLoading ? (
     "Loading..."
   ) : (
     <div className="userProfile">
       <div className="top-info">
         <FontAwesomeIcon icon={faChevronLeft} />
-        <h5>@{data.username}</h5>
+        <h5>@{userQuery.data.username}</h5>
         <FontAwesomeIcon icon={faBars} />
       </div>
       <div className="mid-info">
         <div className="user-profile">
-          <img src={data.profilePic} alt="" />
-          <h5>{data.name}</h5>
+          <img src={userQuery.data.profilePic} alt="" />
+          <h5>{userQuery.data.name}</h5>
         </div>
         <div className="interaction">
           <div className="item">
-            <h4>65</h4>
+            <h4>
+              {userPostQuery.error
+                ? 0
+                : userPostQuery.isLoading
+                ? 0
+                : userPostQuery.data}
+            </h4>
             <h5>Posts</h5>
           </div>
           <div className="item">
-            <h4>675</h4>
+            <h4>
+              {userRelationshipQuery.error
+                ? 0
+                : userRelationshipQuery.isLoading
+                ? 0
+                : userRelationshipQuery.data.followers}
+            </h4>
             <h5>Followers</h5>
           </div>
           <div className="item">
-            <h4>776</h4>
+            <h4>
+              {userRelationshipQuery.error
+                ? 0
+                : userRelationshipQuery.isLoading
+                ? 0
+                : userRelationshipQuery.data.followed}
+            </h4>
             <h5>Following</h5>
           </div>
         </div>
       </div>
       <div className="bottom-info">
-        <small>{data.bio}</small>
+        <small>{userQuery.data.bio}</small>
         <div className="action-items">
           <button className="btn btn-primary">
             Follow

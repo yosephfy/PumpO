@@ -8,6 +8,7 @@ import commentRoutes from "./routes/comments.js";
 import postRoutes from "./routes/posts.js";
 import authRoutes from "./routes/auth.js";
 import storiesRoutes from "./routes/stories.js";
+import messagesRoutes from "./routes/messages.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -30,6 +31,7 @@ app.use("/api/comments", commentRoutes);
 app.use("/api/likes", likeRoutes);
 app.use("/api/feed", feedRoutes);
 app.use("/api/stories", storiesRoutes);
+app.use("/api/messages", messagesRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -1,5 +1,5 @@
 import React from "react";
-import Message from "../message/Message";
+import Message from "../message/MessageBar";
 import FriendRequest from "../friendRequest/FriendRequest";
 import "./rightbar.css";
 

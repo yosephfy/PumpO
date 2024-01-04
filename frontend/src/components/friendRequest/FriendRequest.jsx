@@ -1,36 +1,63 @@
 import { Link } from "react-router-dom";
 import "./friendrequest.css";
+import React, { useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+import { AuthContext } from "../../context/AuthContext";
+
 import reactIcon from "../../assets/react.svg";
+import { makeRequest } from "../../Axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBars,
+  faChevronRight,
+  faMessage,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function FriendRequest() {
-  const requestData = [
-    { id: 1, name: "Hanna", info: "2 mutual 4 following" },
-    { id: 2, name: "Betty", info: "3 mutual 2 following" },
-    { id: 3, name: "John", info: "5 mutual 1 following" },
-  ];
+  const { currentUser } = useContext(AuthContext);
+
+  const { error, isLoading, data } = useQuery({
+    queryKey: ["friendRequest"],
+    queryFn: () =>
+      makeRequest.get(`/users/friendRequests`).then((res) => {
+        return res.data;
+      }),
+  });
+
   return (
     <div className="friend-requests">
-      <h4>Friend Requests</h4>
+      <div className="friend-requests-title">
+        <h4>Friend Requests</h4>
+        <Link to={``}>
+          View more <FontAwesomeIcon icon={faChevronRight} />
+        </Link>
+      </div>
 
-      {requestData.map((f) => (
-        <div className="request" key={f.id}>
-          <Link to="/profile:id">
-            <div className="info">
-              <div className="user">
-                <img src={reactIcon} alt="" />
-                <h5>{f.name}</h5>
-              </div>
-              <div className="info-name">
-                <p>{f.info}</p>
+      {error
+        ? "Something went wrong"
+        : isLoading
+        ? "Loading..."
+        : data.slice(0, 4).map((f) => (
+            <div className="request" key={f.id}>
+              <Link to="/profile:id">
+                <div className="info">
+                  <div className="user">
+                    <img src={f.profilePic} alt="" />
+                    <h5>{f.name}</h5>
+                  </div>
+                  <div className="info-name">
+                    <p>{f.timestamp}</p>
+                  </div>
+                </div>
+              </Link>
+              <div className="action">
+                <button className="btn btn-primary">Accept</button>
+                <button className="btn btn-red">Delete</button>
               </div>
             </div>
-          </Link>
-          <div className="action">
-            <button className="btn btn-primary">Accept</button>
-            <button className="btn btn-red">Delete</button>
-          </div>
-        </div>
-      ))}
+          ))}
     </div>
   );
 }

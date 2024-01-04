@@ -34,7 +34,7 @@ export default function Layout() {
       children: [
         { path: "/", element: <Home /> },
         { path: "/profile/:id", element: <Profile /> },
-        { path: "/chatbox/:id", element: <ChatBox /> },
+        { path: "/chatbox/:userId", element: <ChatBox /> },
       ],
     },
     { path: "/login", element: <Login /> },

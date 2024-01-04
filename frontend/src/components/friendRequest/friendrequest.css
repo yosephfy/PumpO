@@ -24,3 +24,10 @@
     display: flex;
     justify-content: center;
 }
+
+.friend-requests-title {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 15px;
+    align-items: center;
+}
