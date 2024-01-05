@@ -31,10 +31,10 @@ export default function Login() {
     <div className="login">
       <div className="card">
         <div className="left">
-          <h2>NapaExt</h2>
+          <h2>PumpO</h2>
           <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-            Voluptatibus eos totam molestiae est quis
+            Step into the Lift Life Community! PumpO is your ultimate social hub
+            for bodybuilders, powerlifters, and gym lovers. Join the squad now!
           </p>
           <span>Don't have an account?</span>
           <Link to="/register">

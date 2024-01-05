@@ -7,7 +7,8 @@ export default function Signup() {
     username: "",
     email: "",
     password: "",
-    name: "",
+    firstname: "",
+    lastname: "",
   });
   const [err, setErr] = useState(null);
 
@@ -19,12 +20,15 @@ export default function Signup() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:8080/api/auth/register", inputs);
+      await axios.post("http://localhost:8080/api/auth/register", {
+        name: inputs.firstname + " " + inputs.lastname,
+        username: inputs.username,
+        password: inputs.password,
+        email: inputs.email,
+      });
     } catch (err) {
       setErr(err.response.data);
     }
-
-    
   };
 
   console.log(err);
@@ -34,12 +38,12 @@ export default function Signup() {
       <div className="card">
         <div className="left">
           <h2>
-            NapaExt Signup
+            PumpO Signup
             <br />-
           </h2>
           <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-            Voluptatibus eos totam molestiae est quis
+            Step into the Lift Life Community! PumpO is your ultimate social hub
+            for bodybuilders, powerlifters, and gym lovers. Join the squad now!
           </p>
           <span>Already have an account?</span>
           <Link to="/login">
@@ -49,10 +53,18 @@ export default function Signup() {
         <form className="right">
           <input
             type="text"
-            name="name"
+            name="firstname"
             id=""
             required
-            placeholder="Name"
+            placeholder="First Name"
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="lastname"
+            id=""
+            required
+            placeholder="Last Name"
             onChange={handleChange}
           />
           <input
