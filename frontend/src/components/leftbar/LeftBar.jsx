@@ -31,7 +31,7 @@ export default function LeftBar() {
               <h4>Friends</h4>
             </div>
           </Link>
-          <Link to="/">
+          <Link to="/messages">
             <div className="item">
               <FontAwesomeIcon className="icons" icon={faMessage} />
               <h4>Messages</h4>

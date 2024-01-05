@@ -24,10 +24,10 @@ export default function Nav() {
           <Link to="/">
             <h3 className="logo">PumpO</h3>
           </Link>
-          <Link to="/">
+          <Link to="/" className="home-btn">
             <FontAwesomeIcon icon={faHome} />
           </Link>
-          <Link to={`/profile/${currentUser.id}`}>
+          <Link className="profile-btn" to={`/profile/${currentUser.id}`}>
             <FontAwesomeIcon icon={faUser} />
           </Link>
           <div className="nav-SearchBar">
@@ -37,14 +37,17 @@ export default function Nav() {
         </div>
 
         <div className="nav-right">
-          <Link to="/messages">
+          <Link to="/messages" className="messages-btn">
             <FontAwesomeIcon icon={faEnvelope} />
           </Link>
-          <Link to="/">
+          <Link to="/" className="notification-btn">
             <FontAwesomeIcon icon={faBell} />
           </Link>
-          <DarkMode />
-          <Link to="/">
+          <div className="darkmode-btn">
+            <DarkMode />
+          </div>
+
+          <Link to="/" className="menu-btn">
             <FontAwesomeIcon icon={faBars} />
           </Link>
           <div className="user">

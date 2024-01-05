@@ -65,6 +65,7 @@ export default function UserProfile() {
       .then(() => setFollowed(true))
       .catch((error) => console.error("Error following:", error));
     console.log("followed: " + id);
+    userRelationshipQuery.refetch();
   };
 
   const handleUnfollow = () => {
@@ -73,6 +74,7 @@ export default function UserProfile() {
       .then(() => setFollowed(false))
       .catch((error) => console.error("Error unfollowing:", error));
     console.log("unfollowed: " + id);
+    userRelationshipQuery.refetch();
   };
 
   return userQuery.error ? (
@@ -140,7 +142,10 @@ export default function UserProfile() {
             </button>
           )}
           {id != currentUser.id && (
-            <button className="btn btn-primary">
+            <button
+              className="btn btn-primary"
+              onClick={() => history(`/chatbox/${id}`)}
+            >
               Message <FontAwesomeIcon icon={faMessage} />
             </button>
           )}

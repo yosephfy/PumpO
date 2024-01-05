@@ -75,7 +75,10 @@ nav {
         padding: 0;
     }
 
-    .nav-SearchBar input {
+    .nav-SearchBar input,
+    .home-btn,
+    .profile-btn,
+    .darkmode-btn {
         display: none;
     }
 
