@@ -82,8 +82,8 @@ export const ProfileModal = ({ userInfo, refM }) => {
         <div className="profile">
           <img src={userInfo.profilePic} alt="" />
           <div className="profile-info">
-            <h4>{userInfo.email}</h4>
             <h4>@{userInfo.username}</h4>
+            <h4>{userInfo.email}</h4>
             <h4>{userInfo.name}</h4>
           </div>
         </div>

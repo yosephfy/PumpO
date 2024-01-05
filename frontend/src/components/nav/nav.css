@@ -61,6 +61,11 @@ nav {
     position: relative;
 }
 
+.user {
+    cursor: pointer;
+
+}
+
 @media (max-width:768px) {
     nav .user {
         display: none;
