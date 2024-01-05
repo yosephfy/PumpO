@@ -1,18 +1,18 @@
-.bar-messages {
+.messages {
     background: var(--color-card);
-    margin: 20px auto;
-    border-radius: 1rem;
     padding: 14px;
+    display: flex;
+    flex-direction: column;
 }
 
-.bar-messages-top {
+.messages-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1rem;
 }
 
-.bar-messages-search {
+.messages-search {
     background: var(--color-bg);
     display: flex;
     gap: 5px;
@@ -22,7 +22,7 @@
     margin-bottom: 1rem;
 }
 
-.bar-messages-search input {
+.messages-search input {
     background: transparent;
     color: var(--color-text);
 }
@@ -33,20 +33,30 @@
     margin-bottom: 20px;
 }
 
-.bar-message {
+.message {
     display: flex;
-    gap: 5px;
+    justify-content: space-between;
     margin-bottom: 1rem;
+    border-bottom: 1.2px solid var(--color-bg);
+    padding-bottom: 0.7rem;
 }
 
-.bar-message .user {
+.message small {
+    width: 4rem;
+    font-size: xx-small;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.message .user {
     position: relative;
     height: fit-content;
     width: fit-content;
 }
 
-.bar-message-body {
-    width: 80%;
+.message-body {
+    width: 85%;
 }
 
 .green-active {
@@ -59,9 +69,9 @@
     right: 0;
 }
 
-.bar-message p {
+.message p {
     font-size: 0.9rem;
-    width: 70%;
+    width: max(100%);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

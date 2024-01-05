@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div>
       <Stories />
-      <FeedContainer />
+      <FeedContainer domain={["followed", "user"]} />
     </div>
   );
 }

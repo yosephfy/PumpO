@@ -26,8 +26,13 @@
     margin: 20px 0;
 }
 
-.left-container .item img {
+.left-container .item .icons {
     width: 28px;
+    color: var(--color-primary);
+}
+
+.leftbar h4 {
+    color: var(--color-primary);
 }
 
 hr {

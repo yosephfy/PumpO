@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import reactIcon from "../../assets/react.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,16 +9,33 @@ import { makeRequest } from "../../Axios";
 import { useQuery } from "@tanstack/react-query";
 import "./chatbox.css";
 import { useParams } from "react-router";
+import { parseDateTime } from "../../utility/utility";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function ChatBox() {
   const { userId } = useParams();
-  const curr = {
-    id: 2,
-    name: "Brs bdmds bartholo",
-    username: "buddybo",
-    profileImg: reactIcon,
-    img: reactIcon,
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos incidunt impedit nam aliquid illo saepe perspiciatis inventore et fugit, nesciunt laborum tenetur maxime hic nisi molestias, fuga, vel cum nobis?",
+  const [newMessage, setNewMessage] = useState("");
+  const { currentUser } = useContext(AuthContext);
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim()) {
+      return; // Prevent sending empty messages
+    }
+    makeRequest
+      .post("/messages/send", {
+        receivingId: userId,
+        data: newMessage,
+      })
+      .then((res) => {
+        messageData.refetch();
+      })
+      .catch((err) => {
+        console.error("Error sending message:", err);
+      });
+
+    setNewMessage("");
+    document.querySelector('input[name="sendMessage"]').value = "";
   };
 
   const messageData = useQuery({
@@ -36,6 +53,7 @@ export default function ChatBox() {
         return res.data;
       }),
   });
+
   return userData.error ? (
     "Something went wrong..."
   ) : userData.isLoading ? (
@@ -58,10 +76,10 @@ export default function ChatBox() {
                   <div
                     className="single-message"
                     key={m.id}
-                    curr={m.userId != m.receivingUserId ? "true" : "false"}
+                    curr={currentUser.id === m.sendingUserId ? "true" : "false"}
                   >
                     <div>{m.data}</div>
-                    <small>{m.timestamp}</small>
+                    <small>{parseDateTime(m.timestamp)}</small>
                   </div>
                 ))}
           </div>
@@ -69,8 +87,14 @@ export default function ChatBox() {
       </div>
       <div className="chat-box-bottom">
         <div className="chat-box-text-area">
-          <form action="#">
-            <input type="text" name="" id="" placeholder="Write Something" />
+          <form action="#" onSubmit={handleSendMessage}>
+            <input
+              type="text"
+              name="sendMessage"
+              id=""
+              placeholder="Write Something"
+              onChange={(e) => setNewMessage(e.target.value)}
+            />
             <button type="submit" className="btn btn-primary">
               <FontAwesomeIcon icon={faArrowAltCircleRight} />
             </button>

@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
-import "./message.css";
+import "./messages.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faSearch } from "@fortawesome/free-solid-svg-icons";
-import reactIcon from "../../assets/react.svg";
 import { makeRequest } from "../../Axios";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -12,6 +11,7 @@ import {
   faMessage,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { parseDateTime } from "../../utility/utility";
 
 export default function MessageBar() {
   const { isLoading, error, data } = useQuery({
@@ -23,12 +23,12 @@ export default function MessageBar() {
   });
 
   return (
-    <div className="bar-messages">
-      <div className="bar-messages-top">
-        <h4>Message</h4>
+    <div className="messages">
+      <div className="messages-top">
+        <h4>Messages</h4>
         <FontAwesomeIcon icon={faEdit} />
       </div>
-      <div className="bar-messages-search">
+      <div className="messages-search">
         <FontAwesomeIcon icon={faSearch} />
         <input type="search" name="" id="" placeholder="Search Message" />
       </div>
@@ -38,23 +38,21 @@ export default function MessageBar() {
         ? "Something went wrong..."
         : isLoading
         ? "Loading..."
-        : data.slice(0, 10).map((m) => (
+        : data.map((m) => (
             <Link to={`/chatbox/${m.userId}`} key={m.id}>
-              <div className="bar-message">
+              <div className="message">
                 <div className="user">
                   <img src={m.profilePic} alt="" />
                   <div className="green-active"></div>
                 </div>
-                <div className="bar-message-body">
+                <div className="message-body">
                   <h5>{m.name}</h5>
                   <p>{m.data}</p>
                 </div>
+                <small>{parseDateTime(m.timestamp)}</small>
               </div>
             </Link>
           ))}
-      <Link to={``}>
-        View more <FontAwesomeIcon icon={faChevronRight} />
-      </Link>
     </div>
   );
 }

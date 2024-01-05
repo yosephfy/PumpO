@@ -28,3 +28,31 @@ export const WhatTimeAgo = (timestamp) => {
   }
   return { long: "Just now", short: "now" };
 };
+
+export const parseDateTime = (timestamp) => {
+  const now = new Date();
+  const date = new Date(timestamp);
+
+  const diffInMilliseconds = now - date;
+  const diffInSeconds = Math.floor(diffInMilliseconds / 1000);
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  const diffInDays = Math.floor(diffInHours / 24);
+
+  if (diffInDays < 1) {
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    return date.toLocaleTimeString("en-US", options);
+  } else if (diffInDays < 7) {
+    // Within the past week, show the weekday
+    const options = { weekday: "short", hour: "numeric", minute: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  } else if (diffInDays < 365) {
+    // Within the past 12 months, show the year and month
+    const options = { day: "numeric", month: "short" };
+    return date.toLocaleDateString("en-US", options);
+  } else {
+    // More than 12 months ago, show the year and month
+    const options = { year: "numeric", month: "short" };
+    return date.toLocaleDateString("en-US", options);
+  }
+};

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import reactIcon from "../../assets/react.svg";
 import { Link } from "react-router-dom";
 import "./comment.css";
@@ -9,22 +9,50 @@ import { WhatTimeAgo } from "../../utility/utility";
 
 export default function Comment({ post }) {
   const { currentUser } = useContext(AuthContext);
+  const [newMessage, setNewMessage] = useState("");
 
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["comments"],
+  const { isLoading, error, data, refetch } = useQuery({
+    queryKey: ["comments", post.id],
     queryFn: () =>
       makeRequest.get(`/comments/get/${post.id}`).then((res) => {
         return res.data;
       }),
   });
 
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim()) {
+      return; // Prevent sending empty messages
+    }
+    makeRequest
+      .post("/comments/add", {
+        postId: post.id,
+        desc: newMessage,
+      })
+      .then((res) => {
+        refetch();
+      })
+      .catch((err) => {
+        console.error("Error sending message:", err);
+      });
+
+    document.querySelector('input[name="sendComment"]').value = "";
+    setNewMessage("");
+  };
+
   return (
     <div className="comments">
       <div className="writebox">
-        <form action="#">
+        <form action="#" onSubmit={handleAddComment}>
           <div className="user">
             <img src={currentUser.profilePic} alt="" />
-            <input type="text" name="" id="" placeholder="Write a comment" />
+            <input
+              type="text"
+              name="sendComment"
+              id=""
+              placeholder="Write a comment"
+              onChange={(e) => setNewMessage(e.target.value)}
+            />
             <button type="submit" className="btn btn-primary">
               Send
             </button>

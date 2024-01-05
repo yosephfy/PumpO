@@ -1,13 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "./userprofile.css";
 
 import reactIcon from "../../assets/react.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
+  faEllipsisV,
   faChevronLeft,
   faMessage,
   faUserPlus,
+  faUserEdit,
+  faShare,
+  faUserMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -16,6 +20,13 @@ import { makeRequest } from "../../Axios";
 
 export default function UserProfile() {
   const { id } = useParams();
+  const { currentUser } = useContext(AuthContext);
+  const [followed, setFollowed] = useState(false);
+  const history = useNavigate();
+
+  const handleGoBack = () => {
+    history(-1); // This will navigate back to the previous page
+  };
 
   const userQuery = useQuery({
     queryKey: ["userProfile"],
@@ -34,14 +45,35 @@ export default function UserProfile() {
   });
 
   const userRelationshipQuery = useQuery({
-    queryKey: ["userRelationships"],
+    queryKey: ["userRelationships", id],
     queryFn: () =>
       makeRequest.get(`/users/followers/${id}`).then((res) =>
         makeRequest.get(`/users/followed/${id}`).then((res2) => {
-          return { followers: res.data.length, followed: res2.data.length };
+          let follow = res.data.some((d) => d["followerId"] === currentUser.id);
+          setFollowed(follow);
+          return {
+            followersNum: res.data.length,
+            followedNum: res2.data.length,
+          };
         })
       ),
   });
+
+  const handleFollow = () => {
+    makeRequest
+      .post(`/users/follow/${id}`)
+      .then(() => setFollowed(true))
+      .catch((error) => console.error("Error following:", error));
+    console.log("followed: " + id);
+  };
+
+  const handleUnfollow = () => {
+    makeRequest
+      .delete(`/users/unfollow/${id}`)
+      .then(() => setFollowed(false))
+      .catch((error) => console.error("Error unfollowing:", error));
+    console.log("unfollowed: " + id);
+  };
 
   return userQuery.error ? (
     "Something went wrong"
@@ -50,9 +82,9 @@ export default function UserProfile() {
   ) : (
     <div className="userProfile">
       <div className="top-info">
-        <FontAwesomeIcon icon={faChevronLeft} />
+        <FontAwesomeIcon icon={faChevronLeft} onClick={handleGoBack} />
         <h5>@{userQuery.data.username}</h5>
-        <FontAwesomeIcon icon={faBars} />
+        <FontAwesomeIcon icon={faEllipsisV} />
       </div>
       <div className="mid-info">
         <div className="user-profile">
@@ -76,7 +108,7 @@ export default function UserProfile() {
                 ? 0
                 : userRelationshipQuery.isLoading
                 ? 0
-                : userRelationshipQuery.data.followers}
+                : userRelationshipQuery.data.followersNum}
             </h4>
             <h5>Followers</h5>
           </div>
@@ -86,7 +118,7 @@ export default function UserProfile() {
                 ? 0
                 : userRelationshipQuery.isLoading
                 ? 0
-                : userRelationshipQuery.data.followed}
+                : userRelationshipQuery.data.followedNum}
             </h4>
             <h5>Following</h5>
           </div>
@@ -95,13 +127,33 @@ export default function UserProfile() {
       <div className="bottom-info">
         <small>{userQuery.data.bio}</small>
         <div className="action-items">
-          <button className="btn btn-primary">
-            Follow
-            <FontAwesomeIcon icon={faUserPlus} />
-          </button>
-          <button className="btn btn-primary">
-            Message <FontAwesomeIcon icon={faMessage} />
-          </button>
+          {id != currentUser.id && !followed && (
+            <button className="btn btn-primary" onClick={handleFollow}>
+              Follow
+              <FontAwesomeIcon icon={faUserPlus} />
+            </button>
+          )}
+          {id != currentUser.id && followed && (
+            <button className="btn btn-primary" onClick={handleUnfollow}>
+              Unfollow
+              <FontAwesomeIcon icon={faUserMinus} />
+            </button>
+          )}
+          {id != currentUser.id && (
+            <button className="btn btn-primary">
+              Message <FontAwesomeIcon icon={faMessage} />
+            </button>
+          )}
+          {id == currentUser.id && (
+            <button className="btn btn-primary">
+              Edit Profile <FontAwesomeIcon icon={faUserEdit} />
+            </button>
+          )}
+          {id == currentUser.id && (
+            <button className="btn btn-primary">
+              Share Profile <FontAwesomeIcon icon={faShare} />
+            </button>
+          )}
         </div>
       </div>
     </div>

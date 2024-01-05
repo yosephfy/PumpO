@@ -3,6 +3,14 @@ import "./leftbar.css";
 import { Link } from "react-router-dom";
 import reactIcon from "../../assets/react.svg";
 import { AuthContext } from "../../context/AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowAltCircleRight,
+  faFileAlt,
+  faUserFriends,
+  faMessage,
+  faCirclePlay,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function LeftBar() {
   const { currentUser } = useContext(AuthContext);
@@ -10,7 +18,7 @@ export default function LeftBar() {
     <div className="leftbar">
       <div className="left-container">
         <div className="menu">
-          <Link to="/profile/:id">
+          <Link to={`/profile/${currentUser.id}`}>
             <div className="user">
               <img src={currentUser.profilePic} alt="" />
               <h4>{currentUser.username}</h4>
@@ -19,19 +27,19 @@ export default function LeftBar() {
 
           <Link to="/">
             <div className="item">
-              <img src={reactIcon} alt="" />
+              <FontAwesomeIcon className="icons" icon={faUserFriends} />
               <h4>Friends</h4>
             </div>
           </Link>
           <Link to="/">
             <div className="item">
-              <img src={reactIcon} alt="" />
-              <h4>Groups</h4>
+              <FontAwesomeIcon className="icons" icon={faMessage} />
+              <h4>Messages</h4>
             </div>
           </Link>
           <Link to="/">
             <div className="item">
-              <img src={reactIcon} alt="" />
+              <FontAwesomeIcon className="icons" icon={faCirclePlay} />
               <h4>Watch</h4>
             </div>
           </Link>
@@ -43,20 +51,14 @@ export default function LeftBar() {
 
           <Link to="/">
             <div className="item">
-              <img src={reactIcon} alt="" />
+              <FontAwesomeIcon className="icons" icon={faCirclePlay} />
               <h4>Gallary</h4>
             </div>
           </Link>
           <Link to="/">
             <div className="item">
-              <img src={reactIcon} alt="" />
+              <FontAwesomeIcon className="icons" icon={faCirclePlay} />
               <h4>Videos</h4>
-            </div>
-          </Link>
-          <Link to="/">
-            <div className="item">
-              <img src={reactIcon} alt="" />
-              <h4>Message</h4>
             </div>
           </Link>
         </div>

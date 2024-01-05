@@ -83,7 +83,8 @@ SELECT
 FROM
     RankedMessages AS r JOIN users AS u ON ((u.id = r.receivingUserId OR u.id = r.sendingUserId) AND NOT u.id = ?)
 WHERE
-    RowNum = 1;
+    RowNum = 1
+ORDER BY timestamp DESC;
 `;
 
     const values = [userInfo.id, userInfo.id, userInfo.id, userInfo.id];
@@ -103,10 +104,10 @@ export const sendMessage = (req, res) => {
     if (err) return res.status(403).json("Token is not valid!");
 
     const q =
-      "INSERT INTO messages (`sendingUserId`,`recievingUserId`,`data`, `timestamp`) VALUES (?)";
+      "INSERT INTO messages (`sendingUserId`,`receivingUserId`,`data`, `timestamp`) VALUES (?)";
     const values = [
       userInfo.id,
-      req.body.recievingId,
+      req.body.receivingId,
       req.body.data,
       moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
     ];

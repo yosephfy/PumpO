@@ -27,7 +27,7 @@ export default function Nav() {
           <Link to="/">
             <FontAwesomeIcon icon={faHome} />
           </Link>
-          <Link to="/profile:/id">
+          <Link to={`/profile/${currentUser.id}`}>
             <FontAwesomeIcon icon={faUser} />
           </Link>
           <div className="nav-SearchBar">
@@ -37,7 +37,7 @@ export default function Nav() {
         </div>
 
         <div className="nav-right">
-          <Link to="/chatbox/:id">
+          <Link to="/messages">
             <FontAwesomeIcon icon={faEnvelope} />
           </Link>
           <Link to="/">

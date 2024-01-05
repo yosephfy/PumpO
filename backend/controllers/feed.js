@@ -30,3 +30,12 @@ export const getFollowedFeed = (req, res) => {
     });
   });
 };
+
+export const getProfileFeed = (req, res) => {
+  const q = `SELECT p.*, u.username, u.profilePic FROM posts AS p JOIN users AS u ON (u.id = p.userId) WHERE p.userId = ? ORDER BY p.createdAt DESC`;
+
+  db.query(q, [req.params.userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
