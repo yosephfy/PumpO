@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAdd,
+  faBell,
   faBookOpen,
   faBookmark,
   faCirclePlay,
@@ -12,6 +13,7 @@ import {
   faPenToSquare,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import DarkMode from "../darkmode/DarkMode";
 
 export const MoreModal = (r) => {
   return (
@@ -67,6 +69,47 @@ export const MoreModal = (r) => {
             <h4>Videos</h4>
           </div>
         </Link>
+      </div>
+    </div>
+  );
+};
+
+export const ProfileModal = ({ userInfo, refM }) => {
+  return (
+    <div className="modal modal-profile" ref={refM}>
+      <h3>Profile</h3>
+      <div className="items">
+        <div className="profile">
+          <img src={userInfo.profilePic} alt="" />
+          <div className="profile-info">
+            <h4>{userInfo.email}</h4>
+            <h4>@{userInfo.username}</h4>
+            <h4>{userInfo.name}</h4>
+          </div>
+        </div>
+        <Link to="/">
+          <div className="item">
+            <FontAwesomeIcon className="icons" icon={faPenToSquare} />
+            <h4>Edit Profile</h4>
+          </div>
+        </Link>
+        <Link to="/messages">
+          <div className="item">
+            <FontAwesomeIcon className="icons" icon={faBookOpen} />
+            <h4>Logout</h4>
+          </div>
+        </Link>
+        <Link to="/">
+          <div className="item">
+            <FontAwesomeIcon className="icons" icon={faBell} />
+            <h4>Notification</h4>
+          </div>
+        </Link>
+        <hr />
+        <div className="darkmode-item">
+          <h4>Toggle Dark Mode</h4>
+          <DarkMode />
+        </div>
       </div>
     </div>
   );

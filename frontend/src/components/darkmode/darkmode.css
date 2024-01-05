@@ -1,7 +1,26 @@
 .darkmode-icon {
-    transform: 0.3s ease
+    transform: 0.3s ease;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
 }
 
-.darkmode-icon:hover {
-    transform: scale(1.2);
+.darkmode-icon input {
+    display: none;
+}
+
+.darkmode-icon .icon {
+    width: 1rem;
+    padding: 0.1rem;
+    border: 3px solid var(--color-primary);
+    border-radius: 0.4rem;
+}
+
+.darkmode-icon .icon[name=light] {
+    background-color: var(--color-card);
+}
+
+.darkmode-icon .icon[name=dark] {
+    background-color: var(--color-primary);
+    color: var(--color-card);
 }

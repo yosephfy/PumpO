@@ -15,10 +15,11 @@ import {
 import DarkMode from "../darkmode/DarkMode";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
-import { MoreModal } from "../modals/Modals";
+import { MoreModal, ProfileModal } from "../modals/Modals";
 
 export default function Nav() {
   const [openMoreModal, setOpenMoreModal] = useState(false);
+  const [openProfileModal, setOpenProfileModal] = useState(false);
   const modalRef = useRef();
 
   const { currentUser } = useContext(AuthContext);
@@ -26,6 +27,7 @@ export default function Nav() {
     let handler = (e) => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
         setOpenMoreModal(false);
+        setOpenProfileModal(false);
       }
     };
 
@@ -34,6 +36,9 @@ export default function Nav() {
   return (
     <nav>
       {openMoreModal && <MoreModal refM={modalRef} />}
+      {openProfileModal && (
+        <ProfileModal userInfo={currentUser} refM={modalRef} />
+      )}
 
       <div className="nav-container">
         <div className="nav-left">
@@ -56,12 +61,7 @@ export default function Nav() {
           <Link to="/messages" className="messages-btn">
             <FontAwesomeIcon icon={faEnvelope} />
           </Link>
-          <Link to="/" className="notification-btn">
-            <FontAwesomeIcon icon={faBell} />
-          </Link>
-          <div className="darkmode-btn">
-            <DarkMode />
-          </div>
+
           <div
             className="menu-btn"
             onClick={() => setOpenMoreModal(!openMoreModal)}
@@ -71,7 +71,10 @@ export default function Nav() {
             </Link>
           </div>
 
-          <div className="user">
+          <div
+            className="user"
+            onClick={() => setOpenProfileModal(!openProfileModal)}
+          >
             <img src={currentUser.profilePic} alt="" />
             <h4>{currentUser.username}</h4>
           </div>

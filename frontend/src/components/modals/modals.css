@@ -1,9 +1,17 @@
 .modal {
     position: absolute;
-    background-color: var(--color-bg);
+    background-color: var(--color-card-light);
     border: 1px solid var(--color-border);
     padding: 1rem;
     border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal hr {
+    margin: 0;
 }
 
 .modal-more {
@@ -13,7 +21,25 @@
     max-width: 80%;
 }
 
-.items {
+.modal-profile {
+    top: 4rem;
+    right: 1rem;
+    width: max-content;
+    max-width: 80%;
+}
+
+.modal-more .items {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    border-radius: 0.3rem;
+    width: 100%;
+}
+
+.modal-profile .items {
     background-color: var(--color-card);
     border: 1px solid var(--color-border);
     padding: 1rem;
@@ -23,7 +49,7 @@
     border-radius: 0.3rem;
 }
 
-.items .item {
+.modal-more .items .item {
     display: grid;
     grid-template-columns: 7% 90%;
     flex-direction: row;
@@ -32,15 +58,66 @@
     color: var(--text-color);
 }
 
-.item .icons {
+.modal-more .item .icons {
     color: var(--color-primary);
     width: 1rem;
     aspect-ratio: 1/1;
 }
 
+.modal-profile .items .item {
+    display: grid;
+    grid-template-columns: 7% 90%;
+    flex-direction: row;
+    column-gap: 10px;
+    align-items: center;
+    color: var(--text-color);
+}
+
+.modal-profile .item .icons {
+    color: var(--color-primary);
+    width: 1rem;
+    aspect-ratio: 1/1;
+}
+
+.modal-profile .items .profile {
+    display: flex;
+    flex-direction: row;
+    gap: 0.6rem;
+    border: 1px solid var(--color-border);
+    padding-right: 2rem;
+    padding: 0.7rem 2rem 0.7rem 0.7rem;
+    border-radius: 0.7rem;
+    background-color: var(--color-card-light);
+    align-items: center;
+
+
+}
+
+.modal-profile .items .profile img {
+    width: 4rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: 2px double var(--color-border);
+}
+
+.modal-profile .items .profile h4 {
+    color: var(--text-color);
+    font-size: smaller;
+}
+
+.modal-profile .items .darkmode-item {
+    display: flex;
+    justify-content: space-between;
+}
 
 @media (max-width:768px) {
     .modal-more {
+        top: 3.6rem;
+        right: 0;
+        min-width: 100%;
+    }
+
+    .modal-profile {
         top: 3.6rem;
         right: 0;
         min-width: 100%;
