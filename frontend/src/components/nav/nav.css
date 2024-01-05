@@ -57,6 +57,10 @@ nav {
     gap: 20px;
 }
 
+.menu-btn {
+    position: relative;
+}
+
 @media (max-width:768px) {
     nav .user {
         display: none;

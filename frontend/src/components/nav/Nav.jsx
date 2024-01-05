@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import "./nav.css";
@@ -14,11 +14,27 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import DarkMode from "../darkmode/DarkMode";
 import { AuthContext } from "../../context/AuthContext";
+import { useState } from "react";
+import { MoreModal } from "../modals/Modals";
 
 export default function Nav() {
+  const [openMoreModal, setOpenMoreModal] = useState(false);
+  const modalRef = useRef();
+
   const { currentUser } = useContext(AuthContext);
+  useEffect(() => {
+    let handler = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        setOpenMoreModal(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handler);
+  });
   return (
     <nav>
+      {openMoreModal && <MoreModal refM={modalRef} />}
+
       <div className="nav-container">
         <div className="nav-left">
           <Link to="/">
@@ -46,10 +62,15 @@ export default function Nav() {
           <div className="darkmode-btn">
             <DarkMode />
           </div>
+          <div
+            className="menu-btn"
+            onClick={() => setOpenMoreModal(!openMoreModal)}
+          >
+            <Link to="/">
+              <FontAwesomeIcon icon={faBars} />
+            </Link>
+          </div>
 
-          <Link to="/" className="menu-btn">
-            <FontAwesomeIcon icon={faBars} />
-          </Link>
           <div className="user">
             <img src={currentUser.profilePic} alt="" />
             <h4>{currentUser.username}</h4>
