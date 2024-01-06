@@ -1,3 +1,6 @@
+import defaultUserIcon from "../assets/defaultuser.svg";
+import defaultImage from "../assets/defaultimage.png";
+
 export const WhatTimeAgo = (timestamp) => {
   const seconds = Math.floor((Date.now() - Date.parse(timestamp)) / 1000);
 
@@ -54,5 +57,17 @@ export const parseDateTime = (timestamp) => {
     // More than 12 months ago, show the year and month
     const options = { year: "numeric", month: "short" };
     return date.toLocaleDateString("en-US", options);
+  }
+};
+
+export const getImage = (link, type) => {
+  if (link && link.trim().length !== 0) {
+    return link;
+  }
+
+  if (type == "profilePic") {
+    return defaultUserIcon;
+  } else {
+    return defaultImage;
   }
 };

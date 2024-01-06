@@ -12,6 +12,7 @@ import {
   faMessage,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { getImage } from "../../utility/utility";
 
 export default function MessageBar() {
   const { isLoading, error, data } = useQuery({
@@ -42,7 +43,7 @@ export default function MessageBar() {
             <Link to={`/chatbox/${m.userId}`} key={m.id}>
               <div className="bar-message">
                 <div className="user">
-                  <img src={m.profilePic} alt="" />
+                  <img src={getImage(m.profilePic, "profilePic")} alt="" />
                   <div className="green-active"></div>
                 </div>
                 <div className="bar-message-body">

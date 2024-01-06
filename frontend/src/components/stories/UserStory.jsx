@@ -7,6 +7,7 @@ import reactIcon from "../../assets/react.svg";
 
 import { useContext } from "react";
 import { makeRequest } from "../../Axios.js";
+import { getImage } from "../../utility/utility.js";
 
 export default function UserStory() {
   const { currentUser } = useContext(AuthContext);
@@ -22,9 +23,27 @@ export default function UserStory() {
   return (
     <div className="story userStory">
       <div className="user">
-        <img src={error || isLoading ? reactIcon : data[0].profilePic} alt="" />
+        <img
+          src={
+            error || isLoading
+              ? reactIcon
+              : data.length === 0
+              ? getImage("", "profilePic")
+              : getImage(data[0].profilePic, "profilePic")
+          }
+          alt=""
+        />
       </div>
-      <img src={error || isLoading ? reactIcon : data[0].data} alt="" />
+      <img
+        src={
+          error || isLoading
+            ? reactIcon
+            : data.length === 0
+            ? getImage("")
+            : getImage(data[0].data)
+        }
+        alt=""
+      />
       <label htmlFor="storyFiles">
         <FontAwesomeIcon icon={faAdd} />
         <input type="file" name="" id="storyFiles" />

@@ -16,6 +16,7 @@ import DarkMode from "../darkmode/DarkMode";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
 import { MoreModal, ProfileModal } from "../modals/Modals";
+import { getImage } from "../../utility/utility";
 
 export default function Nav() {
   const [openMoreModal, setOpenMoreModal] = useState(false);
@@ -75,7 +76,7 @@ export default function Nav() {
             className="user"
             onClick={() => setOpenProfileModal(!openProfileModal)}
           >
-            <img src={currentUser.profilePic} alt="" />
+            <img src={getImage(currentUser.profilePic, "profilePic")} alt="" />
             <h4>{currentUser.username}</h4>
           </div>
         </div>

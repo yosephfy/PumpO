@@ -9,7 +9,7 @@ import { makeRequest } from "../../Axios";
 import { useQuery } from "@tanstack/react-query";
 import "./chatbox.css";
 import { useParams } from "react-router";
-import { parseDateTime } from "../../utility/utility";
+import { getImage, parseDateTime } from "../../utility/utility";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function ChatBox() {
@@ -62,7 +62,7 @@ export default function ChatBox() {
     <div>
       <div className="chat-box">
         <div className="chat-box-top">
-          <img src={userData.data.profilePic} alt="" />
+          <img src={getImage(userData.data.profilePic, "profilePic")} alt="" />
           <div className="user-name">
             <h3>{userData.data.name}</h3>
             <h3>@{userData.data.username}</h3>

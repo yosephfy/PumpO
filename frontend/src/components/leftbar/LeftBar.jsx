@@ -11,6 +11,7 @@ import {
   faMessage,
   faCirclePlay,
 } from "@fortawesome/free-solid-svg-icons";
+import { getImage } from "../../utility/utility";
 
 export default function LeftBar() {
   const { currentUser } = useContext(AuthContext);
@@ -20,7 +21,10 @@ export default function LeftBar() {
         <div className="menu">
           <Link to={`/profile/${currentUser.id}`}>
             <div className="user">
-              <img src={currentUser.profilePic} alt="" />
+              <img
+                src={getImage(currentUser.profilePic, "profilePic")}
+                alt=""
+              />
               <h4>{currentUser.username}</h4>
             </div>
           </Link>

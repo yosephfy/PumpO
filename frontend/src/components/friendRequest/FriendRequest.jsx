@@ -14,6 +14,7 @@ import {
   faMessage,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { getImage } from "../../utility/utility";
 
 export default function FriendRequest() {
   const { currentUser } = useContext(AuthContext);
@@ -44,7 +45,7 @@ export default function FriendRequest() {
               <Link to="/profile:id">
                 <div className="info">
                   <div className="user">
-                    <img src={f.profilePic} alt="" />
+                    <img src={getImage(f.profilePic, "profilePic")} alt="" />
                     <h5>{f.name}</h5>
                   </div>
                   <div className="info-name">

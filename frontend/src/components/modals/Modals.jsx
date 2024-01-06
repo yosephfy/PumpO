@@ -14,6 +14,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import DarkMode from "../darkmode/DarkMode";
+import { getImage } from "../../utility/utility";
 
 export const MoreModal = (r) => {
   return (
@@ -80,7 +81,7 @@ export const ProfileModal = ({ userInfo, refM }) => {
       <h3>Profile</h3>
       <div className="items">
         <div className="profile">
-          <img src={userInfo.profilePic} alt="" />
+          <img src={getImage(userInfo.profilePic, "profilePic")} alt="" />
           <div className="profile-info">
             <h4>@{userInfo.username}</h4>
             <h4>{userInfo.email}</h4>

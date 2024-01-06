@@ -9,7 +9,7 @@ import {
   faShare,
 } from "@fortawesome/free-solid-svg-icons";
 import Comment from "../comment/Comment";
-import { WhatTimeAgo } from "../../utility/utility.js";
+import { WhatTimeAgo, getImage } from "../../utility/utility.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "../../Axios.js";
@@ -95,7 +95,7 @@ export default function Feed({ feed }) {
       <div className="top-content">
         <Link to={`/profile/${feed.userId}`} reloadDocument>
           <div className="user">
-            <img src={feed.profilePic} alt="" />
+            <img src={getImage(feed.profilePic, "profilePic")} alt="" />
             <div>
               <h5>{feed.username}</h5>
               <small>{timeAgo}</small>
@@ -108,7 +108,7 @@ export default function Feed({ feed }) {
       </div>
       <div className="mid-content">
         <p>{feed.desc}</p>
-        <img src={feed.img} alt="" />
+        <img src={getImage(feed.img, "image")} alt="" />
       </div>
 
       <Interactions

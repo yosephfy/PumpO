@@ -17,6 +17,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router";
 import { makeRequest } from "../../Axios";
+import { getImage } from "../../utility/utility";
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -90,7 +91,7 @@ export default function UserProfile() {
       </div>
       <div className="mid-info">
         <div className="user-profile">
-          <img src={userQuery.data.profilePic} alt="" />
+          <img src={getImage(userQuery.data.profilePic, "profilePic")} alt="" />
           <h5>{userQuery.data.name}</h5>
         </div>
         <div className="interaction">

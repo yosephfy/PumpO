@@ -8,6 +8,7 @@ import reactIcon from "../../assets/react.svg";
 import { useContext } from "react";
 import { makeRequest } from "../../Axios.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
+import { getImage } from "../../utility/utility.js";
 
 export default function Stories() {
   const { currentUser } = useContext(AuthContext);
@@ -32,9 +33,9 @@ export default function Stories() {
               <SwiperSlide key={s.id}>
                 <div className="story">
                   <div className="user">
-                    <img src={s.profilePic} alt="" />
+                    <img src={getImage(s.profilePic, "profilePic")} alt="" />
                   </div>
-                  <img src={s.data} alt="" />
+                  <img src={getImage(s.data)} alt="" />
                   <h5>{s.username}</h5>
                 </div>
               </SwiperSlide>

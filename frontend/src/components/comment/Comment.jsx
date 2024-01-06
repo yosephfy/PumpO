@@ -5,7 +5,7 @@ import "./comment.css";
 import { AuthContext } from "../../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { makeRequest } from "../../Axios";
-import { WhatTimeAgo } from "../../utility/utility";
+import { WhatTimeAgo, getImage } from "../../utility/utility";
 
 export default function Comment({ post }) {
   const { currentUser } = useContext(AuthContext);
@@ -45,7 +45,7 @@ export default function Comment({ post }) {
       <div className="writebox">
         <form action="#" onSubmit={handleAddComment}>
           <div className="user">
-            <img src={currentUser.profilePic} alt="" />
+            <img src={getImage(currentUser.profilePic, "profilePic")} alt="" />
             <input
               type="text"
               name="sendComment"
@@ -66,7 +66,7 @@ export default function Comment({ post }) {
         : data.map((c) => (
             <Link to="/profile/:id" key={c.id}>
               <div className="user" key={c.id}>
-                <img src={c.profilePic} alt="" />
+                <img src={getImage(c.profilePic, "profilePic")} alt="" />
                 <div>
                   <h5>{c.name}</h5>
                   <p>{c.desc}</p>
