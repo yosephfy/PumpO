@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { db } from "../connect.js";
+import moment from "moment";
 
 export const getUsers = (req, res) => {
   const q = "SELECT * FROM users";
@@ -92,7 +93,7 @@ export const getUserFriendRequests = (req, res) => {
 
     const q = `SELECT r.*, u.id AS userId, u.profilePic, u.name, u.username FROM friendrequests AS r JOIN users AS u ON (r.requestingId = u.id) WHERE requestedId = ? ORDER BY timestamp DESC`;
 
-    const values = [userInfo.id];
+    const values = [req.params.requestedId];
 
     db.query(q, values, (err, data) => {
       if (err) return res.status(500).json(err);

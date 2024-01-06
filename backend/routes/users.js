@@ -34,7 +34,7 @@ router.delete("/unfollow/:followedId", unfollowUser);
 router.post("/relationships/add", relationshipsAdd);
 router.delete("/relationships/delete", relationshipsDelete);
 
-router.get("/friendRequests", getUserFriendRequests);
+router.get("/friendRequests/:requestedId", getUserFriendRequests);
 router.post("/friendRequests/add", friendRequestAdd);
 router.delete("/friendRequests/delete", friendRequestDelete);
 

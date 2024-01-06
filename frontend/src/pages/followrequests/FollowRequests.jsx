@@ -25,7 +25,7 @@ export default function FollowRequests() {
   const { error, isLoading, data, refetch } = useQuery({
     queryKey: ["followRequest"],
     queryFn: () =>
-      makeRequest.get(`/users/friendRequests`).then((res) => {
+      makeRequest.get(`/users/friendRequests/${currentUser.id}`).then((res) => {
         return res.data;
       }),
   });

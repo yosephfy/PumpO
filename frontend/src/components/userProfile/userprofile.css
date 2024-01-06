@@ -71,3 +71,9 @@
     gap: 1rem;
     background: var(--color-primary);
 }
+
+.action-items .requested {
+    background-color: var(--color-card);
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+}

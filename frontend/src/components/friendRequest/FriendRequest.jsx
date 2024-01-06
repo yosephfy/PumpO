@@ -22,7 +22,7 @@ export default function FriendRequest() {
   const { error, isLoading, data } = useQuery({
     queryKey: ["friendRequest"],
     queryFn: () =>
-      makeRequest.get(`/users/friendRequests`).then((res) => {
+      makeRequest.get(`/users/friendRequests/${currentUser.id}`).then((res) => {
         return res.data;
       }),
   });
@@ -42,7 +42,7 @@ export default function FriendRequest() {
         ? "Loading..."
         : data.slice(0, 4).map((f) => (
             <div className="request" key={f.id}>
-              <Link to="/profile:id">
+              <Link to="/followreqs">
                 <div className="info">
                   <div className="user">
                     <img src={getImage(f.profilePic, "profilePic")} alt="" />

@@ -23,6 +23,7 @@ export default function UserProfile() {
   const { id } = useParams();
   const { currentUser } = useContext(AuthContext);
   const [followed, setFollowed] = useState(false);
+  const [requested, setRequested] = useState(false);
   const history = useNavigate();
 
   const handleGoBack = () => {
@@ -60,27 +61,77 @@ export default function UserProfile() {
       ),
   });
 
+  const requestQuery = useQuery({
+    queryKey: ["followRequest", id],
+    queryFn: () =>
+      makeRequest.get(`/users/friendRequests/${id}`).then((res) => {
+        let request = res.data.some(
+          (d) => d["requestingId"] === currentUser.id
+        );
+        setRequested(request);
+        return request;
+      }),
+  });
+
   const handleFollow = () => {
     makeRequest
       .post(`/users/follow/${id}`)
       .then(() => setFollowed(true))
       .catch((error) => console.error("Error following:", error));
     console.log("followed: " + id);
+
     userRelationshipQuery.refetch();
+    handleCancelRequestFollow();
+    setRequested(false);
+  };
+
+  const handleRequestFollow = () => {
+    makeRequest
+      .post(`/users/friendRequests/add`, {
+        requestingId: currentUser.id,
+        requestedId: id,
+      })
+      .then(() => setRequested(true))
+      .catch((error) => console.error("Error requesting:", error));
+    console.log("requested: " + id);
+    userRelationshipQuery.refetch();
+  };
+  const handleCancelRequestFollow = () => {
+    makeRequest
+      .delete(`/users/friendRequests/delete`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          requestedId: id,
+          requestingId: currentUser.id,
+        },
+      })
+      .then(() => setRequested(false))
+      .catch((error) => console.error("Error canceling request:", error));
+    console.log("canceled request: " + id);
+    userRelationshipQuery.refetch();
+
+    requestQuery.refetch();
   };
 
   const handleUnfollow = () => {
     makeRequest
       .delete(`/users/unfollow/${id}`)
-      .then(() => setFollowed(false))
+      .then(() => {
+        setFollowed(false);
+        handleCancelRequestFollow();
+      })
       .catch((error) => console.error("Error unfollowing:", error));
     console.log("unfollowed: " + id);
+    setRequested(false);
+    requestQuery.refetch();
     userRelationshipQuery.refetch();
   };
 
-  return userQuery.error ? (
+  return userQuery.error || requestQuery.error ? (
     "Something went wrong"
-  ) : userQuery.isLoading ? (
+  ) : userQuery.isLoading || requestQuery.isLoading ? (
     "Loading..."
   ) : (
     <div className="userProfile">
@@ -130,33 +181,62 @@ export default function UserProfile() {
       <div className="bottom-info">
         <small>{userQuery.data.bio}</small>
         <div className="action-items">
-          {id != currentUser.id && !followed && (
-            <button className="btn btn-primary" onClick={handleFollow}>
-              Follow
-              <FontAwesomeIcon icon={faUserPlus} />
-            </button>
-          )}
+          {id != currentUser.id &&
+            !followed &&
+            userQuery.data.privateProfile &&
+            !requested && (
+              <button
+                className="request-follow btn btn-primary"
+                onClick={handleRequestFollow}
+              >
+                Request Follow
+                <FontAwesomeIcon icon={faUserPlus} />
+              </button>
+            )}
+          {id != currentUser.id &&
+            !followed &&
+            userQuery.data.privateProfile &&
+            requested && (
+              <button
+                className="requested btn btn-primary"
+                onClick={handleCancelRequestFollow}
+              >
+                Requested
+              </button>
+            )}
+          {id != currentUser.id &&
+            !followed &&
+            !userQuery.data.privateProfile && (
+              <button className="follow btn btn-primary" onClick={handleFollow}>
+                Follow
+                <FontAwesomeIcon icon={faUserPlus} />
+              </button>
+            )}
           {id != currentUser.id && followed && (
-            <button className="btn btn-primary" onClick={handleUnfollow}>
+            <button
+              className="unfollow btn btn-primary"
+              onClick={handleUnfollow}
+            >
               Unfollow
               <FontAwesomeIcon icon={faUserMinus} />
             </button>
           )}
-          {id != currentUser.id && (
-            <button
-              className="btn btn-primary"
-              onClick={() => history(`/chatbox/${id}`)}
-            >
-              Message <FontAwesomeIcon icon={faMessage} />
-            </button>
-          )}
+          {id != currentUser.id &&
+            (!userQuery.data.privateProfile || followed) && (
+              <button
+                className="message-btn btn btn-primary"
+                onClick={() => history(`/chatbox/${id}`)}
+              >
+                Message <FontAwesomeIcon icon={faMessage} />
+              </button>
+            )}
           {id == currentUser.id && (
-            <button className="btn btn-primary">
+            <button className="edit-profile btn btn-primary">
               Edit Profile <FontAwesomeIcon icon={faUserEdit} />
             </button>
           )}
           {id == currentUser.id && (
-            <button className="btn btn-primary">
+            <button className="share-profile btn btn-primary">
               Share Profile <FontAwesomeIcon icon={faShare} />
             </button>
           )}
