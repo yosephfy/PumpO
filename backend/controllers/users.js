@@ -11,6 +11,7 @@ export const getUsers = (req, res) => {
     return res.json(data);
   });
 };
+
 export const getUserById = (req, res) => {
   const userId = req.params.userId;
   const q = "SELECT * FROM users WHERE id = ?";
@@ -205,6 +206,66 @@ export const friendRequestDelete = (req, res) => {
     db.query(q, values, (err, data) => {
       if (err) return res.status(500).json(err);
       return res.status(200).json(data);
+    });
+  });
+};
+
+export const getGymProfileByUserId = (req, res) => {
+  const userId = req.params.userId;
+  const q = "SELECT * FROM gymprofile WHERE userId = ?";
+
+  db.query(q, [userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length == 0) return res.status(404).json("Profile Not found");
+    return res.status(200).json(data[0]);
+  });
+};
+
+export const updateGymProfile = (req, res) => {
+  const token = req.cookies.accessToken;
+  if (!token) return res.status(401).json("Not authenticated!");
+
+  jwt.verify(token, "secretkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+
+    const q =
+      "UPDATE gymprofile SET `gymType`=?,`weightStatus`=?,`startingDate`=?,`age`=?  WHERE id=? ";
+
+    const value = [
+      req.body.gymType,
+      req.body.weightStatus,
+      req.body.startingDate,
+      req.body.age,
+      userInfo.id,
+    ];
+    db.query(q, value, (err, data) => {
+      if (err) res.status(500).json(err);
+      if (data.affectedRows > 0) return res.json("Updated!");
+      return res.status(403).json("You can update only your profile!");
+    });
+  });
+};
+
+export const addGymProfile = (req, res) => {
+  const token = req.cookies.accessToken;
+  if (!token) return res.status(401).json("Not logged in!");
+
+  jwt.verify(token, "secretkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+
+    const q =
+      "INSERT INTO gymprofile(`gymType`, `weightStatus`, `startingDate`, `age`, `userId`) VALUES (?)";
+    const values = [
+      req.body.gymType,
+      req.body.weightStatus,
+      moment(Date.parse(req.body.startingDate)).format("YYYY-MM-DD HH:mm:ss"),
+      req.body.age,
+      userInfo.id,
+    ];
+
+    db.query(q, [values], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).json("Gym profile has been created.");
     });
   });
 };
