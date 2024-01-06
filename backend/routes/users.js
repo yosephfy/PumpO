@@ -35,7 +35,7 @@ router.post("/relationships/add", relationshipsAdd);
 router.delete("/relationships/delete", relationshipsDelete);
 
 router.get("/friendRequests", getUserFriendRequests);
-router.post("/friendRequests/add/:requestingId", friendRequestAdd);
-router.delete("/friendRequests/delete/:requestingId", friendRequestDelete);
+router.post("/friendRequests/add", friendRequestAdd);
+router.delete("/friendRequests/delete", friendRequestDelete);
 
 export default router;

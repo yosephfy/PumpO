@@ -179,14 +179,14 @@ export const friendRequestAdd = (req, res) => {
     const q =
       "INSERT INTO friendrequests (`requestingId`,`requestedId`,`timestamp`) VALUES (?)";
     const values = [
-      req.params.requestingId,
-      userInfo.id,
+      req.body.requestingId,
+      req.body.requestedId,
       moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
     ];
 
     db.query(q, [values], (err, data) => {
       if (err) res.status(500).json(err);
-      return res.status(200).json("followed");
+      return res.status(200).json(data);
     });
   });
 };
@@ -200,9 +200,10 @@ export const friendRequestDelete = (req, res) => {
 
     const q =
       "DELETE FROM friendrequests WHERE `requestedId`=? AND `requestingId`=?";
-    db.query(q, [userInfo.id, req.params.requestingId], (err, data) => {
+    const values = [req.body.requestedId, req.body.requestingId];
+    db.query(q, values, (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json("Deleted");
+      return res.status(200).json(data);
     });
   });
 };

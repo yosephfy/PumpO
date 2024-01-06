@@ -36,19 +36,29 @@ export default function FollowRequests() {
         followedId: currentUser.id,
         followerId: followerId,
       })
-      .then(() => {
-        makeRequest
-          .delete(`/users/friendRequests/delete/${followerId}`)
-          .then(() => refetch())
-          .catch((error) => console.error("Error accepting request:", error));
+      .then((res) => {
+        console.log(res.data);
+        handleDelete(followerId);
       })
       .catch((error) => console.error("Error accepting request:", error));
   };
 
   const handleDelete = (followerId) => {
+    console.log(followerId, currentUser.id);
     makeRequest
-      .delete(`/users/friendRequests/delete/${followerId}`)
-      .then(() => refetch())
+      .delete("/users/friendRequests/delete", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          requestedId: currentUser.id,
+          requestingId: followerId,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        refetch();
+      })
       .catch((error) => console.error("Error deleting request:", error));
   };
 
