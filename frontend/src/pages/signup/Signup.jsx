@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./signup.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 export default function Signup() {
+  const navigate = useNavigate();
   const [inputs, setInputs] = useState({
     username: "",
     email: "",
@@ -26,6 +27,7 @@ export default function Signup() {
         password: inputs.password,
         email: inputs.email,
       });
+      navigate("/login");
     } catch (err) {
       setErr(err.response.data);
     }
