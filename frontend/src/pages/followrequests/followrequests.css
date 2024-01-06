@@ -54,6 +54,7 @@
     .follow-requests .action .btn {
         width: fit-content;
         border-radius: 50%;
+        padding: 0.5rem;
     }
 
     .follow-requests .request {
