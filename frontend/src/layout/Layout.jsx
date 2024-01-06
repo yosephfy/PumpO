@@ -7,6 +7,7 @@ import Login from "../pages/login/Login";
 import Profile from "../pages/profile/Profile";
 import Signup from "../pages/signup/Signup";
 import Messages from "../pages/messages/Messages";
+import FollowRequests from "../pages/followrequests/FollowRequests";
 
 import Nav from "../components/nav/Nav";
 import RightBar from "../components/rightbar/RightBar";
@@ -37,6 +38,7 @@ export default function Layout() {
         { path: "/profile/:id", element: <Profile /> },
         { path: "/chatbox/:userId", element: <ChatBox /> },
         { path: "/messages", element: <Messages /> },
+        { path: "/followreqs", element: <FollowRequests /> },
       ],
     },
     { path: "/login", element: <Login /> },

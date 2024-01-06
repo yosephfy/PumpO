@@ -68,13 +68,6 @@ export default function Feed({ feed }) {
     console.log("BRO disliked: " + feed.id);
   };
 
-  const handleComment = () => {
-    makeRequest
-      .post("yourCommentApiEndpoint")
-      .then(() => setComments((prevComments) => prevComments + 1))
-      .catch((error) => console.error("Error posting comment:", error));
-  };
-
   const handleShare = () => {
     makeRequest
       .post("yourShareApiEndpoint")
@@ -114,7 +107,6 @@ export default function Feed({ feed }) {
       <Interactions
         actions={{
           onLike: currLiked ? handleUnlike : handleLike,
-          onComment: handleComment,
           onShare: "handleShare",
           expandComment: commentExpandHandler,
         }}

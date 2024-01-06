@@ -31,7 +31,7 @@ export default function FriendRequest() {
     <div className="friend-requests">
       <div className="friend-requests-title">
         <h4>Friend Requests</h4>
-        <Link to={``}>
+        <Link to={`/followreqs`}>
           View more <FontAwesomeIcon icon={faChevronRight} />
         </Link>
       </div>

@@ -10,6 +10,10 @@ import {
   getUserFriendRequests,
   followUser,
   unfollowUser,
+  relationshipsAdd,
+  relationshipsDelete,
+  friendRequestAdd,
+  friendRequestDelete,
 } from "../controllers/users.js";
 
 const router = express.Router();
@@ -27,6 +31,11 @@ router.get("/followed/:userId", getUserFollowed);
 router.post("/follow/:followedId", followUser);
 router.delete("/unfollow/:followedId", unfollowUser);
 
+router.post("/relationships/add", relationshipsAdd);
+router.delete("/relationships/delete", relationshipsDelete);
+
 router.get("/friendRequests", getUserFriendRequests);
+router.post("/friendRequests/add/:requestingId", friendRequestAdd);
+router.delete("/friendRequests/delete/:requestingId", friendRequestDelete);
 
 export default router;

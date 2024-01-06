@@ -1,4 +1,4 @@
-.request {
+.friend-requests .request {
     background: var(--color-card);
     margin-top: 1rem;
     padding: 14px;
@@ -8,24 +8,24 @@
     flex-direction: column;
 }
 
-.request h5 {
+.friend-requests .request h5 {
     font-size: 0.91rem;
 }
 
-.request .action {
+.friend-requests .request .action {
     display: flex;
     align-items: center;
     gap: 0.3rem;
 }
 
-.request .action button {
+.friend-requests .request .action button {
     width: 40%;
     align-items: center;
     display: flex;
     justify-content: center;
 }
 
-.friend-requests-title {
+.friend-requests .friend-requests-title {
     display: flex;
     justify-content: space-between;
     padding-right: 15px;
