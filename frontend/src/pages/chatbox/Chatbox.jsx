@@ -26,7 +26,7 @@ export default function ChatBox() {
         receivingId: userId,
         data: newMessage,
       })
-      .then((res) => {
+      .then(() => {
         messageData.refetch();
       })
       .catch((err) => {
@@ -75,7 +75,7 @@ export default function ChatBox() {
                   <div
                     className="single-message"
                     key={m.id}
-                    curr={currentUser.id === m.sendingUserId ? "true" : "false"}
+                    name={currentUser.id === m.sendingUserId ? "true" : "false"}
                   >
                     <div>{m.data}</div>
                     <small>{parseDateTime(m.timestamp)}</small>

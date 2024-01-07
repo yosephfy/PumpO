@@ -28,7 +28,7 @@ export default function UserProfile() {
   };
 
   const userQuery = useQuery({
-    queryKey: ["userProfile"],
+    queryKey: ["userProfile", id],
     queryFn: () =>
       makeRequest.get(`/users/findById/${id}`).then((res) => {
         return res.data;
@@ -36,7 +36,7 @@ export default function UserProfile() {
   });
 
   const userPostQuery = useQuery({
-    queryKey: ["userPosts"],
+    queryKey: ["userPosts", id],
     queryFn: () =>
       makeRequest.get(`/posts/all/${id}`).then((res) => {
         return res.data.length;

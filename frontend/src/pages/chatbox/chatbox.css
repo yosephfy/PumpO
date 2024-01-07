@@ -92,26 +92,26 @@
     display: flex;
 }
 
-.single-message[curr=true] {
+.single-message[name=true] {
     border-radius: 1rem 1rem 0 1rem;
     background-color: var(--color-primary);
     color: rgb(235, 234, 234);
     margin-left: auto;
 }
 
-.single-message[curr=false] {
+.single-message[name=false] {
     border-radius: 1rem 1rem 1rem 0;
     background-color: var(--color-card);
     border: 1px solid var(--color-primary);
 }
 
-.single-message[curr=true] small {
+.single-message[name=true] small {
     display: flex;
     justify-content: right;
     font-size: xx-small;
 }
 
-.single-message[curr=false] small {
+.single-message[name=false] small {
     display: flex;
     justify-content: left;
     font-size: xx-small;

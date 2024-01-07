@@ -1,9 +1,7 @@
-import {
-  faListDots
-} from "@fortawesome/free-solid-svg-icons";
+import { faListDots } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { makeRequest } from "../../axios.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { WhatTimeAgo, getImage } from "../../utility/utility.js";
@@ -13,12 +11,12 @@ import "./feed.css";
 
 export default function Feed({ feed }) {
   const { currentUser } = useContext(AuthContext);
-  const history = useNavigate();
 
   const [likes, setLikes] = useState(0);
   const [currLiked, setCurrLiked] = useState(false);
   const [comments, setComments] = useState(0);
   const [shares, setShares] = useState(0);
+  //setShares(0);
 
   useEffect(() => {
     makeRequest
@@ -37,7 +35,6 @@ export default function Feed({ feed }) {
         setComments(data.length || 0);
       })
       .catch((error) => console.error("Error fetching interactions:", error));
-    // setShares(data.shares || 0);
   }, []);
 
   const handleLike = () => {
@@ -62,13 +59,6 @@ export default function Feed({ feed }) {
       .catch((error) => console.error("Error deleting like:", error));
     setCurrLiked(false);
     console.log("BRO disliked: " + feed.id);
-  };
-
-  const handleShare = () => {
-    makeRequest
-      .post("yourShareApiEndpoint")
-      .then(() => setShares((prevShares) => prevShares + 1))
-      .catch((error) => console.error("Error posting share:", error));
   };
 
   const [openComment, setOpenComment] = useState(false);

@@ -12,7 +12,7 @@ export default function Stories() {
   const { currentUser } = useContext(AuthContext);
 
   const { isLoading, error, data } = useQuery({
-    queryKey: "stories",
+    queryKey: ["stories"],
     queryFn: () =>
       makeRequest.get(`/stories/followed/${currentUser.id}`).then((res) => {
         return res.data;

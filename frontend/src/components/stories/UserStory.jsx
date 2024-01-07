@@ -12,7 +12,7 @@ export default function UserStory() {
   const { currentUser } = useContext(AuthContext);
 
   const { isLoading, error, data } = useQuery({
-    queryKey: "UserStories",
+    queryKey: ["UserStories"],
     queryFn: () =>
       makeRequest.get(`/stories/all/${currentUser.id}`).then((res) => {
         return res.data;

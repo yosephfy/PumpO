@@ -36,7 +36,7 @@ export default function Login() {
             Step into the Lift Life Community! PumpO is your ultimate social hub
             for bodybuilders, powerlifters, and gym lovers. Join the squad now!
           </p>
-          <span>Don't have an account?</span>
+          <span>{"Don't have an account?"}</span>
           <Link to="/register">
             <button className="btn btn-primary">Register</button>
           </Link>

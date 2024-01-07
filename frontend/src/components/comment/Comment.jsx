@@ -28,7 +28,7 @@ export default function Comment({ post }) {
         postId: post.id,
         desc: newMessage,
       })
-      .then((res) => {
+      .then(() => {
         refetch();
       })
       .catch((err) => {

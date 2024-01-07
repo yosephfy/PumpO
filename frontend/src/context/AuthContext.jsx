@@ -1,5 +1,7 @@
 import axios from "axios";
-import Cookies from "cookies-js";
+//import Cookies from "cookies-js";
+import Cookies from "js-cookie";
+
 import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();

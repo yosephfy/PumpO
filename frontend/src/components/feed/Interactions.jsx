@@ -1,10 +1,8 @@
-/* eslint-disable no-param-reassign */
 import { faComment, faHeart, faShare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./feed.css";
 
 export default function Interactions({ actions, interactions }) {
-
   return (
     <div>
       <div className="bottom-content">

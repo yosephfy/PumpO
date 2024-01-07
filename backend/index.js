@@ -1,6 +1,7 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
+import Sequelize from "sequelize";
 import authRoutes from "./routes/auth.js";
 import commentRoutes from "./routes/comments.js";
 import feedRoutes from "./routes/feed.js";
@@ -11,10 +12,6 @@ import storiesRoutes from "./routes/stories.js";
 import userRoutes from "./routes/users.js";
 const app = express();
 const PORT = process.env.PORT || 8080;
-
-/* app.get("/", (req, res) => {
-  res.send("Hello, Fitness App!");
-}); */
 
 app.use(express.json());
 const corsConfig = {
@@ -37,7 +34,6 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-import Sequelize from "sequelize";
 const sequelize = new Sequelize("pumpodatabase", "root", "foreveryoung", {
   host: "localhost",
   dialect: "mysql",
