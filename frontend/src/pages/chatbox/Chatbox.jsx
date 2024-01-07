@@ -5,7 +5,7 @@ import {
   faArrowAltCircleRight,
   faFileAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { makeRequest } from "../../Axios";
+import { makeRequest } from "../../axios";
 import { useQuery } from "@tanstack/react-query";
 import "./chatbox.css";
 import { useParams } from "react-router";
