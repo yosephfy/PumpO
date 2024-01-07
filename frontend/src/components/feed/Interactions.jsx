@@ -1,14 +1,9 @@
 /* eslint-disable no-param-reassign */
-import React, { useContext, useState, useEffect } from "react";
-import "./feed.css";
-import Comment from "../comment/Comment";
 import { faComment, faHeart, faShare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AuthContext } from "../../context/AuthContext";
-import { makeRequest } from "../../Axios";
+import "./feed.css";
 
 export default function Interactions({ actions, interactions }) {
-  const { currentUser } = useContext(AuthContext);
 
   return (
     <div>

@@ -1,19 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
-import "./feed.css";
-import { Link, useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faComment,
-  faHeart,
-  faListDots,
-  faShare,
+  faListDots
 } from "@fortawesome/free-solid-svg-icons";
-import Comment from "../comment/Comment";
-import { WhatTimeAgo, getImage } from "../../utility/utility.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { makeRequest } from "../../axios.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { makeRequest } from "../../Axios.js";
+import { WhatTimeAgo, getImage } from "../../utility/utility.js";
+import Comment from "../comment/Comment";
 import Interactions from "./Interactions.jsx";
+import "./feed.css";
 
 export default function Feed({ feed }) {
   const { currentUser } = useContext(AuthContext);

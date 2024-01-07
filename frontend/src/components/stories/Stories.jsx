@@ -1,14 +1,12 @@
-import "./stories.css";
-import UserStory from "./UserStory.jsx";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
 import { useQuery } from "@tanstack/react-query";
-
-import reactIcon from "../../assets/react.svg";
 import { useContext } from "react";
-import { makeRequest } from "../../Axios.js";
+import "swiper/css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { makeRequest } from "../../axios.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { getImage } from "../../utility/utility.js";
+import UserStory from "./UserStory.jsx";
+import "./stories.css";
 
 export default function Stories() {
   const { currentUser } = useContext(AuthContext);

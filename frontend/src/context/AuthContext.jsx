@@ -1,11 +1,13 @@
 import axios from "axios";
+import Cookies from "cookies-js";
 import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
+    //JSON.parse(localStorage.getItem("user")) || null
+    JSON.parse(Cookies.get("user") || null) || null
   );
 
   const login = async (inputs) => {
@@ -14,7 +16,6 @@ export const AuthContextProvider = ({ children }) => {
       inputs,
       {
         withCredentials: true,
-        
       }
     );
 
@@ -22,7 +23,8 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(currentUser));
+    //localStorage.setItem("user", JSON.stringify(currentUser));
+    Cookies.set("user", JSON.stringify(currentUser));
   }, [currentUser]);
 
   return (

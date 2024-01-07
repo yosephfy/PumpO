@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { db } from "../connect.js";
 import moment from "moment";
+import { db } from "../connect.js";
 
 export const getCommentsFromPost = (req, res) => {
   const q = `SELECT c.*, u.username, u.name, u.id AS userId, u.profilePic, u.email FROM comments AS c JOIN users AS u ON (u.id = c.userId) WHERE postId = ? ORDER BY c.timestamp DESC`;

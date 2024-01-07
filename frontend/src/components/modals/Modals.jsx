@@ -1,20 +1,17 @@
-import React from "react";
-import "./modals.css";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faAdd,
   faBell,
   faBookOpen,
   faBookmark,
   faCirclePlay,
-  faFileEdit,
   faMessage,
   faPenToSquare,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import DarkMode from "../darkmode/DarkMode";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 import { getImage } from "../../utility/utility";
+import DarkMode from "../darkmode/DarkMode";
+import "./modals.css";
 
 export const MoreModal = (r) => {
   return (

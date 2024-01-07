@@ -1,6 +1,5 @@
-import React from "react";
-import Message from "../message/MessageBar";
 import FriendRequest from "../friendRequest/FriendRequest";
+import Message from "../message/MessageBar";
 import "./rightbar.css";
 
 export default function RightBar() {

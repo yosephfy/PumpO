@@ -1,23 +1,20 @@
-import React, { useContext, useState } from "react";
-import "./userprofile.css";
-
-import reactIcon from "../../assets/react.svg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBars,
-  faEllipsisV,
   faChevronLeft,
+  faEllipsisV,
   faMessage,
-  faUserPlus,
-  faUserEdit,
   faShare,
+  faUserEdit,
   faUserMinus,
+  faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import { AuthContext } from "../../context/AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { makeRequest } from "../../Axios";
+import { makeRequest } from "../../axios";
+import { AuthContext } from "../../context/AuthContext";
 import { getImage } from "../../utility/utility";
+import "./userprofile.css";
 
 export default function UserProfile() {
   const { id } = useParams();

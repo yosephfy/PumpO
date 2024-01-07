@@ -1,11 +1,10 @@
-import React, { useContext, useState } from "react";
-import reactIcon from "../../assets/react.svg";
-import { Link } from "react-router-dom";
-import "./comment.css";
-import { AuthContext } from "../../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import { makeRequest } from "../../Axios";
+import { useContext, useState } from "react";
+import { Link } from "react-router-dom";
+import { makeRequest } from "../../axios";
+import { AuthContext } from "../../context/AuthContext";
 import { WhatTimeAgo, getImage } from "../../utility/utility";
+import "./comment.css";
 
 export default function Comment({ post }) {
   const { currentUser } = useContext(AuthContext);

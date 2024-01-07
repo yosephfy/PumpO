@@ -1,13 +1,12 @@
-import "./stories.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
-import { AuthContext } from "../../context/AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
-import reactIcon from "../../assets/react.svg";
-
 import { useContext } from "react";
-import { makeRequest } from "../../Axios.js";
+import reactIcon from "../../assets/react.svg";
+import { makeRequest } from "../../axios.js";
+import { AuthContext } from "../../context/AuthContext";
 import { getImage } from "../../utility/utility.js";
+import "./stories.css";
 
 export default function UserStory() {
   const { currentUser } = useContext(AuthContext);

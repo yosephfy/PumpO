@@ -1,12 +1,11 @@
-import React, { useContext } from "react";
-import "./feed.css";
+import { useContext } from "react";
 import Feed from "./Feed";
+import "./feed.css";
 
-import reactIcon from "../../assets/react.svg";
-import { AuthContext } from "../../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import { makeRequest } from "../../Axios";
 import { useParams } from "react-router";
+import { makeRequest } from "../../axios";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function FeedContainer({ domain }) {
   const params = useParams();

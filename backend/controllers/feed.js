@@ -1,6 +1,5 @@
-import { db } from "../connect.js";
 import jwt from "jsonwebtoken";
-import moment from "moment";
+import { db } from "../connect.js";
 
 export const getNewFeed = (req, res) => {
   const q = `SELECT p.*, u.username, u.profilePic FROM posts AS p JOIN users AS u ON (p.userId = u.id) ORDER BY createdAt DESC`;

@@ -1,17 +1,14 @@
-import React, { useContext } from "react";
-import "./leftbar.css";
-import { Link } from "react-router-dom";
-import reactIcon from "../../assets/react.svg";
-import { AuthContext } from "../../context/AuthContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowAltCircleRight,
-  faFileAlt,
-  faUserFriends,
-  faMessage,
   faCirclePlay,
+  faMessage,
+  faUserFriends
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContext } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 import { getImage } from "../../utility/utility";
+import "./leftbar.css";
 
 export default function LeftBar() {
   const { currentUser } = useContext(AuthContext);

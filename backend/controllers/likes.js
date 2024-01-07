@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { db } from "../connect.js";
 import moment from "moment";
+import { db } from "../connect.js";
 
 export const getLikesFromPost = (req, res) => {
   const q = `SELECT * FROM likes WHERE postId = ?`;

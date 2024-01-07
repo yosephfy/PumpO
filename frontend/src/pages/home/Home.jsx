@@ -1,6 +1,5 @@
-import React from "react";
-import Stories from "../../components/stories/Stories";
 import FeedContainer from "../../components/feed/FeedContainer";
+import Stories from "../../components/stories/Stories";
 
 export default function Home() {
   return (

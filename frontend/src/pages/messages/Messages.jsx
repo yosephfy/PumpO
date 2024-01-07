@@ -1,17 +1,10 @@
-import { Link } from "react-router-dom";
-import "./messages.css";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faSearch } from "@fortawesome/free-solid-svg-icons";
-import { makeRequest } from "../../Axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
-import {
-  faBars,
-  faChevronRight,
-  faMessage,
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+import { makeRequest } from "../../axios";
 import { getImage, parseDateTime } from "../../utility/utility";
+import "./messages.css";
 
 export default function MessageBar() {
   const { isLoading, error, data } = useQuery({

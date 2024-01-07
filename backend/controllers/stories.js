@@ -1,6 +1,6 @@
-import { db } from "../connect.js";
 import jwt from "jsonwebtoken";
 import moment from "moment";
+import { db } from "../connect.js";
 
 export const getStory = (req, res) => {
   const q = `SELECT s.*, u.username, u.profilePic FROM users AS u JOIN stories AS s ON (u.id = s.userId) WHERE s.id = ?`;

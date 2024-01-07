@@ -1,18 +1,15 @@
-import React from "react";
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
-//
-import ChatBox from "../pages/chatbox/Chatbox";
-import Home from "../pages/home/Home";
-import Login from "../pages/login/Login";
-import Profile from "../pages/profile/Profile";
-import Signup from "../pages/signup/Signup";
-import Messages from "../pages/messages/Messages";
-import FollowRequests from "../pages/followrequests/FollowRequests";
-
+import LeftBar from "../components/leftbar/LeftBar";
 import Nav from "../components/nav/Nav";
 import RightBar from "../components/rightbar/RightBar";
-import LeftBar from "../components/leftbar/LeftBar";
+import ChatBox from "../pages/chatbox/Chatbox";
+import FollowRequests from "../pages/followrequests/FollowRequests";
 import GymProfile from "../pages/gymprofile/GymProfile";
+import Home from "../pages/home/Home";
+import Login from "../pages/login/Login";
+import Messages from "../pages/messages/Messages";
+import Profile from "../pages/profile/Profile";
+import Signup from "../pages/signup/Signup";
 
 export default function Layout() {
   const Feed = () => {

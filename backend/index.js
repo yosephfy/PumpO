@@ -1,16 +1,16 @@
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import express from "express";
+import authRoutes from "./routes/auth.js";
+import commentRoutes from "./routes/comments.js";
+import feedRoutes from "./routes/feed.js";
+import likeRoutes from "./routes/likes.js";
+import messagesRoutes from "./routes/messages.js";
+import postRoutes from "./routes/posts.js";
+import storiesRoutes from "./routes/stories.js";
+import userRoutes from "./routes/users.js";
 const app = express();
 const PORT = process.env.PORT || 8080;
-import userRoutes from "./routes/users.js";
-import likeRoutes from "./routes/likes.js";
-import feedRoutes from "./routes/feed.js";
-import commentRoutes from "./routes/comments.js";
-import postRoutes from "./routes/posts.js";
-import authRoutes from "./routes/auth.js";
-import storiesRoutes from "./routes/stories.js";
-import messagesRoutes from "./routes/messages.js";
-import cors from "cors";
-import cookieParser from "cookie-parser";
 
 /* app.get("/", (req, res) => {
   res.send("Hello, Fitness App!");

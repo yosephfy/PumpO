@@ -1,19 +1,15 @@
+import { useQuery } from "@tanstack/react-query";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import "./friendrequest.css";
-import React, { useContext } from "react";
-import { useQuery } from "@tanstack/react-query";
 
 import { AuthContext } from "../../context/AuthContext";
 
-import reactIcon from "../../assets/react.svg";
-import { makeRequest } from "../../Axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBars,
-  faChevronRight,
-  faMessage,
-  faUserPlus,
+  faChevronRight
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { makeRequest } from "../../axios";
 import { getImage } from "../../utility/utility";
 
 export default function FriendRequest() {

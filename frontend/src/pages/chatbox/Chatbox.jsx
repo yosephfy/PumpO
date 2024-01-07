@@ -1,16 +1,15 @@
-import React, { useState, useContext } from "react";
-import reactIcon from "../../assets/react.svg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowAltCircleRight,
   faFileAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { makeRequest } from "../../axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
-import "./chatbox.css";
+import { useContext, useState } from "react";
 import { useParams } from "react-router";
-import { getImage, parseDateTime } from "../../utility/utility";
+import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
+import { getImage, parseDateTime } from "../../utility/utility";
+import "./chatbox.css";
 
 export default function ChatBox() {
   const { userId } = useParams();

@@ -1,23 +1,15 @@
-import { Link } from "react-router-dom";
-import "./followrequests.css";
-import React, { useContext } from "react";
-import { useQuery } from "@tanstack/react-query";
-
-import { AuthContext } from "../../context/AuthContext";
-
-import reactIcon from "../../assets/react.svg";
-import { makeRequest } from "../../Axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBars,
-  faCheck,
-  faChevronRight,
   faCircleCheck,
-  faCircleXmark,
-  faMessage,
-  faUserPlus,
+  faCircleXmark
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useQuery } from "@tanstack/react-query";
+import { useContext } from "react";
+import { Link } from "react-router-dom";
+import { makeRequest } from "../../axios";
+import { AuthContext } from "../../context/AuthContext";
 import { getImage } from "../../utility/utility";
+import "./followrequests.css";
 
 export default function FollowRequests() {
   const { currentUser } = useContext(AuthContext);

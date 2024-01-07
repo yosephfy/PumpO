@@ -1,7 +1,8 @@
-import React, { useState } from "react";
 import axios from "axios";
-import "./signup.css";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import "./signup.css";
+
 export default function Signup() {
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({

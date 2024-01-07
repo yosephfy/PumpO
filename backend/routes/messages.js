@@ -1,9 +1,9 @@
 import express from "express";
 import {
-  sendMessage,
   getAllMessages,
   getMessagesFromUser,
   getUserMessagesList,
+  sendMessage,
 } from "../controllers/messages.js";
 
 const router = express.Router();

@@ -1,22 +1,20 @@
-import React, { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import "./nav.css";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
-  faBell,
   faEnvelope,
   faHome,
   faSearch,
-  faUser,
+  faUser
 } from "@fortawesome/free-solid-svg-icons";
-import DarkMode from "../darkmode/DarkMode";
-import { AuthContext } from "../../context/AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { MoreModal, ProfileModal } from "../modals/Modals";
+import { AuthContext } from "../../context/AuthContext";
 import { getImage } from "../../utility/utility";
+import { MoreModal, ProfileModal } from "../modals/Modals";
 
 export default function Nav() {
   const [openMoreModal, setOpenMoreModal] = useState(false);
