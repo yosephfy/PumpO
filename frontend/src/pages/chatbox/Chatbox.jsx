@@ -20,7 +20,7 @@ export default function ChatBox() {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) {
-      return; // Prevent sending empty messages
+      return;
     }
     makeRequest
       .post("/messages/send", {
