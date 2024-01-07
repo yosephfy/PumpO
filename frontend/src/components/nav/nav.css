@@ -67,7 +67,7 @@ nav {
 }
 
 @media (max-width:768px) {
-    nav .user {
+    nav .user h4 {
         display: none;
     }
 

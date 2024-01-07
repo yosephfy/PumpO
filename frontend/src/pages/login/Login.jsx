@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import "./login.css";
+import { asyncCallWithTimeout } from "../../utility/utility";
 
 export default function Login() {
   const [inputs, setInputs] = useState({
@@ -20,7 +21,7 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await login(inputs);
+      await asyncCallWithTimeout(login(inputs), 5000);
       navigate("/");
     } catch (err) {
       setErr(err.response.data);

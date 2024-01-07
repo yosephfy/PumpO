@@ -28,7 +28,7 @@
 .modal-profile {
     top: 4rem;
     right: 1rem;
-    width: max-content;
+    width: 18rem;
     max-width: 80%;
 }
 
@@ -49,6 +49,7 @@
     flex-direction: column;
     gap: 1.2rem;
     border-radius: 0.3rem;
+    width: 100%;
 }
 
 .modal-more .items .item {
@@ -122,5 +123,9 @@
         top: 3.6rem;
         right: 0;
         min-width: 100%;
+    }
+
+    .modal .darkmode-item {
+        padding-right: 3rem;
     }
 }
