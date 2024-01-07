@@ -12,6 +12,7 @@ import FollowRequests from "../pages/followrequests/FollowRequests";
 import Nav from "../components/nav/Nav";
 import RightBar from "../components/rightbar/RightBar";
 import LeftBar from "../components/leftbar/LeftBar";
+import GymProfile from "../pages/gymprofile/GymProfile";
 
 export default function Layout() {
   const Feed = () => {
@@ -43,6 +44,7 @@ export default function Layout() {
     },
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Signup /> },
+    { path: "/gymprofile", element: <GymProfile /> },
   ]);
   return (
     <>
