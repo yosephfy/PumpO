@@ -14,6 +14,9 @@ import {
   relationshipsDelete,
   friendRequestAdd,
   friendRequestDelete,
+  getGymProfileByUserId,
+  addGymProfile,
+  updateGymProfile,
 } from "../controllers/users.js";
 
 const router = express.Router();
@@ -37,5 +40,9 @@ router.delete("/relationships/delete", relationshipsDelete);
 router.get("/friendRequests/:requestedId", getUserFriendRequests);
 router.post("/friendRequests/add", friendRequestAdd);
 router.delete("/friendRequests/delete", friendRequestDelete);
+
+router.get("/gymProfile/findByUserId/:userId", getGymProfileByUserId);
+router.post("/gymProfile/add", addGymProfile);
+router.put("/gymProfile/update", updateGymProfile);
 
 export default router;
