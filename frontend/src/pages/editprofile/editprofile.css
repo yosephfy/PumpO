@@ -1,0 +1,189 @@
+.editprofile {
+    background: var(--color-card);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.editprofile-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid var(--color-soft);
+}
+
+
+.editprofile .profile-img {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.editprofile .profile-img .profile-img-edit {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.editprofile .profile-img .profile-img-edit .icon {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    bottom: 2.5%;
+    right: 5%;
+    background-color: var(--color-primary);
+    width: 1.5rem;
+    aspect-ratio: 1/1;
+    color: var(--color-card);
+}
+
+.editprofile .profile-img img {
+    width: 5rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: 2px double var(--color-primary);
+}
+
+.editprofile {
+    color: var(--color-primary);
+}
+
+.editprofile h3 {
+    text-align: center;
+}
+
+.editprofile p {
+    font-size: .9rem;
+}
+
+.editprofile span {
+    color: var(--color-primary);
+}
+
+
+
+.editprofile .form {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    padding: 2rem 1rem;
+}
+
+.editprofile .form .field>input {
+    padding: 1rem;
+    min-width: 75%;
+    background: transparent;
+    border: transparent;
+    outline: none;
+    border: 1px solid var(--color-border);
+    border-radius: 0.7rem;
+    margin: 0 auto;
+    color: var(--text-color);
+}
+
+.editprofile .form .field h4 {
+    min-width: 10%;
+    width: 15%;
+    max-width: 20%;
+    flex: auto;
+}
+
+
+
+
+.editprofile .form .field {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.editprofile .form input::placeholder {
+    color: var(--color-soft);
+    font-size: 1rem;
+    text-transform: capitalize;
+}
+
+.editprofile .field .answer-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0.7rem;
+}
+
+.editprofile .field .option {
+    background-color: var(--color-card);
+    padding: 0.3rem 0.6rem;
+    border: 2px solid var(--color-border);
+    border-radius: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    display: inline-block;
+    cursor: pointer;
+    transition: all ease .3s;
+    min-width: max-content;
+}
+
+.editprofile .field .answer-options [name='selected'] {
+    border: 2px solid var(--color-border);
+    color: var(--color-primary);
+    background-color: var(--color-card);
+}
+
+.editprofile .field .answer-options [name='selected'] small {
+    color: var(--color-primary);
+}
+
+.datepicker .MuiFormLabel-colorPrimary {
+    color: var(--color-soft);
+    border-color: aliceblue;
+}
+
+.editprofile .option small {
+    color: var(--color-soft);
+    font-weight: 500;
+    font-size: small;
+}
+
+
+.action-buttons {
+    padding: 0 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.7rem;
+}
+
+.action-buttons button {
+    background-color: var(--color-card);
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+}
+
+.action-buttons button:hover {
+    background-color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+    color: var(--color-card);
+}
+
+@media (max-width:768px) {
+    .editprofile {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .editprofile .form .field h4 {
+        font-size: small;
+    }
+}
