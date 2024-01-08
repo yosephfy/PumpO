@@ -106,7 +106,7 @@ export const ProfileModal = ({ userInfo, refM }) => {
           </div>
         </Link>
         <hr />
-        <Link to="/">
+        <Link to="/settings" onClick={() => {}}>
           <div className="item">
             <FontAwesomeIcon className="icons" icon={faGear} />
             <h4>Settings & Privacy</h4>
