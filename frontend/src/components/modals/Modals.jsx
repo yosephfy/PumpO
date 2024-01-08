@@ -3,8 +3,10 @@ import {
   faBookOpen,
   faBookmark,
   faCirclePlay,
+  faGear,
   faMessage,
   faPenToSquare,
+  faRightFromBracket,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -85,15 +87,15 @@ export const ProfileModal = ({ userInfo, refM }) => {
             <h4>{userInfo.name}</h4>
           </div>
         </div>
-        <Link to="/">
+        <Link to="/editProfile">
           <div className="item">
             <FontAwesomeIcon className="icons" icon={faPenToSquare} />
             <h4>Edit Profile</h4>
           </div>
         </Link>
-        <Link to="/messages">
+        <Link to="/login">
           <div className="item">
-            <FontAwesomeIcon className="icons" icon={faBookOpen} />
+            <FontAwesomeIcon className="icons" icon={faRightFromBracket} />
             <h4>Logout</h4>
           </div>
         </Link>
@@ -101,6 +103,13 @@ export const ProfileModal = ({ userInfo, refM }) => {
           <div className="item">
             <FontAwesomeIcon className="icons" icon={faBell} />
             <h4>Notification</h4>
+          </div>
+        </Link>
+        <hr />
+        <Link to="/">
+          <div className="item">
+            <FontAwesomeIcon className="icons" icon={faGear} />
+            <h4>Settings & Privacy</h4>
           </div>
         </Link>
         <hr />
