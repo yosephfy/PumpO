@@ -8,7 +8,7 @@ import {
   faEnvelope,
   faHome,
   faSearch,
-  faUser
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
@@ -65,7 +65,7 @@ export default function Nav() {
             className="menu-btn"
             onClick={() => setOpenMoreModal(!openMoreModal)}
           >
-            <Link to="/">
+            <Link>
               <FontAwesomeIcon icon={faBars} />
             </Link>
           </div>

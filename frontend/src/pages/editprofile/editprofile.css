@@ -139,7 +139,8 @@
 }
 
 
-.editprofile .form input::placeholder {
+.editprofile .form input,
+.editprofile .input::placeholder {
     color: var(--color-soft);
     font-size: 1rem;
     text-transform: capitalize;
@@ -178,13 +179,15 @@
 
 .datepicker .MuiFormLabel-colorPrimary {
     color: var(--color-soft);
-    border-color: aliceblue;
+    border-color: var(--color-border);
+
 }
 
 .editprofile .option small {
     color: var(--color-soft);
-    font-weight: 500;
+    font-weight: 700;
     font-size: small;
+
 }
 
 
