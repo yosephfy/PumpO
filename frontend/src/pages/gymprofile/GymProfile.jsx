@@ -8,10 +8,11 @@ import "./gymprofile.css";
 
 export default function GymProfile() {
   const navigate = useNavigate();
-  const [age, setAge] = useState(dayjs("2024"));
+  const [birthYear, setAge] = useState(dayjs("2024"));
   const [startingDate, setStartingDate] = useState(dayjs("2024"));
   const [gymType, setGymType] = useState("NOTSET");
   const [weight, setWeight] = useState("NOTSET");
+  const [height, setHeight] = useState(0);
 
   const handleSelectGymType = (e) => {
     setGymType(e);
@@ -51,8 +52,11 @@ export default function GymProfile() {
       .post(`/users/gymProfile/add`, {
         gymType: gymType.toUpperCase(),
         weightStatus: weight.toUpperCase(),
-        startingDate: startingDate,
-        age: moment(Date.now()).year() - age.year(),
+        height: height,
+        startingDate: moment(Date.parse(startingDate)).format(
+          "YYYY-MM-DD HH:mm:ss"
+        ),
+        birthYear: moment(Date.parse(birthYear)).format("YYYY-MM-DD HH:mm:ss"),
       })
       .then(() => {
         navigate("/");
@@ -164,13 +168,40 @@ export default function GymProfile() {
             </div>
           </div>
 
+          <div className="height-weight">
+            <div className="question">
+              <h4>Height</h4>
+              <input
+                className="option"
+                type="text"
+                name="height"
+                id=""
+                required
+                placeholder="168.0"
+                onChange={(newValue) => setHeight(newValue)}
+              />
+            </div>
+            <div className="question">
+              <h4>Weight</h4>
+              <input
+                className="option"
+                type="text"
+                name="weight"
+                id=""
+                required
+                placeholder="180lb"
+                onChange={() => {}}
+              />
+            </div>
+          </div>
+
           <div className="question">
             <h4>Enter your Birth Year</h4>
             <DatePicker
               className="datepicker"
               label={"Starting Date"}
               views={["year"]}
-              value={age}
+              value={birthYear}
               onChange={(newValue) => setAge(newValue)}
             />
           </div>
