@@ -1,33 +1,176 @@
-import { Link } from "react-router-dom";
-import "./editprofile.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCamera,
-  faCameraAlt,
-  faCameraRetro,
   faChevronLeft,
   faEllipsisV,
-  faVideoCamera,
 } from "@fortawesome/free-solid-svg-icons";
-import reactIcon from "../../assets/react.svg";
-import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DatePicker } from "@mui/x-date-pickers";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import moment from "moment";
+import { useContext, useEffect, useState } from "react";
+import reactIcon from "../../assets/react.svg";
+import { makeRequest } from "../../axios";
+import { AuthContext } from "../../context/AuthContext";
+import "./editprofile.css";
 
 export default function EditProfile() {
-  const [age, setAge] = useState(null);
+  const { currentUser } = useContext(AuthContext);
+  const [userInputs, setUserInputs] = useState({
+    username: "",
+    email: "",
+    bio: "",
+    name: "",
+  });
+
+  const [birthYear, setAge] = useState(null);
   const [startingDate, setStartingDate] = useState(null);
+  const [gymType, setGymType] = useState("NOTSET");
+  const [weight, setWeight] = useState("NOTSET");
+  const [err, setErr] = useState(null);
+  const [formChanged, setFormChanged] = useState(false);
 
-  const handleClick = () => {};
-  const handleChange = () => {};
+  const userQuery = useQuery({
+    queryKey: ["editprofile", currentUser.id],
+    queryFn: () =>
+      makeRequest.get(`/users/findById/${currentUser.id}`).then((res) => {
+        let userData = res.data;
+        setUserInputs({
+          username: userData.username,
+          email: userData.email,
+          bio: userData.bio,
+          name: userData.name,
+        });
+        return res.data;
+      }),
+  });
+
+  const gymProfileQuery = useQuery({
+    queryKey: ["editgymprofile", currentUser.id],
+    queryFn: () =>
+      makeRequest
+        .get(`/users/gymProfile/findByUserId/${currentUser.id}`)
+        .then((res) => {
+          let userData = res.data;
+          setGymType(userData.gymType.toLowerCase());
+          setWeight(userData.weightStatus.toLowerCase());
+          setAge(dayjs(userData.birthYear));
+          setStartingDate(dayjs(userData.startingDate));
+
+          return res.data;
+        }),
+  });
+
+  useEffect(() => {
+    if (
+      !gymProfileQuery.error &&
+      !gymProfileQuery.isLoading &&
+      gymProfileQuery.data
+    ) {
+      handleSelectGymType(gymType.toLowerCase());
+      handleSelectWeightStatus(weight.toLowerCase());
+    }
+  }, [gymProfileQuery]);
+
   const handleGoBack = () => {};
-  const handleSelectGymType = () => {};
-  const handleSelectWeightStatus = () => {};
 
-  return (
+  const handleClick = (e) => {
+    e.preventDefault();
+
+    makeRequest
+      .put(`/users/update`, userInputs)
+      .then(() => {
+        userQuery.refetch();
+        setFormChanged(false);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    makeRequest
+      .put(`/users/gymProfile/update`, {
+        gymType: gymType.toUpperCase(),
+        weightStatus: weight.toUpperCase(),
+        startingDate: moment(Date.parse(startingDate.toString())).format(
+          "YYYY-MM-DD HH:mm:ss"
+        ),
+        birthYear: moment(Date.parse(birthYear.toString())).format(
+          "YYYY-MM-DD HH:mm:ss"
+        ),
+      })
+      .then(() => {
+        gymProfileQuery.refetch();
+        setFormChanged(false);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    console.log(userInputs);
+  };
+
+  const handleChange = (e) => {
+    setFormChanged(true);
+    setUserInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSelectGymType = (e) => {
+    if (e === "notset") {
+      return;
+    }
+    setGymType(e);
+    let bb = document.getElementById("bodybuilder");
+    let pl = document.getElementById("powerlifter");
+    let cl = document.getElementById("calisthenics");
+    let ot = document.getElementById("other");
+
+    if (!(bb && pl && cl && ot)) {
+      return;
+    }
+
+    bb.removeAttribute("name");
+    pl.removeAttribute("name");
+    cl.removeAttribute("name");
+    ot.removeAttribute("name");
+
+    let item = document.getElementById(e);
+    if (item) item.setAttribute("name", "selected");
+    setFormChanged(true);
+  };
+
+  const handleSelectWeightStatus = (e) => {
+    if (e === "notset") {
+      return;
+    }
+    setWeight(e);
+    let bb = document.getElementById("cutting");
+    let pl = document.getElementById("maintaining");
+    let cl = document.getElementById("bulking");
+    let ot = document.getElementById("notsure");
+
+    if (!(bb && pl && cl && ot)) {
+      return;
+    }
+
+    bb.removeAttribute("name");
+    pl.removeAttribute("name");
+    cl.removeAttribute("name");
+    ot.removeAttribute("name");
+
+    let item = document.getElementById(e);
+    if (item) item.setAttribute("name", "selected");
+    setFormChanged(true);
+  };
+
+  return userQuery.error ? (
+    "Something went wrong..."
+  ) : userQuery.isLoading ? (
+    "Loading..."
+  ) : (
     <div className="editprofile">
       <div className="editprofile-top">
         <FontAwesomeIcon icon={faChevronLeft} onClick={handleGoBack} />
-        <h5>@username</h5>
+        <h5>Edit Profile</h5>
         <FontAwesomeIcon icon={faEllipsisV} />
       </div>
       <div className="profile-img">
@@ -48,6 +191,7 @@ export default function EditProfile() {
             id=""
             required
             placeholder="Name"
+            defaultValue={userInputs.name}
             onChange={handleChange}
           />
         </div>
@@ -59,6 +203,7 @@ export default function EditProfile() {
             id=""
             required
             placeholder="Username"
+            defaultValue={userInputs.username}
             onChange={handleChange}
           />
         </div>
@@ -70,17 +215,19 @@ export default function EditProfile() {
             id=""
             required
             placeholder="Email"
+            defaultValue={userInputs.email}
             onChange={handleChange}
           />
         </div>
         <div className="field">
-          <h4>Password</h4>
-          <input
-            type="password"
-            name="password"
+          <h4>Bio</h4>
+          <textarea
+            type="text"
+            name="bio"
             id=""
             required
-            placeholder="Password"
+            placeholder="Bio"
+            defaultValue={userInputs.bio}
             onChange={handleChange}
           />
         </div>
@@ -178,7 +325,7 @@ export default function EditProfile() {
             className="datepicker"
             label={"Birth Year"}
             views={["year"]}
-            value={age}
+            value={birthYear}
             onChange={(newValue) => setAge(newValue)}
           />
         </div>
@@ -194,7 +341,12 @@ export default function EditProfile() {
         </div>
       </div>
       <div className="action-buttons">
-        <button className="btn" type="submit" onClick={handleClick}>
+        <button
+          className="btn"
+          type="submit"
+          onClick={handleClick}
+          disabled={!formChanged}
+        >
           Save
         </button>
       </div>

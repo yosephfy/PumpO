@@ -79,7 +79,8 @@
     padding: 2rem 1rem;
 }
 
-.editprofile .form .field>input {
+.editprofile .form .field>input,
+.editprofile .form .field>textarea {
     padding: 1rem;
     min-width: 75%;
     background: transparent;
@@ -89,6 +90,8 @@
     border-radius: 0.7rem;
     margin: 0 auto;
     color: var(--text-color);
+    text-wrap: pretty;
+    resize: none;
 }
 
 .editprofile .form .field h4 {
@@ -138,12 +141,12 @@
 
 .editprofile .field .answer-options [name='selected'] {
     border: 2px solid var(--color-border);
-    color: var(--color-primary);
-    background-color: var(--color-card);
+    color: var(--color-card);
+    background-color: var(--color-primary);
 }
 
 .editprofile .field .answer-options [name='selected'] small {
-    color: var(--color-primary);
+    color: var(--color-card);
 }
 
 .datepicker .MuiFormLabel-colorPrimary {
@@ -175,6 +178,12 @@
     background-color: var(--color-primary);
     border: 2px solid var(--color-primary);
     color: var(--color-card);
+}
+
+.action-buttons button:disabled {
+    background-color: var(--color-card);
+    border: 2px solid var(--color-bg);
+    color: var(--color-soft);
 }
 
 @media (max-width:768px) {

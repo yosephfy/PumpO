@@ -12,6 +12,7 @@ export default function GymProfile() {
   const [startingDate, setStartingDate] = useState(dayjs("2024"));
   const [gymType, setGymType] = useState("NOTSET");
   const [weight, setWeight] = useState("NOTSET");
+  const [height, setHeight] = useState(0);
 
   const handleSelectGymType = (e) => {
     setGymType(e);
@@ -51,8 +52,11 @@ export default function GymProfile() {
       .post(`/users/gymProfile/add`, {
         gymType: gymType.toUpperCase(),
         weightStatus: weight.toUpperCase(),
-        startingDate: startingDate,
-        age: moment(Date.now()).year() - age.year(),
+        height: height,
+        startingDate: moment(Date.parse(startingDate)).format(
+          "YYYY-MM-DD HH:mm:ss"
+        ),
+        age: moment(Date.parse(age)).format("YYYY-MM-DD HH:mm:ss"),
       })
       .then(() => {
         navigate("/");
