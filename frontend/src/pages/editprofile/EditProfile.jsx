@@ -23,10 +23,11 @@ export default function EditProfile() {
     name: "",
   });
 
-  const [birthYear, setAge] = useState(null);
-  const [startingDate, setStartingDate] = useState(null);
+  const [birthYear, setAge] = useState("");
+  const [startingDate, setStartingDate] = useState("");
   const [gymType, setGymType] = useState("NOTSET");
   const [weight, setWeight] = useState("NOTSET");
+  const [height, setHeight] = useState(0);
   const [err, setErr] = useState(null);
   const [formChanged, setFormChanged] = useState(false);
 
@@ -56,7 +57,7 @@ export default function EditProfile() {
           setWeight(userData.weightStatus.toLowerCase());
           setAge(dayjs(userData.birthYear));
           setStartingDate(dayjs(userData.startingDate));
-
+          setHeight(userData.height);
           return res.data;
         }),
   });
@@ -97,6 +98,7 @@ export default function EditProfile() {
         birthYear: moment(Date.parse(birthYear.toString())).format(
           "YYYY-MM-DD HH:mm:ss"
         ),
+        height: height,
       })
       .then(() => {
         gymProfileQuery.refetch();
@@ -162,9 +164,9 @@ export default function EditProfile() {
     setFormChanged(true);
   };
 
-  return userQuery.error ? (
+  return userQuery.error || gymProfileQuery.error ? (
     "Something went wrong..."
-  ) : userQuery.isLoading ? (
+  ) : userQuery.isLoading || gymProfileQuery.isLoading ? (
     "Loading..."
   ) : (
     <div className="editprofile">
@@ -186,6 +188,7 @@ export default function EditProfile() {
         <div className="field">
           <h4>Name</h4>
           <input
+            className="input"
             type="text"
             name="name"
             id=""
@@ -198,6 +201,7 @@ export default function EditProfile() {
         <div className="field">
           <h4>Username</h4>
           <input
+            className="input"
             type="text"
             name="username"
             id=""
@@ -210,6 +214,7 @@ export default function EditProfile() {
         <div className="field">
           <h4>Email</h4>
           <input
+            className="input"
             type="email"
             name="email"
             id=""
@@ -222,6 +227,7 @@ export default function EditProfile() {
         <div className="field">
           <h4>Bio</h4>
           <textarea
+            className="input"
             type="text"
             name="bio"
             id=""
@@ -319,6 +325,36 @@ export default function EditProfile() {
             </button>
           </div>
         </div>
+        <div className="height-weight">
+          <div className="option">
+            <h4>Height</h4>
+            <input
+              type="number"
+              name="name"
+              id=""
+              required
+              placeholder="168.0cm"
+              defaultValue={height}
+              onChange={(e) => {
+                setHeight(e.target.value);
+                setFormChanged(true);
+              }}
+            />
+          </div>
+          <div className="option">
+            <h4>Weight</h4>
+            <input
+              type="number"
+              name="name"
+              id=""
+              required
+              placeholder="188.0lb"
+              defaultValue={0}
+              onChange={() => {}}
+            />
+          </div>
+        </div>
+
         <div className="field">
           <h4>Birth Year</h4>
           <DatePicker
