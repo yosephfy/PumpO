@@ -10,6 +10,7 @@ import Login from "../pages/login/Login";
 import Messages from "../pages/messages/Messages";
 import Profile from "../pages/profile/Profile";
 import Signup from "../pages/signup/Signup";
+import EditProfile from "../pages/editprofile/EditProfile";
 
 export default function Layout() {
   const Feed = () => {
@@ -34,6 +35,7 @@ export default function Layout() {
       children: [
         { path: "/", element: <Home /> },
         { path: "/profile/:id", element: <Profile /> },
+        { path: "/editProfile/", element: <EditProfile /> },
         { path: "/chatbox/:userId", element: <ChatBox /> },
         { path: "/messages", element: <Messages /> },
         { path: "/followreqs", element: <FollowRequests /> },

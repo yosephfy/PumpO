@@ -199,7 +199,7 @@ export default function GymProfile() {
             <h4>Enter your Birth Year</h4>
             <DatePicker
               className="datepicker"
-              label={"Starting Date"}
+              label={"Birth Year"}
               views={["year"]}
               value={birthYear}
               onChange={(newValue) => setAge(newValue)}

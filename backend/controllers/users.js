@@ -57,9 +57,17 @@ export const updateUser = (req, res) => {
   jwt.verify(token, "secretkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
 
-    const q = "UPDATE users SET `name`=? WHERE id=? ";
+    const q =
+      "UPDATE users SET `name` = ?, `username` = ?, `email` = ?, `bio` = ? WHERE `id` = ? ";
 
-    db.query(q, [req.body.name, userInfo.id], (err, data) => {
+    const value = [
+      req.body.name,
+      req.body.username,
+      req.body.email,
+      req.body.bio,
+      userInfo.id,
+    ];
+    db.query(q, value, (err, data) => {
       if (err) res.status(500).json(err);
       if (data.affectedRows > 0) return res.json("Updated!");
       return res.status(403).json("You can update only your post!");
@@ -229,13 +237,14 @@ export const updateGymProfile = (req, res) => {
     if (err) return res.status(403).json("Token is not valid!");
 
     const q =
-      "UPDATE gymprofile SET `gymType`=?,`weightStatus`=?,`startingDate`=?,`age`=?  WHERE id=? ";
+      "UPDATE gymprofile SET `gymType`=?,`weightStatus`=?, `height`=?,`startingDate`=?,`birthYear`=?  WHERE userId=? ";
 
     const value = [
       req.body.gymType,
       req.body.weightStatus,
+      req.body.height,
       req.body.startingDate,
-      req.body.age,
+      req.body.birthYear,
       userInfo.id,
     ];
     db.query(q, value, (err, data) => {
@@ -254,12 +263,13 @@ export const addGymProfile = (req, res) => {
     if (err) return res.status(403).json("Token is not valid!");
 
     const q =
-      "INSERT INTO gymprofile(`gymType`, `weightStatus`, `startingDate`, `age`, `userId`) VALUES (?)";
+      "INSERT INTO gymprofile(`gymType`, `weightStatus`, `height`, `startingDate`, `birthYear`, `userId`) VALUES (?)";
     const values = [
       req.body.gymType,
       req.body.weightStatus,
+      req.body.height,
       moment(Date.parse(req.body.startingDate)).format("YYYY-MM-DD HH:mm:ss"),
-      req.body.age,
+      moment(Date.parse(req.body.birthYear)).format("YYYY-MM-DD HH:mm:ss"),
       userInfo.id,
     ];
 
