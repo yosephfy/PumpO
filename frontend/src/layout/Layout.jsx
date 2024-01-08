@@ -11,6 +11,7 @@ import Messages from "../pages/messages/Messages";
 import Profile from "../pages/profile/Profile";
 import Signup from "../pages/signup/Signup";
 import EditProfile from "../pages/editprofile/EditProfile";
+import Settings from "../pages/settings/Settings";
 
 export default function Layout() {
   const Feed = () => {
@@ -39,6 +40,7 @@ export default function Layout() {
         { path: "/chatbox/:userId", element: <ChatBox /> },
         { path: "/messages", element: <Messages /> },
         { path: "/followreqs", element: <FollowRequests /> },
+        { path: "/settings", element: <Settings /> },
       ],
     },
     { path: "/login", element: <Login /> },

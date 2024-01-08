@@ -1,0 +1,55 @@
+.settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: var(--color-card);
+    padding: 1rem;
+    border-radius: 0.2rem;
+    border: 1px solid var(--color-border);
+}
+
+.settings h3 {
+    text-align: center;
+}
+
+.settings hr {
+    align-self: center;
+    width: 90%;
+}
+
+.settings .section {
+    display: flex;
+    background-color: var(--color-card);
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem 0;
+    border: 1px solid var(--color-border);
+    border-radius: 0.2rem;
+}
+
+.settings .section>h4 {
+    padding: 1rem;
+}
+
+
+.settings .section .single-setting {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    color: var(--color-soft);
+    align-items: center;
+}
+
+.settings .section .single-setting:hover {
+    background-color: var(--color-bg);
+    filter: blur(10%);
+}
+
+.settings .section .single-setting .name {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+}
