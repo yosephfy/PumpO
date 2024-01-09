@@ -1,35 +1,27 @@
-import "./settings.css";
 import {
-  faBackspace,
   faBell,
-  faCamera,
   faCancel,
-  faChevronLeft,
   faChevronRight,
   faDisplay,
-  faEllipsisV,
   faExchange,
   faEye,
   faFlag,
-  faInfo,
   faInfoCircle,
   faLock,
   faMessage,
   faRightFromBracket,
   faShare,
   faShield,
-  faShopLock,
   faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router";
+import "./settings.css";
 
 export default function Settings() {
   const navigate = useNavigate();
   return (
-    <div className="settings">
-      <h3>Settings and Privacy</h3>
-
+    <div className="">
       <div className="section">
         <h4>Account</h4>
         <hr />

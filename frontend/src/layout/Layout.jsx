@@ -12,6 +12,8 @@ import Profile from "../pages/profile/Profile";
 import Signup from "../pages/signup/Signup";
 import EditProfile from "../pages/editprofile/EditProfile";
 import Settings from "../pages/settings/Settings";
+import Account from "../pages/settings/Account";
+import SetttingContainer from "../pages/settings/SetttingContainer";
 
 export default function Layout() {
   const Feed = () => {
@@ -40,7 +42,14 @@ export default function Layout() {
         { path: "/chatbox/:userId", element: <ChatBox /> },
         { path: "/messages", element: <Messages /> },
         { path: "/followreqs", element: <FollowRequests /> },
-        { path: "/settings", element: <Settings /> },
+        {
+          path: "/settings",
+          element: <SetttingContainer />,
+          children: [
+            { path: "/settings", element: <Settings /> },
+            { path: "/settings/account", element: <Account /> },
+          ],
+        },
       ],
     },
     { path: "/login", element: <Login /> },
