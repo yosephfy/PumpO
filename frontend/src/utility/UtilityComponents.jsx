@@ -1,6 +1,6 @@
 import {
-    faCheckCircle,
-    faChevronRight
+  faCheckCircle,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
@@ -27,6 +27,7 @@ export const SingleSettingComponent = ({
       {input && (
         <div className="item-action">
           <input
+            className="input"
             type={input}
             defaultValue={defaultVal}
             onChange={(e) => {
