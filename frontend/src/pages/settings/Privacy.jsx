@@ -16,8 +16,7 @@ import "./settings.css";
 
 export default function Privacy() {
   const [err, setErr] = useState(null);
-  const [checkedPrivate, setCheckedPrivate] = useState(true);
-  const navigate = useNavigate();
+  const [checkedPrivate, setCheckedPrivate] = useState(false);
 
   const privacySetting = useQuery({
     queryKey: ["privacySetting"],

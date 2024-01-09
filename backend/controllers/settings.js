@@ -11,7 +11,6 @@ export const getSettingsFromUserId = (req, res) => {
 
     const q = "SELECT * FROM settings WHERE `userId` = ? AND `name` IN (?)";
     var values = JSON.parse(req.query.names);
-    console.log(values);
     db.query(q, [userInfo.id, values], (err, data) => {
       if (err) return res.status(500).json(err);
       if (data.length == 0)
