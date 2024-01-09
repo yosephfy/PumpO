@@ -14,7 +14,7 @@ export const AuthContextProvider = ({ children }) => {
     JSON.parse(Cookies.get("user") || null) || null
   );
 
-  const settingsNeeded = [settingKeys.darkmode];
+  const settingsNeeded = [settingKeys.darkmmode.key];
   const login = async (inputs) => {
     makeRequest
       .post(`auth/login`, inputs)

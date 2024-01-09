@@ -52,7 +52,7 @@ export default function Settings() {
         <SingleSetting
           icon={faBell}
           name="Notifications"
-          handleClick={() => navigate("/settings/notification")}
+          handleClick={() => navigate("/settings/notifications")}
         />
         <SingleSetting
           icon={faEye}
