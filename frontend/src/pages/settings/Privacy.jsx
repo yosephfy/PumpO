@@ -4,34 +4,50 @@ import {
   faUserShield,
 } from "@fortawesome/free-solid-svg-icons";
 import Switch from "@mui/material/Switch";
-import { useContext, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
+import { SettingContext } from "../../context/SettingContext";
 import { SingleSettingComponent } from "../../utility/UtilityComponents";
+import { settingKeys } from "../../utility/enums";
 import "./settings.css";
 
 export default function Privacy() {
-  const { currentUser } = useContext(AuthContext);
   const [err, setErr] = useState(null);
-  const [checkedPrivate, setCheckedPrivate] = useState(
-    currentUser.privateProfile.trim() == `true` || false
-  );
-  console.log(currentUser);
+  const [checkedPrivate, setCheckedPrivate] = useState(true);
   const navigate = useNavigate();
+
+  const privacySetting = useQuery({
+    queryKey: ["privacySetting"],
+    queryFn: () =>
+      makeRequest
+        .get(`/settings/get/${settingKeys.privateProfile}`)
+        .then((res) => {
+          setCheckedPrivate(res.data == 1 ? true : false);
+          return res.data;
+        })
+        .catch((errr) => console.log(errr)),
+  });
 
   const onPrivateChange = (e) => {
     setCheckedPrivate(e.target.checked);
 
-    /* makeRequest
-      .put(`/users/updatePrivateProfile`, {
-        privateProfile: e.target.checked.toString(),
+    makeRequest
+      .put(`/settings/update`, {
+        name: settingKeys.privateProfile,
+        value: e.target.checked ? 1 : 0,
       })
-      .then()
-      .catch((err) => setErr(err)); */
+      .then((res) => console.log(`privacy turned: ${e.target.checked}`))
+      .catch((err) => setErr(err));
   };
 
-  return (
+  return privacySetting.error ? (
+    "Something went wrong"
+  ) : privacySetting.isLoading ? (
+    "Loading..."
+  ) : (
     <div className="privacy">
       <SingleSettingComponent
         className={"item private-account"}

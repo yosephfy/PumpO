@@ -9,30 +9,30 @@ export const getSettingsFromUserId = (req, res) => {
   jwt.verify(token, "secretkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
 
-    const q = "SELECT * FROM settings WHERE userId = ?";
-
-    db.query(q, [userInfo.id], (err, data) => {
+    const q = "SELECT * FROM settings WHERE `userId` = ? AND `name` IN (?)";
+    var values = JSON.parse(req.query.names);
+    console.log(values);
+    db.query(q, [userInfo.id, values], (err, data) => {
       if (err) return res.status(500).json(err);
       if (data.length == 0)
         return res.status(404).json("User Settings Not found");
-      return res.status(200).json(data[0]);
+      return res.status(200).json(data);
     });
   });
 };
 
-export const getSettingsFromUserIdAndKey = (req, res) => {
+export const getSettingsFromUserIdAndName = (req, res) => {
   const token = req.cookies.accessToken;
   if (!token) return res.status(401).json("Not logged in!");
 
   jwt.verify(token, "secretkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
 
-    const q = "SELECT * FROM settings WHERE `userId` = ? AND `key` = ?";
+    const q = "SELECT * FROM settings WHERE `userId` = ? AND `name` = ?";
 
-    db.query(q, [userInfo.id, req.body.key], (err, data) => {
+    db.query(q, [userInfo.id, req.params.val], (err, data) => {
       if (err) return res.status(500).json(err);
-      if (data.length == 0)
-        return res.status(404).json("User Settings Not found");
+      if (data.length === 0) return res.status(404).json(req.params.val);
       return res.status(200).json(data[0]);
     });
   });
@@ -46,10 +46,10 @@ export const addSettings = (req, res) => {
     if (err) return res.status(403).json("Token is not valid!");
 
     const q =
-      "INSERT INTO settings(`userId`, `key`, `value`, `timestamp`) VALUES (?)";
+      "INSERT INTO settings(`userId`, `name`, `value`, `timestamp`) VALUES (?)";
     const values = [
       userInfo.id,
-      req.body.key,
+      req.body.name,
       req.body.value,
       moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
     ];
@@ -61,16 +61,17 @@ export const addSettings = (req, res) => {
   });
 };
 
-export const updateSettingByUserIdAndKey = (req, res) => {
+export const updateSettingByUserIdAndName = (req, res) => {
   const token = req.cookies.accessToken;
   if (!token) return res.status(401).json("Not logged in!");
 
   jwt.verify(token, "secretkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
 
-    const q = "UPDATE settings SET `key` = ?, `value` = ? WHERE `userId` = ? ";
+    const q =
+      "UPDATE settings SET `value` = ? WHERE `name` = ? AND`userId` = ? ";
 
-    db.query(q, [req.body.key, req.body.value, userInfo.id], (err, data) => {
+    db.query(q, [req.body.value, req.body.name, userInfo.id], (err, data) => {
       if (err) return res.status(500).json(err);
       if (data.affectedRows > 0)
         return res.status(200).json("Setting has been upated");
