@@ -59,6 +59,7 @@
 /**/
 
 .settings .account,
+.settings .security,
 .settings .privacy {
     display: flex;
     flex-direction: column;

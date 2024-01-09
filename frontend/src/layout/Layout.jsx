@@ -15,6 +15,7 @@ import Settings from "../pages/settings/Settings";
 import Account from "../pages/settings/Account";
 import SetttingContainer from "../pages/settings/SetttingContainer";
 import Privacy from "../pages/settings/Privacy";
+import Security from "../pages/settings/Security";
 
 export default function Layout() {
   const Feed = () => {
@@ -50,6 +51,7 @@ export default function Layout() {
             { path: "/settings", element: <Settings /> },
             { path: "/settings/account", element: <Account /> },
             { path: "/settings/privacy", element: <Privacy /> },
+            { path: "/settings/security", element: <Security /> },
           ],
         },
       ],
