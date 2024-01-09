@@ -53,3 +53,62 @@
     gap: 1rem;
     align-items: center;
 }
+
+
+
+/**/
+
+.settings .account,
+.settings .notifications,
+.settings .privacy {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: var(--color-card);
+    padding: 1rem;
+    border-radius: 0.2rem;
+    border: 1px solid var(--color-border);
+}
+
+.settings .item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    color: var(--color-soft);
+    align-items: center;
+}
+
+.settings .item .name {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+}
+
+.settings .item .item-action {
+    display: flex;
+    flex-direction: row;
+    width: 40%;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.settings .item .input {
+    background-color: var(--color-bg);
+    text-align: center;
+    padding: 0 0.9rem;
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 0.2rem;
+    color: var(--text-color);
+}
+
+.settings .item .item-action .save-icon[curr='true'] {
+    color: var(--color-soft);
+}
+
+.settings .item .item-action .save-icon[curr='false'] {
+    color: var(--color-primary);
+}
