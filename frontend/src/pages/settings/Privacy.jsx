@@ -16,14 +16,13 @@ import "./settings.css";
 
 export default function Privacy() {
   const [err, setErr] = useState(null);
-  const [checkedPrivate, setCheckedPrivate] = useState(true);
-  const navigate = useNavigate();
+  const [checkedPrivate, setCheckedPrivate] = useState(false);
 
   const privacySetting = useQuery({
     queryKey: ["privacySetting"],
     queryFn: () =>
       makeRequest
-        .get(`/settings/get/${settingKeys.privateProfile}`)
+        .get(`/settings/get/${settingKeys.privateProfile.key}`)
         .then((res) => {
           setCheckedPrivate(res.data == 1 ? true : false);
           return res.data;
@@ -36,7 +35,7 @@ export default function Privacy() {
 
     makeRequest
       .put(`/settings/update`, {
-        name: settingKeys.privateProfile,
+        name: settingKeys.privateProfile.key,
         value: e.target.checked ? 1 : 0,
       })
       .then((res) => console.log(`privacy turned: ${e.target.checked}`))

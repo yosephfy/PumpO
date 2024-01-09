@@ -11,7 +11,6 @@ export const getSettingsFromUserId = (req, res) => {
 
     const q = "SELECT * FROM settings WHERE `userId` = ? AND `name` IN (?)";
     var values = JSON.parse(req.query.names);
-    console.log(values);
     db.query(q, [userInfo.id, values], (err, data) => {
       if (err) return res.status(500).json(err);
       if (data.length == 0)
@@ -32,7 +31,7 @@ export const getSettingsFromUserIdAndName = (req, res) => {
 
     db.query(q, [userInfo.id, req.params.val], (err, data) => {
       if (err) return res.status(500).json(err);
-      if (data.length === 0) return res.status(404).json(req.params.val);
+      if (data.length === 0) return res.status(200).json(-1);
       return res.status(200).json(data[0]);
     });
   });
@@ -67,15 +66,35 @@ export const updateSettingByUserIdAndName = (req, res) => {
 
   jwt.verify(token, "secretkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
+    const q1 = "SELECT * FROM settings WHERE `userId` = ? AND `name` = ?";
 
-    const q =
-      "UPDATE settings SET `value` = ? WHERE `name` = ? AND`userId` = ? ";
-
-    db.query(q, [req.body.value, req.body.name, userInfo.id], (err, data) => {
+    db.query(q1, [userInfo.id, req.body.name], (err, data) => {
+      let qadd = "";
+      let values = [];
       if (err) return res.status(500).json(err);
-      if (data.affectedRows > 0)
-        return res.status(200).json("Setting has been upated");
-      return res.status(403).json("Did not update setting");
+      if (data.length == 0) {
+        values = [
+          [
+            userInfo.id,
+            req.body.name,
+            req.body.value,
+            moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+          ],
+        ];
+        qadd =
+          "INSERT INTO settings(`userId`, `name`, `value`, `timestamp`) VALUES (?)";
+      } else {
+        values = [req.body.value, req.body.name, userInfo.id];
+        qadd =
+          "UPDATE settings SET `value` = ? WHERE `name` = ? AND`userId` = ? ";
+      }
+
+      db.query(qadd, values, (err, data1) => {
+        if (err) return res.status(500).json(err);
+        if (data1.affectedRows > 0)
+          return res.status(200).json("Setting has been upated");
+        return res.status(403).json("Did not update setting");
+      });
     });
   });
 };
