@@ -3,8 +3,6 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 import { createContext, useEffect, useState } from "react";
-import { makeRequest } from "../axios";
-import { settingKeys } from "../utility/enums";
 
 export const AuthContext = createContext();
 
@@ -14,25 +12,16 @@ export const AuthContextProvider = ({ children }) => {
     JSON.parse(Cookies.get("user") || null) || null
   );
 
-  const settingsNeeded = [settingKeys.darkmmode.key];
   const login = async (inputs) => {
-    makeRequest
-      .post(`auth/login`, inputs)
-      .then((res) => setCurrentUser(res.data))
-      .catch((err) => console.error(err));
+    const res = await axios.post(
+      "http://localhost:8080/api/auth/login",
+      inputs,
+      {
+        withCredentials: true,
+      }
+    );
 
-    makeRequest
-      .get(
-        `settings/getall?names=[${settingsNeeded
-          .map((s) => `"${s}"`)
-          .toString()}]`
-      )
-      .then((res) => {
-        Cookies.set("settings", JSON.stringify(res.data));
-      })
-      .catch((err) => console.error(err));
-
-    //setCurrentUser(usr.data);
+    setCurrentUser(res.data);
   };
 
   useEffect(() => {
