@@ -1,49 +1,43 @@
+import "./settings.css";
 import {
+  faBackspace,
   faBell,
+  faCamera,
   faCancel,
+  faChevronLeft,
   faChevronRight,
   faDisplay,
+  faEllipsisV,
   faExchange,
   faEye,
   faFlag,
+  faInfo,
   faInfoCircle,
   faLock,
   faMessage,
   faRightFromBracket,
   faShare,
   faShield,
+  faShopLock,
   faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from "react-router";
-import "./settings.css";
 
 export default function Settings() {
-  const navigate = useNavigate();
   return (
-    <div className="">
+    <div className="settings">
+      <h3>Settings and Privacy</h3>
+
       <div className="section">
         <h4>Account</h4>
         <hr />
-        <SingleSetting
-          icon={faUserAlt}
-          name="Account"
-          handleClick={() => navigate("/settings/account")}
-        />
-        <SingleSetting
-          icon={faLock}
-          name="Privacy"
-          handleClick={() => navigate("/settings/privacy")}
-        />
-        <SingleSetting
-          icon={faShield}
-          name="Security"
-          handleClick={() => navigate("/settings/security")}
-        />
+        <SingleSetting icon={faUserAlt} name="Account" handleClick={() => {}} />
+        <SingleSetting icon={faLock} name="Privacy" handleClick={() => {}} />
+        <SingleSetting icon={faShield} name="Security" handleClick={() => {}} />
         <SingleSetting
           icon={faShare}
           name="Share Profile"
-          handleClick={() => navigate("/settings/share")}
+          handleClick={() => {}}
         />
       </div>
       <div className="section">
@@ -52,22 +46,18 @@ export default function Settings() {
         <SingleSetting
           icon={faBell}
           name="Notifications"
-          handleClick={() => navigate("/settings/notifications")}
+          handleClick={() => {}}
         />
         <SingleSetting
           icon={faEye}
           name="Audience & Visibility"
-          handleClick={() => navigate("/settings/visibility")}
+          handleClick={() => {}}
         />
-        <SingleSetting
-          icon={faDisplay}
-          name="Display"
-          handleClick={() => navigate("/settings/display")}
-        />
+        <SingleSetting icon={faDisplay} name="Display" handleClick={() => {}} />
         <SingleSetting
           icon={faCancel}
           name="Blcoked Accounts"
-          handleClick={() => navigate("/settings/blocked")}
+          handleClick={() => {}}
         />
       </div>
       <div className="section">
@@ -76,17 +66,13 @@ export default function Settings() {
         <SingleSetting
           icon={faFlag}
           name="Report a problem"
-          handleClick={() => navigate("/settings/report")}
+          handleClick={() => {}}
         />
-        <SingleSetting
-          icon={faMessage}
-          name="Support"
-          handleClick={() => navigate("/settings/support")}
-        />
+        <SingleSetting icon={faMessage} name="Support" handleClick={() => {}} />
         <SingleSetting
           icon={faInfoCircle}
           name="Terms and Policies"
-          handleClick={() => navigate("/settings/terms")}
+          handleClick={() => {}}
         />
       </div>
       <div className="section">
@@ -95,12 +81,12 @@ export default function Settings() {
         <SingleSetting
           icon={faExchange}
           name="Switch account"
-          handleClick={() => navigate("/settings/login")}
+          handleClick={() => {}}
         />
         <SingleSetting
           icon={faRightFromBracket}
           name="Logout"
-          handleClick={() => navigate("/register")}
+          handleClick={() => {}}
         />
       </div>
     </div>

@@ -58,7 +58,6 @@ nav {
 }
 
 .menu-btn {
-    display: none;
     position: relative;
 }
 
@@ -90,10 +89,6 @@ nav {
     .profile-btn,
     .darkmode-btn {
         display: none;
-    }
-
-    .menu-btn {
-        display: block;
     }
 
     .nav-left,
