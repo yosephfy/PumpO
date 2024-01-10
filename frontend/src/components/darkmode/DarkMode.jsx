@@ -15,7 +15,7 @@ export default function DarkMode() {
     <div className="darkmode-icon">
       <input type="checkbox" name="" id="" />
       <FontAwesomeIcon
-        className="icon"
+        className="darkmode-icon"
         icon={faLightbulb}
         onClick={DarkHandler}
         name={`${mode ? "dark" : "light"}`}

@@ -21,7 +21,7 @@ export const SingleSettingComponent = ({
   return (
     <div className={className} onClick={handleClick ? handleClick : () => {}}>
       <div className="name">
-        <FontAwesomeIcon icon={icon} />
+        <FontAwesomeIcon className="icon" icon={icon} />
         <h4>{name}</h4>
       </div>
       {input && (

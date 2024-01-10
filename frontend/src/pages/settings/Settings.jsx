@@ -17,30 +17,38 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router";
 import "./settings.css";
+import { SingleSettingComponent } from "../../utility/UtilityComponents";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Settings() {
+  const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
   return (
-    <div className="">
+    <div className="main-setting">
       <div className="section">
         <h4>Account</h4>
         <hr />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faUserAlt}
           name="Account"
           handleClick={() => navigate("/settings/account")}
         />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faLock}
           name="Privacy"
           handleClick={() => navigate("/settings/privacy")}
         />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faShield}
           name="Security"
           handleClick={() => navigate("/settings/security")}
         />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faShare}
           name="Share Profile"
           handleClick={() => navigate("/settings/share")}
@@ -49,22 +57,26 @@ export default function Settings() {
       <div className="section">
         <h4>Content & Display</h4>
         <hr />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faBell}
           name="Notifications"
           handleClick={() => navigate("/settings/notifications")}
         />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faEye}
           name="Audience & Visibility"
           handleClick={() => navigate("/settings/visibility")}
         />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faDisplay}
           name="Display"
           handleClick={() => navigate("/settings/display")}
         />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faCancel}
           name="Blcoked Accounts"
           handleClick={() => navigate("/settings/blocked")}
@@ -73,17 +85,20 @@ export default function Settings() {
       <div className="section">
         <h4>Support & About</h4>
         <hr />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faFlag}
           name="Report a problem"
           handleClick={() => navigate("/settings/report")}
         />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faMessage}
           name="Support"
           handleClick={() => navigate("/settings/support")}
         />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faInfoCircle}
           name="Terms and Policies"
           handleClick={() => navigate("/settings/terms")}
@@ -92,12 +107,15 @@ export default function Settings() {
       <div className="section">
         <h4>Login</h4>
         <hr />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faExchange}
           name="Switch account"
           handleClick={() => navigate("/settings/login")}
+          Comp={<img className="profilePic" src={currentUser.profilePic} />}
         />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faRightFromBracket}
           name="Logout"
           handleClick={() => navigate("/register")}
@@ -106,16 +124,3 @@ export default function Settings() {
     </div>
   );
 }
-
-const SingleSetting = ({ icon, name, handleClick }) => {
-  return (
-    <div className="single-setting" onClick={handleClick}>
-      <div className="name">
-        <FontAwesomeIcon className="icon" icon={icon} />
-        <h4>{name}</h4>
-      </div>
-
-      <FontAwesomeIcon className="icon" icon={faChevronRight} />
-    </div>
-  );
-};

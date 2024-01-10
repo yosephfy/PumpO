@@ -5,11 +5,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Switch from "@mui/material/Switch";
 import { useQuery } from "@tanstack/react-query";
-import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useState } from "react";
 import { makeRequest } from "../../axios";
-import { AuthContext } from "../../context/AuthContext";
-import { SettingContext } from "../../context/SettingContext";
 import { SingleSettingComponent } from "../../utility/UtilityComponents";
 import { settingKeys } from "../../utility/enums";
 import "./settings.css";

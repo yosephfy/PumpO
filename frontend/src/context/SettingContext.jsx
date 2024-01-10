@@ -1,6 +1,4 @@
-//import Cookies from "cookies-js";
 import Cookies from "js-cookie";
-
 import { createContext, useEffect, useState } from "react";
 import { makeRequest } from "../axios";
 
@@ -13,16 +11,13 @@ export const SettingContextProvider = ({ children }) => {
 
   const changeSetting = ({ name, value }) => {
     makeRequest
-      .post(`/settings/add`, { name: name, value: value })
+      .post(`/settings/update`, { name: name, value: value })
       .then((res) => {
-        setSetting(res.data);
+        setSetting((prev) => (prev[`${name}`] = value));
+        Cookies.set("settings", JSON.stringify(setting));
       })
       .catch((err) => console.error(err));
   };
-
-  useEffect(() => {
-    Cookies.set("settings", JSON.stringify(setting));
-  }, [setting]);
 
   return (
     <SettingContext.Provider value={{ setting, changeSetting }}>

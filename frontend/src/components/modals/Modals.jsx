@@ -99,7 +99,7 @@ export const ProfileModal = ({ userInfo, refM }) => {
             <h4>Logout</h4>
           </div>
         </Link>
-        <Link to="/">
+        <Link to="/settings/notifications">
           <div className="item">
             <FontAwesomeIcon className="icons" icon={faBell} />
             <h4>Notification</h4>

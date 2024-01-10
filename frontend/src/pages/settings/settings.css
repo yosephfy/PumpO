@@ -8,6 +8,15 @@
     border: 1px solid var(--color-border);
 }
 
+.settings .top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+    align-items: center;
+
+}
+
 .settings h3 {
     text-align: center;
 }
@@ -58,6 +67,7 @@
 
 /**/
 
+.settings .main-setting,
 .settings .account,
 .settings .security,
 .settings .notifications,
@@ -83,11 +93,28 @@
     align-items: center;
 }
 
+.settings .item h4 {
+    color: var(--text-color);
+}
+
+.settings .item .icon {
+    color: var(--color-soft);
+}
+
+
+.settings .item .profilePic {
+    width: 1.7rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+}
+
 .settings .item .name {
     display: flex;
     flex-direction: row;
     gap: 1rem;
     align-items: center;
+
 }
 
 .settings .item .item-action {
