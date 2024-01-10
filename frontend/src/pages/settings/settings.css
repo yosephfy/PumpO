@@ -62,6 +62,7 @@
 .settings .security,
 .settings .notifications,
 .settings .visibility,
+.settings .display,
 .settings .privacy {
     display: flex;
     flex-direction: column;
