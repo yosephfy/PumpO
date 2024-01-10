@@ -3,7 +3,6 @@ import { createContext, useState } from "react";
 import { makeRequest } from "../axios";
 import { settingKeys } from "../utility/enums";
 
-
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
