@@ -11,6 +11,7 @@ export const AuthContextProvider = ({ children }) => {
   );
 
   const settingsNeeded = [settingKeys.darkmmode.key];
+  
   const login = async (inputs) =>
     makeRequest.post(`auth/login`, inputs).then((res) => {
       setCurrentUser(res.data);
@@ -19,8 +20,8 @@ export const AuthContextProvider = ({ children }) => {
       settingsNeeded.forEach((set) => {
         makeRequest
           .get(`settings/get/${set}`)
-          .then((res) => {
-            settingObj[`${set}`] = res.data.value;
+          .then((res2) => {
+            settingObj[`${set}`] = res2.data.value;
             Cookies.set("settings", JSON.stringify(settingObj));
           })
           .catch((err) => {

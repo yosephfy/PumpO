@@ -18,14 +18,17 @@ export default function Login() {
   };
   const { login } = useContext(AuthContext);
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    try {
-      await asyncCallWithTimeout(login(inputs), 5000);
-      navigate("/");
+    asyncCallWithTimeout(login(inputs), 2000)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((errrrr) => setErr(errrrr.response.data));
+    /* try {
     } catch (err) {
       setErr(err.response.data);
-    }
+    } */
   };
 
   return (
