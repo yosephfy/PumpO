@@ -13,30 +13,43 @@ import "./settings.css";
 
 export default function Privacy() {
   const [err, setErr] = useState(null);
-  const [checkedPrivate, setCheckedPrivate] = useState(false);
+  const [checkedPrivate, setCheckedPrivate] = useState(true);
+  const [checkedStatus, setCheckedStatus] = useState(true);
 
   const privacySetting = useQuery({
     queryKey: ["privacySetting"],
-    queryFn: () =>
+    queryFn: () => {
       makeRequest
         .get(`/settings/get/${settingKeys.privateProfile.key}`)
         .then((res) => {
-          setCheckedPrivate(res.data == 1 ? true : false);
+          setCheckedPrivate(
+            res.data == -1 ? true : res.data.value == 1 ? true : false
+          );
           return res.data;
         })
-        .catch((errr) => console.log(errr)),
+        .catch((errr) => console.log(errr));
+
+      makeRequest
+        .get(`/settings/get/${settingKeys.activityStatus.key}`)
+        .then((res) => {
+          setCheckedStatus(
+            res.data == -1 ? true : res.data.value == 1 ? true : false
+          );
+          return res.data;
+        })
+        .catch((errr) => console.log(errr));
+
+      return 1;
+    },
   });
 
-  const onPrivateChange = (e) => {
-    setCheckedPrivate(e.target.checked);
-
+  const handleValueChange = (nam, val) => {
     makeRequest
-      .put(`/settings/update`, {
-        name: settingKeys.privateProfile.key,
-        value: e.target.checked ? 1 : 0,
+      .put(`/settings/update`, { name: nam, value: val })
+      .then((res) => {
+        console.log(res.data);
       })
-      .then((res) => console.log(`privacy turned: ${e.target.checked}`))
-      .catch((err) => setErr(err));
+      .catch((errr) => console.error(errr));
   };
 
   return privacySetting.error ? (
@@ -52,7 +65,14 @@ export default function Privacy() {
         Comp={
           <Switch
             checked={checkedPrivate}
-            onChange={onPrivateChange}
+            onChange={(e) => {
+              e.preventDefault();
+              handleValueChange(
+                settingKeys.privateProfile.key,
+                e.target.checked ? 1 : 0
+              );
+              setCheckedPrivate(e.target.checked);
+            }}
             inputProps={{ "aria-label": "controlled" }}
           />
         }
@@ -63,9 +83,16 @@ export default function Privacy() {
         name={"Activity status"}
         Comp={
           <Switch
-            defaultChecked={false}
-            onChange={() => {}}
-            inputProps={{ "aria-label": "uncontrolled" }}
+            checked={checkedStatus}
+            onChange={(e) => {
+              e.preventDefault();
+              handleValueChange(
+                settingKeys.activityStatus.key,
+                e.target.checked ? 1 : 0
+              );
+              setCheckedStatus(e.target.checked);
+            }}
+            inputProps={{ "aria-label": "controlled" }}
           />
         }
       />

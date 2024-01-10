@@ -1,7 +1,7 @@
 .bar-messages {
     background: var(--color-card);
-    margin: 20px auto;
-    border-radius: 1rem;
+    margin: 0.1rem auto;
+    border-radius: 0.3rem;
     padding: 14px;
 }
 
