@@ -60,6 +60,7 @@
 
 .settings .account,
 .settings .security,
+.settings .notifications,
 .settings .privacy {
     display: flex;
     flex-direction: column;
