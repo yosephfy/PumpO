@@ -23,4 +23,24 @@ export const settingKeys = {
     key: "directMessageNotification",
     values: { everyone: 2, friends: 1, none: 0 },
   },
+  commentVisibility: {
+    key: "commentVisibility",
+    values: { everyone: 2, friends: 1, none: 0 },
+  },
+  postVisibility: {
+    key: "postVisibility",
+    values: { everyone: 2, friends: 1, none: 0 },
+  },
+  tagVisibility: {
+    key: "tagVisibility",
+    values: { everyone: 2, friends: 1, none: 0 },
+  },
+  discoverabilityVisibility: {
+    key: "discoverabilityVisibility",
+    values: { everyone: 2, friends: 1, none: 0 },
+  },
+  directMessageVisibility: {
+    key: "directMessageVisibility",
+    values: { everyone: 2, friends: 1, none: 0 },
+  },
 };

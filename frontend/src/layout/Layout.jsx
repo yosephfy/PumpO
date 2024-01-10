@@ -17,7 +17,7 @@ import SetttingContainer from "../pages/settings/SetttingContainer";
 import Privacy from "../pages/settings/Privacy";
 import Security from "../pages/settings/Security";
 import Notifications from "../pages/settings/Notifications";
-
+import Visibility from "../pages/settings/Visibility";
 
 export default function Layout() {
   const Feed = () => {
@@ -55,6 +55,7 @@ export default function Layout() {
             { path: "/settings/privacy", element: <Privacy /> },
             { path: "/settings/security", element: <Security /> },
             { path: "/settings/notifications", element: <Notifications /> },
+            { path: "/settings/visibility", element: <Visibility /> },
           ],
         },
       ],
