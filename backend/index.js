@@ -10,6 +10,7 @@ import messagesRoutes from "./routes/messages.js";
 import postRoutes from "./routes/posts.js";
 import storiesRoutes from "./routes/stories.js";
 import userRoutes from "./routes/users.js";
+import settingRoutes from "./routes/settings.js";
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -29,6 +30,7 @@ app.use("/api/likes", likeRoutes);
 app.use("/api/feed", feedRoutes);
 app.use("/api/stories", storiesRoutes);
 app.use("/api/messages", messagesRoutes);
+app.use("/api/settings", settingRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

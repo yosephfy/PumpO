@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import "./login.css";
 import { asyncCallWithTimeout } from "../../utility/utility";
+import "./login.css";
 
 export default function Login() {
   const [inputs, setInputs] = useState({

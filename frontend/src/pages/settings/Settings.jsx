@@ -1,107 +1,126 @@
-import "./settings.css";
 import {
-  faBackspace,
   faBell,
-  faCamera,
   faCancel,
-  faChevronLeft,
   faChevronRight,
   faDisplay,
-  faEllipsisV,
   faExchange,
   faEye,
   faFlag,
-  faInfo,
   faInfoCircle,
   faLock,
   faMessage,
   faRightFromBracket,
   faShare,
   faShield,
-  faShopLock,
   faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router";
+import "./settings.css";
+import { SingleSettingComponent } from "../../utility/UtilityComponents";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Settings() {
+  const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   return (
-    <div className="settings">
-      <h3>Settings and Privacy</h3>
-
+    <div className="main-setting">
       <div className="section">
         <h4>Account</h4>
         <hr />
-        <SingleSetting icon={faUserAlt} name="Account" handleClick={() => {}} />
-        <SingleSetting icon={faLock} name="Privacy" handleClick={() => {}} />
-        <SingleSetting icon={faShield} name="Security" handleClick={() => {}} />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
+          icon={faUserAlt}
+          name="Account"
+          handleClick={() => navigate("/settings/account")}
+        />
+        <SingleSettingComponent
+          className={"item"}
+          icon={faLock}
+          name="Privacy"
+          handleClick={() => navigate("/settings/privacy")}
+        />
+        <SingleSettingComponent
+          className={"item"}
+          icon={faShield}
+          name="Security"
+          handleClick={() => navigate("/settings/security")}
+        />
+        <SingleSettingComponent
+          className={"item"}
           icon={faShare}
           name="Share Profile"
-          handleClick={() => {}}
+          handleClick={() => navigate("/settings/share")}
         />
       </div>
       <div className="section">
         <h4>Content & Display</h4>
         <hr />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faBell}
           name="Notifications"
-          handleClick={() => {}}
+          handleClick={() => navigate("/settings/notifications")}
         />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faEye}
           name="Audience & Visibility"
-          handleClick={() => {}}
+          handleClick={() => navigate("/settings/visibility")}
         />
-        <SingleSetting icon={faDisplay} name="Display" handleClick={() => {}} />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
+          icon={faDisplay}
+          name="Display"
+          handleClick={() => navigate("/settings/display")}
+        />
+        <SingleSettingComponent
+          className={"item"}
           icon={faCancel}
           name="Blcoked Accounts"
-          handleClick={() => {}}
+          handleClick={() => navigate("/settings/blocked")}
         />
       </div>
       <div className="section">
         <h4>Support & About</h4>
         <hr />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faFlag}
           name="Report a problem"
-          handleClick={() => {}}
+          handleClick={() => navigate("/settings/report")}
         />
-        <SingleSetting icon={faMessage} name="Support" handleClick={() => {}} />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
+          icon={faMessage}
+          name="Support"
+          handleClick={() => navigate("/settings/support")}
+        />
+        <SingleSettingComponent
+          className={"item"}
           icon={faInfoCircle}
           name="Terms and Policies"
-          handleClick={() => {}}
+          handleClick={() => navigate("/settings/terms")}
         />
       </div>
       <div className="section">
         <h4>Login</h4>
         <hr />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faExchange}
           name="Switch account"
-          handleClick={() => {}}
+          handleClick={() => navigate("/settings/login")}
+          Comp={<img className="profilePic" src={currentUser.profilePic} />}
         />
-        <SingleSetting
+        <SingleSettingComponent
+          className={"item"}
           icon={faRightFromBracket}
           name="Logout"
-          handleClick={() => {}}
+          handleClick={() => navigate("/register")}
         />
       </div>
     </div>
   );
 }
-
-const SingleSetting = ({ icon, name, handleClick }) => {
-  return (
-    <div className="single-setting" onClick={handleClick}>
-      <div className="name">
-        <FontAwesomeIcon className="icon" icon={icon} />
-        <h4>{name}</h4>
-      </div>
-
-      <FontAwesomeIcon className="icon" icon={faChevronRight} />
-    </div>
-  );
-};

@@ -65,9 +65,7 @@ export default function Nav() {
             className="menu-btn"
             onClick={() => setOpenMoreModal(!openMoreModal)}
           >
-            <Link>
-              <FontAwesomeIcon icon={faBars} />
-            </Link>
+            <FontAwesomeIcon icon={faBars} />
           </div>
 
           <div

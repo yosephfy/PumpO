@@ -9,18 +9,18 @@
     display: none;
 }
 
-.darkmode-icon .icon {
+.darkmode-icon .darkmode-icon {
     width: 1rem;
     padding: 0.1rem;
     border: 3px solid var(--color-primary);
     border-radius: 0.4rem;
 }
 
-.darkmode-icon .icon[name=light] {
+.darkmode-icon .darkmode-icon[name=light] {
     background-color: var(--color-card);
 }
 
-.darkmode-icon .icon[name=dark] {
+.darkmode-icon .darkmode-icon[name=dark] {
     background-color: var(--color-primary);
     color: var(--color-card);
 }
