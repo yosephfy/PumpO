@@ -1,17 +1,24 @@
+import "./settings.css";
 import {
+  faBackspace,
   faBell,
+  faCamera,
   faCancel,
+  faChevronLeft,
   faChevronRight,
   faDisplay,
+  faEllipsisV,
   faExchange,
   faEye,
   faFlag,
+  faInfo,
   faInfoCircle,
   faLock,
   faMessage,
   faRightFromBracket,
   faShare,
   faShield,
+  faShopLock,
   faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -51,7 +58,7 @@ export default function Settings() {
           className={"item"}
           icon={faShare}
           name="Share Profile"
-          handleClick={() => navigate("/settings/share")}
+          handleClick={() => {}}
         />
       </div>
       <div className="section">
@@ -61,7 +68,7 @@ export default function Settings() {
           className={"item"}
           icon={faBell}
           name="Notifications"
-          handleClick={() => navigate("/settings/notifications")}
+          handleClick={() => {}}
         />
         <SingleSettingComponent
           className={"item"}
@@ -79,7 +86,7 @@ export default function Settings() {
           className={"item"}
           icon={faCancel}
           name="Blcoked Accounts"
-          handleClick={() => navigate("/settings/blocked")}
+          handleClick={() => {}}
         />
       </div>
       <div className="section">
@@ -101,7 +108,7 @@ export default function Settings() {
           className={"item"}
           icon={faInfoCircle}
           name="Terms and Policies"
-          handleClick={() => navigate("/settings/terms")}
+          handleClick={() => {}}
         />
       </div>
       <div className="section">
@@ -118,7 +125,7 @@ export default function Settings() {
           className={"item"}
           icon={faRightFromBracket}
           name="Logout"
-          handleClick={() => navigate("/register")}
+          handleClick={() => {}}
         />
       </div>
     </div>

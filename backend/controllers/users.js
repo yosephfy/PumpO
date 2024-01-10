@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import moment from "moment";
 import { db } from "../connect.js";
-import cript from "bcryptjs";
 
 export const getUsers = (req, res) => {
   const q = "SELECT * FROM users";
@@ -68,44 +67,6 @@ export const updateUser = (req, res) => {
       req.body.bio,
       userInfo.id,
     ];
-    db.query(q, value, (err, data) => {
-      if (err) res.status(500).json(err);
-      if (data.affectedRows > 0) return res.json("Updated!");
-      return res.status(403).json("You can update only your post!");
-    });
-  });
-};
-
-export const updateUserPrivateAccount = (req, res) => {
-  const token = req.cookies.accessToken;
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "secretkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
-    const q = "UPDATE users SET `privateProfile` = ? WHERE `id` = ? ";
-
-    const value = [req.body.privateProfile, userInfo.id];
-    db.query(q, value, (err, data) => {
-      if (err) res.status(500).json(err);
-      if (data.affectedRows > 0) return res.json("Updated!");
-      return res.status(403).json("You can update only your post!");
-    });
-  });
-};
-
-export const updateUserPassword = (req, res) => {
-  const token = req.cookies.accessToken;
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "secretkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
-    const q = "UPDATE users SET `password` = ? WHERE `id` = ? ";
-    const salt = cript.genSaltSync(10);
-    const hashedPassword = cript.hashSync(req.body.password, salt);
-
-    const value = [hashedPassword, userInfo.id];
     db.query(q, value, (err, data) => {
       if (err) res.status(500).json(err);
       if (data.affectedRows > 0) return res.json("Updated!");
