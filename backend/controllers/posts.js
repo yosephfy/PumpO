@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import moment from "moment";
 import { db } from "../connect.js";
+import cloudinary from "../utils/cloudinary.js";
 
 export const getPost = (req, res) => {
   const q = `SELECT p.*, u.username, u.profilePic FROM users AS u JOIN posts AS p ON (u.id = p.userId) WHERE p.id = ?`;
@@ -60,4 +61,19 @@ export const deletePost = (req, res) => {
       return res.status(403).json("You can delete only your post");
     });
   });
+};
+
+export const uploadPost = async (req, res) => {
+  let filestr = req.body.data.replace(/^"(.+(?="$))"$/, "$1");
+
+  try {
+    const uploadedResponse = await cloudinary.uploader.upload(filestr, {
+      folder: "pumpo/posts",
+    });
+    console.log(uploadedResponse);
+    return res.status(200).json("UPLOADED");
+  } catch (err) {
+    res.status(500).json(err);
+    console.log(err);
+  }
 };

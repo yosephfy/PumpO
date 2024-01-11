@@ -20,6 +20,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { SingleSettingComponent } from "../../utility/UtilityComponents";
 import Switch from "@mui/material/Switch";
 import Select from "@mui/material/Select";
+import { makeRequest } from "../../axios";
 
 export default function BottomNav() {
   const { currentUser } = useContext(AuthContext);
@@ -87,22 +88,37 @@ const PostSomething = ({ media, story, text, cancelPost }) => {
 
   const [selectedImage, setSelectedImage] = useState(false);
   const [currMedia, setCurrMedia] = useState(null);
+  const [currPreviewSrc, setCurrPreviewSrc] = useState(null);
+
+  const previewSource = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setCurrPreviewSrc(reader.result);
+    };
+  };
 
   const handleMediaUpload = (e) => {
     setCurrMedia(e.target.files[0]);
     console.log(e.target.files[0]);
     setSelectedImage(true);
+    previewSource(e.target.files[0]);
   };
 
-  const handleStoryUpload = (e) => {
-    setCurrMedia(e.target.files[0]);
-    console.log(e.target.files[0]);
-    setSelectedImage(true);
+  const imageUpload = (base64) => {
+    console.log(base64);
+    makeRequest
+      .post(`/posts/upload`, { data: JSON.stringify(base64) })
+      .then()
+      .catch((err) => console.log(err.response.data));
   };
 
   const handlePost = (e) => {
     e.preventDefault();
     console.log("posted" + currMedia);
+    if (!currPreviewSrc) return;
+
+    imageUpload(currPreviewSrc);
   };
 
   return (
@@ -158,14 +174,14 @@ const PostSomething = ({ media, story, text, cancelPost }) => {
               <input
                 type="file"
                 id="file"
-                onInput={handleStoryUpload}
+                onInput={handleMediaUpload}
                 required
               />
             </label>
           )}
           {selectedImage && (
             <div className="story-caption">
-              <img alt="not found" src={URL.createObjectURL(currMedia)} />
+              {currPreviewSrc && <img alt="not found" src={currPreviewSrc} />}
             </div>
           )}
         </div>
