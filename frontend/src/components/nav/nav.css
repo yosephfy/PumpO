@@ -52,6 +52,158 @@
     justify-content: space-between;
 }
 
+
+.post-drawer {
+    padding: 1rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.post-drawer .top-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.post-drawer .top-buttons button {
+    display: none;
+}
+
+.post-drawer .media,
+.post-drawer .post-story {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.post-drawer .media .icon,
+.post-drawer .post-story .icon {
+    height: 80px;
+    color: rgba(75, 85, 99, 1);
+}
+
+.post-drawer .media span {
+    font-weight: 400;
+    color: rgba(75, 85, 99, 1);
+}
+
+.post-drawer .media label,
+.post-drawer .post-story label {
+    height: 200px;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: space-between;
+    gap: 20px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #cacaca;
+    background-color: rgba(255, 255, 255, 1);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
+}
+
+.post-drawer .media input,
+.post-drawer .post-story input {
+    display: none;
+}
+
+.post-drawer .media .post-caption {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    width: 100%;
+
+}
+
+.post-drawer .media .post-caption img {
+    width: 3rem;
+    aspect-ratio: 1/1;
+    border-radius: 0.3rem;
+    background-color: var(--color-bg);
+}
+
+.post-drawer .post-story .story-caption img {
+    aspect-ratio: 1/1;
+    border-radius: 0.3rem;
+    background-color: var(--color-bg);
+}
+
+.post-drawer .media .post-caption textarea {
+    width: 100%;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.3rem auto;
+    color: var(--text-color);
+}
+
+.post-drawer .media .post-caption textarea::placeholder {
+    color: var(--color-soft);
+}
+
+.post-drawer .item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem 0.4rem;
+    cursor: pointer;
+    color: var(--color-soft);
+    align-items: center;
+}
+
+.post-drawer .item h4 {
+    color: var(--text-color);
+    font-size: smaller;
+}
+
+.post-drawer .item .icon {
+    color: var(--color-soft);
+    width: 1rem;
+    height: 1rem;
+}
+
+
+
+.post-drawer .item .name {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+
+}
+
+.post-drawer .item .item-action {
+    display: flex;
+    flex-direction: row;
+    width: 40%;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.post-drawer .item .input {
+    background-color: var(--color-bg);
+    text-align: center;
+    padding: 0 0.9rem;
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 0.2rem;
+    color: var(--text-color);
+}
+
+.post-drawer .item .item-action .save-icon[curr='true'] {
+    color: var(--color-soft);
+}
+
+.post-drawer .item .item-action .save-icon[curr='false'] {
+    color: var(--color-primary);
+}
+
+
 .nav-container a {
     color: var(--color-primary);
     font-size: 1.1rem;
