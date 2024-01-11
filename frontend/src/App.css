@@ -19,6 +19,13 @@
   --color-soft: #aaaaaa;
   --color-border: lightgray;
   --color-red: red;
+
+  --bottom-nav-height: 3.6rem;
+  --top-nav-height: 3.6rem;
+
+  --left-bar-width: 20%;
+  --container-width: 54%;
+  --right-bar-width: 50%;
 }
 
 .darkmode {
@@ -38,6 +45,7 @@ body {
   max-width: 991px;
   width: 100%;
   margin: 0 auto;
+  margin-bottom: var(--bottom-nav-height);
 }
 
 h1,
@@ -108,7 +116,7 @@ p {
 
 main {
   display: grid;
-  grid-template-columns: 20% 54% 23%;
+  grid-template-columns: var(--left-bar-width) var(--container-width) var(--right-bar-width);
   gap: min(3%, 10px);
   width: 100%;
 }
@@ -116,7 +124,9 @@ main {
 
 @media (max-width:1024px) {
   main {
-    grid-template-columns: 8% 56% 32%;
+    --left-bar-width: 8%;
+    --container-width: 56%;
+    --right-bar-width: 32%;
   }
 }
 
@@ -126,6 +136,7 @@ main {
   }
 
   .container {
+    --container-width: 94%;
     width: 94%;
   }
 }

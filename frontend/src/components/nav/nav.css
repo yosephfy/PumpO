@@ -1,5 +1,5 @@
 .top-nav {
-    height: 3.6rem;
+    height: var(--top-nav-height);
     display: flex;
     padding: 20px;
     align-items: center;
@@ -13,17 +13,19 @@
 }
 
 .bottom-nav {
-    height: 3.6rem;
+    height: var(--bottom-nav-height);
     display: flex;
     padding: 1rem 2rem;
     align-items: center;
     justify-content: stretch;
     border-top: 1px solid var(--color-border);
     color: var(--color-primary);
-    position: sticky;
+    position: fixed;
+    overflow: hidden;
     z-index: 10;
     background: var(--color-card);
     bottom: 0;
+    width: var(--container-width);
 }
 
 .bottom-nav .icon {
@@ -46,10 +48,12 @@
 }
 
 .bottom-nav-container {
-    width: 96%;
+    width: 100%;
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    padding: 0 1rem;
 }
 
 
@@ -65,8 +69,21 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
     border-bottom: 1px solid var(--color-border);
+
+}
+
+.post-drawer .top-buttons .post-btn {
+    color: var(--color-primary);
+}
+
+.post-drawer .top-buttons .cancel-btn {
+    color: var(--color-red);
+}
+
+.post-drawer .top-buttons label[aria-disabled=true] {
+    color: var(--color-soft);
 }
 
 .post-drawer .top-buttons button {

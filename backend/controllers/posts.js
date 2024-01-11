@@ -25,14 +25,29 @@ export const addPost = (req, res) => {
   const token = req.cookies.accessToken;
   if (!token) return res.status(401).json("Not logged in!");
 
-  jwt.verify(token, "secretkey", (err, userInfo) => {
+  jwt.verify(token, "secretkey", async (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
+    ///
+    let filestr = req.body.img.replace(/^"(.+(?="$))"$/, "$1");
+    let imgUrl =
+      "https://blogs.oregonstate.edu/mulliganhr/wp-content/themes/koji/assets/images/default-fallback-image.png";
 
+    try {
+      const uploadedResponse = await cloudinary.uploader.upload(filestr, {
+        folder: "pumpo/posts",
+      });
+      imgUrl = uploadedResponse.url;
+      console.log(uploadedResponse);
+    } catch (err) {
+      res.status(500).json(err);
+      console.log(err);
+    }
+    ///
     const q =
       "INSERT INTO posts(`desc`, `img`, `createdAt`, `updatedAt`, `userId`) VALUES (?)";
     const values = [
       req.body.desc,
-      req.body.img,
+      imgUrl,
       moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
       moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
       userInfo.id,

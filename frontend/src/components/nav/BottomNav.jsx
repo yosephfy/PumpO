@@ -21,11 +21,12 @@ import { SingleSettingComponent } from "../../utility/UtilityComponents";
 import Switch from "@mui/material/Switch";
 import Select from "@mui/material/Select";
 import { makeRequest } from "../../axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function BottomNav() {
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [state, setState] = useState(true);
+  const [state, setState] = useState(false);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -77,7 +78,7 @@ export default function BottomNav() {
         />
       </div>
       <Drawer anchor={"bottom"} open={state} onClose={toggleDrawer(false)}>
-        <PostSomething story cancelPost={toggleDrawer(false)} />
+        <PostSomething media cancelPost={toggleDrawer(false)} />
       </Drawer>
     </nav>
   );
@@ -85,10 +86,12 @@ export default function BottomNav() {
 
 const PostSomething = ({ media, story, text, cancelPost }) => {
   const { currentUser } = useContext(AuthContext);
+  const queryClient = useQueryClient();
 
   const [selectedImage, setSelectedImage] = useState(false);
   const [currMedia, setCurrMedia] = useState(null);
   const [currPreviewSrc, setCurrPreviewSrc] = useState(null);
+  const [caption, setCaption] = useState("");
 
   const previewSource = (file) => {
     const reader = new FileReader();
@@ -105,28 +108,43 @@ const PostSomething = ({ media, story, text, cancelPost }) => {
     previewSource(e.target.files[0]);
   };
 
-  const imageUpload = (base64) => {
-    console.log(base64);
-    makeRequest
-      .post(`/posts/upload`, { data: JSON.stringify(base64) })
-      .then()
-      .catch((err) => console.log(err.response.data));
-  };
-
   const handlePost = (e) => {
     e.preventDefault();
     console.log("posted" + currMedia);
     if (!currPreviewSrc) return;
 
-    imageUpload(currPreviewSrc);
+    console.log(currPreviewSrc);
+
+    let postObj = { img: JSON.stringify(currPreviewSrc), desc: caption };
+    makeRequest
+      .post(`/posts/add`, postObj)
+      .then(() => {
+        queryClient.refetchQueries({ queryKey: ["feed"] });
+      })
+      .catch((err) => console.log(err.response.data));
+
+    cancelPost(e);
   };
 
   return (
     <div className="post-drawer">
       <div className="top-buttons">
-        <label htmlFor="cancel-btn">Cancel</label>
-        <label htmlFor="post-btn">Share</label>
-        <button type="submit" id="post-btn" onClick={handlePost} />
+        <label className="cancel-btn" htmlFor="cancel-btn">
+          Cancel
+        </label>
+        <label
+          className="post-btn"
+          htmlFor="post-btn"
+          aria-disabled={!selectedImage}
+        >
+          Share
+        </label>
+        <button
+          type="submit"
+          id="post-btn"
+          onClick={handlePost}
+          disabled={!selectedImage}
+        />
         <button
           type="button"
           id="cancel-btn"
@@ -152,12 +170,17 @@ const PostSomething = ({ media, story, text, cancelPost }) => {
           )}
           {selectedImage && (
             <div className="post-caption">
-              <img alt="not found" src={URL.createObjectURL(currMedia)} />
+              {currMedia && (
+                <img alt="not found" src={URL.createObjectURL(currMedia)} />
+              )}
               <textarea
                 name="caption"
                 id="caption"
                 rows="2"
                 placeholder="Write something"
+                onChange={(e) => {
+                  setCaption(e.target.value);
+                }}
               />
               {/*               <button onClick={() => setSelectedImage(null)}>Remove</button>
                */}
