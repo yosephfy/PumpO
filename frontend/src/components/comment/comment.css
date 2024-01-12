@@ -1,32 +1,100 @@
 .comments {
     width: 100%;
-    background: var(--color-bg);
+    background: var(--color-card);
     padding: 1rem;
-    border-radius: 0.5rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
     margin: 1rem 0;
+    border-top: 1px solid var(--color-bg);
+    border-bottom: 1px solid var(--color-bg);
 }
 
 .comments .writebox {
     width: 100%;
+    flex-direction: row;
     justify-content: space-between;
+    display: flex;
+    align-items: center;
 }
 
-.comments .writebox input {
+
+.comments .writebox .my-profile-pic {
+    display: flex;
+    flex-direction: column;
+}
+
+.comments .writebox .my-profile-pic img {
+    border-radius: 50%;
+    width: 2rem;
+    aspect-ratio: 1/1;
+}
+
+.comments .writebox .input-comment {
+    padding: 0 0.6rem;
+    font-size: small;
+    width: 100%;
+}
+
+.comments .writebox .input-comment input {
     width: 100%;
     background: transparent;
-    border: 1px solid var(--color-soft);
-    padding: 10px;
-    border-radius: 0.5rem;
-    color: var(--color-text);
+    border: 0.5px solid var(--color-border);
+    padding: 0.6rem;
+    border-radius: 0.9rem;
+    color: var(--text-color);
+    font-size: small;
 }
 
-.comments .writebox input::placeholder {
-    color: var(--color-text);
+.comments .writebox .input-comment input::placeholder {
+    color: var(--color-soft);
+    font-size: small;
 }
 
-.comments small {
+.comments .writebox .send-button {
+    width: 2rem;
+    height: 2rem;
+    aspect-ratio: 1/1;
+    background-color: var(--color-card-light);
+    border-radius: 50%;
+    color: var(--color-primary);
+}
+
+.comments .single-comment {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-top: 1px solid var(--color-bg);
+    padding: 0.3rem 0;
+}
+
+.comments .single-comment .user-profile-pic {
+    display: flex;
+    flex-direction: column;
+}
+
+.comments .single-comment .user-profile-pic img {
+    width: 1.5rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
+.comments .single-comment .comment-area {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0.6rem;
+    font-size: small;
+    width: 100%;
+}
+
+.comments .single-comment .comment-area h5 {
+    font-weight: bold;
+}
+
+.comments .single-comment .timestamp {
+    display: flex;
+    flex-direction: column;
     font-size: xx-small;
+    padding-top: 0.5rem;
+    text-align: end;
 }

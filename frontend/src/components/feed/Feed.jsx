@@ -1,4 +1,4 @@
-import { faListDots } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisH, faListDots } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -82,11 +82,10 @@ export default function Feed({ feed }) {
           </div>
         </Link>
         <span>
-          <FontAwesomeIcon icon={faListDots} />
+          <FontAwesomeIcon icon={faEllipsisH} />
         </span>
       </div>
       <div className="mid-content">
-        <p>{feed.desc}</p>
         <img src={getImage(feed.img, "image")} alt="" />
       </div>
 
@@ -103,6 +102,10 @@ export default function Feed({ feed }) {
           shares: shares,
         }}
       />
+      <div className="feed-caption">
+        <p>{feed.desc}</p>
+      </div>
+
       {openComment && <Comment post={feed} />}
     </div>
   );

@@ -5,6 +5,8 @@ import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
 import { WhatTimeAgo, getImage } from "../../utility/utility";
 import "./comment.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 export default function Comment({ post }) {
   const { currentUser } = useContext(AuthContext);
@@ -41,38 +43,43 @@ export default function Comment({ post }) {
 
   return (
     <div className="comments">
-      <div className="writebox">
-        <form action="#" onSubmit={handleAddComment}>
-          <div className="user">
-            <img src={getImage(currentUser.profilePic, "profilePic")} alt="" />
-            <input
-              type="text"
-              name="sendComment"
-              id=""
-              placeholder="Write a comment"
-              onChange={(e) => setNewMessage(e.target.value)}
-            />
-            <button type="submit" className="btn btn-primary">
-              Send
-            </button>
-          </div>
-        </form>
-      </div>
+      <form className="writebox" action="#" onSubmit={handleAddComment}>
+        <div className="my-profile-pic">
+          <img src={getImage(currentUser.profilePic, "profilePic")} alt="" />
+        </div>
+
+        <div className="input-comment">
+          <input
+            type="text"
+            name="sendComment"
+            id=""
+            placeholder="Write a comment"
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
+        </div>
+
+        <button className="send-button" type="submit">
+          <FontAwesomeIcon icon={faPaperPlane} />
+        </button>
+      </form>
       {error
         ? "Something went wrong"
         : isLoading
         ? "Loading..."
         : data.map((c) => (
-            <Link to="/profile/:id" key={c.id}>
-              <div className="user" key={c.id}>
+            <div className="single-comment" key={c.id}>
+              <div className="user-profile-pic">
                 <img src={getImage(c.profilePic, "profilePic")} alt="" />
-                <div>
-                  <h5>{c.name}</h5>
-                  <p>{c.desc}</p>
-                </div>
+              </div>
+              <div className="comment-area">
+                <h5>{c.name}</h5>
+                <p>{c.desc}</p>
+              </div>
+
+              <div className="timestamp">
                 <small>{WhatTimeAgo(c.timestamp).short}</small>
               </div>
-            </Link>
+            </div>
           ))}
     </div>
   );

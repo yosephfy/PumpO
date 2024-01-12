@@ -20,7 +20,7 @@
   --color-border: lightgray;
   --color-red: red;
 
-  --bottom-nav-height: 3.6rem;
+  --bottom-nav-height: 3.3rem;
   --top-nav-height: 3.6rem;
 
   --left-bar-width: 20%;
@@ -117,7 +117,7 @@ p {
 main {
   display: grid;
   grid-template-columns: var(--left-bar-width) var(--container-width) var(--right-bar-width);
-  gap: min(3%, 10px);
+  gap: min(2%, 0.5rem);
   width: 100%;
 }
 
@@ -136,7 +136,7 @@ main {
   }
 
   .container {
-    --container-width: 94%;
-    width: 94%;
+    --container-width: 100%;
+    width: 100%;
   }
 }

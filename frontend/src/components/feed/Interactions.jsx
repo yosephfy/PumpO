@@ -4,37 +4,36 @@ import "./feed.css";
 
 export default function Interactions({ actions, interactions }) {
   return (
-    <div>
-      <div className="bottom-content">
-        <div className="action-item">
-          <span>
-            <FontAwesomeIcon
-              name="heart"
-              icon={faHeart}
-              onClick={actions.onLike}
-              style={{
-                color: interactions.likedByUser ? "red" : "grey",
-              }}
-            />
-            <small>{interactions.usersLiked} likes</small>
-          </span>
-        </div>
-        <div
-          className="action-item"
-          name="comment"
-          onClick={actions.expandComment}
-        >
-          <span>
-            <FontAwesomeIcon icon={faComment} />
-            <small>{interactions.comments} comments</small>
-          </span>
-        </div>
-        <div className="action-item" name="share">
-          <span>
-            <FontAwesomeIcon icon={faShare} />
-            <small>14 shares</small>
-          </span>
-        </div>
+    <div className="bottom-content">
+      <div className="action-item">
+        <span>
+          <FontAwesomeIcon
+            className="icon"
+            name="heart"
+            icon={faHeart}
+            onClick={actions.onLike}
+            style={{
+              color: interactions.likedByUser ? "red" : "var(--color-soft)",
+            }}
+          />
+          <small>{interactions.usersLiked}</small>
+        </span>
+      </div>
+      <div
+        className="action-item"
+        name="comment"
+        onClick={actions.expandComment}
+      >
+        <span>
+          <FontAwesomeIcon className="icon" icon={faComment} />
+          <small>{interactions.comments}</small>
+        </span>
+      </div>
+      <div className="action-item" name="share">
+        <span>
+          <FontAwesomeIcon className="icon" icon={faShare} />
+          <small>14</small>
+        </span>
       </div>
     </div>
   );

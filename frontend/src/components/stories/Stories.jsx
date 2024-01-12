@@ -7,6 +7,9 @@ import { AuthContext } from "../../context/AuthContext.jsx";
 import { getImage } from "../../utility/utility.js";
 import UserStory from "./UserStory.jsx";
 import "./stories.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import reactIcon from "../../assets/react.svg";
 
 export default function Stories() {
   const { currentUser } = useContext(AuthContext);
@@ -20,20 +23,21 @@ export default function Stories() {
   });
   return (
     <div className="stories">
-      <UserStory />
-
-      <Swiper style={{ width: "80%" }} slidesPerView={4} spaceBetween={10}>
+      <Swiper style={{ width: "100%" }} slidesPerView="auto" spaceBetween={0}>
+        <SwiperSlide style={{ width: "fit-content" }}>
+          <UserStory />
+        </SwiperSlide>
         {error
           ? "Something went wrong"
           : isLoading
           ? "loading"
           : data.map((s) => (
-              <SwiperSlide key={s.id}>
+              <SwiperSlide style={{ width: "fit-content" }} key={s.id}>
                 <div className="story">
-                  <div className="user">
-                    <img src={getImage(s.profilePic, "profilePic")} alt="" />
+                  <div className="story-circle">
+                    <img src={getImage(s.data)} alt="" />
                   </div>
-                  <img src={getImage(s.data)} alt="" />
+
                   <h5>{s.username}</h5>
                 </div>
               </SwiperSlide>

@@ -20,34 +20,25 @@ export default function UserStory() {
   });
 
   return (
-    <div className="story userStory">
-      <div className="user">
+    <div className="userStory">
+      <div className="story-circle">
         <img
           src={
             error || isLoading
               ? reactIcon
               : data.length === 0
-              ? getImage("", "profilePic")
-              : getImage(data[0].profilePic, "profilePic")
+              ? getImage("")
+              : getImage(data[0].data)
           }
           alt=""
         />
+        <label htmlFor="storyFiles">
+          <FontAwesomeIcon icon={faAdd} />
+          <input type="file" name="" id="storyFiles" />
+        </label>
       </div>
-      <img
-        src={
-          error || isLoading
-            ? reactIcon
-            : data.length === 0
-            ? getImage("")
-            : getImage(data[0].data)
-        }
-        alt=""
-      />
-      <label htmlFor="storyFiles">
-        <FontAwesomeIcon icon={faAdd} />
-        <input type="file" name="" id="storyFiles" />
-      </label>
-      <h5>Add Story</h5>
+
+      <h5>Post</h5>
     </div>
   );
 }
