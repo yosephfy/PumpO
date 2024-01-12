@@ -13,9 +13,11 @@ import reactIcon from "../../assets/react.svg";
 import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
 import "./editprofile.css";
+import { useNavigate } from "react-router";
 
 export default function EditProfile() {
   const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [userInputs, setUserInputs] = useState({
     username: "",
     email: "",
@@ -171,7 +173,7 @@ export default function EditProfile() {
   ) : (
     <div className="editprofile">
       <div className="editprofile-top">
-        <FontAwesomeIcon icon={faChevronLeft} onClick={handleGoBack} />
+        <FontAwesomeIcon icon={faChevronLeft} onClick={() => navigate(-1)} />
         <h5>Edit Profile</h5>
         <FontAwesomeIcon icon={faEllipsisV} />
       </div>

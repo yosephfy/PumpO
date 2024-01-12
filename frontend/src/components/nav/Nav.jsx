@@ -33,10 +33,10 @@ export default function Nav() {
     document.addEventListener("mousedown", handler);
   });
   return (
-    <nav>
+    <nav className="top-nav">
       {openMoreModal && <MoreModal refM={modalRef} />}
       {openProfileModal && (
-        <ProfileModal userInfo={currentUser} refM={modalRef} />
+        <ProfileModal userInfo={currentUser} refM={modalRef} toggleModal={setOpenProfileModal}/>
       )}
 
       <div className="nav-container">
