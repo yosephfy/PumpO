@@ -21,10 +21,10 @@ export default function UserProfile() {
   const { currentUser } = useContext(AuthContext);
   const [followed, setFollowed] = useState(false);
   const [requested, setRequested] = useState(false);
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const handleGoBack = () => {
-    history(-1); // This will navigate back to the previous page
+    navigate(-1);
   };
 
   const userQuery = useQuery({
@@ -133,7 +133,7 @@ export default function UserProfile() {
   ) : (
     <div className="userProfile">
       <div className="top-info">
-        <FontAwesomeIcon icon={faChevronLeft} onClick={handleGoBack} />
+        <FontAwesomeIcon icon={faChevronLeft} onClick={() => navigate(-1)} />
         <h5>@{userQuery.data.username}</h5>
         <FontAwesomeIcon icon={faEllipsisV} />
       </div>
@@ -222,13 +222,16 @@ export default function UserProfile() {
             (!userQuery.data.privateProfile || followed) && (
               <button
                 className="message-btn btn btn-primary"
-                onClick={() => history(`/chatbox/${id}`)}
+                onClick={() => navigate(`/chatbox/${id}`)}
               >
                 Message <FontAwesomeIcon icon={faMessage} />
               </button>
             )}
           {id == currentUser.id && (
-            <button className="edit-profile btn btn-primary">
+            <button
+              className="edit-profile btn btn-primary"
+              onClick={() => navigate("/editProfile")}
+            >
               Edit Profile <FontAwesomeIcon icon={faUserEdit} />
             </button>
           )}

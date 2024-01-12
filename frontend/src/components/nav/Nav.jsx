@@ -36,7 +36,7 @@ export default function Nav() {
     <nav className="top-nav">
       {openMoreModal && <MoreModal refM={modalRef} />}
       {openProfileModal && (
-        <ProfileModal userInfo={currentUser} refM={modalRef} />
+        <ProfileModal userInfo={currentUser} refM={modalRef} toggleModal={setOpenProfileModal}/>
       )}
 
       <div className="nav-container">
