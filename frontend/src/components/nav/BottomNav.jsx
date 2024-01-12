@@ -22,6 +22,7 @@ import Switch from "@mui/material/Switch";
 import Select from "@mui/material/Select";
 import { makeRequest } from "../../axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { getImage } from "../../utility/utility";
 
 export default function BottomNav() {
   const { currentUser } = useContext(AuthContext);
@@ -70,7 +71,7 @@ export default function BottomNav() {
         />
         <img
           className="profilePic"
-          src={currentUser.profilePic}
+          src={getImage(currentUser.profilePic, "profilePic")}
           alt=""
           onClick={() => {
             navigate(`/profile/${currentUser.id}`);

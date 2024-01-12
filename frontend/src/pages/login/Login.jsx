@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { asyncCallWithTimeout } from "../../utility/utility";
 import "./login.css";
+import { makeRequest } from "../../axios";
+import Cookies from "js-cookie";
 
 export default function Login() {
   const [inputs, setInputs] = useState({
@@ -29,6 +31,17 @@ export default function Login() {
     } catch (err) {
       setErr(err.response.data);
     } */
+  };
+
+  const onADMIN = async (e) => {
+    e.preventDefault();
+    try {
+      await login({ username: "hmeagh5", password: "123456" });
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      alert(JSON.stringify(error));
+    }
   };
 
   return (
@@ -65,6 +78,9 @@ export default function Login() {
           {err && err}
           <button className="btn" type="submit" onClick={handleLogin}>
             Login
+          </button>
+          <button className="btn" type="button" onClick={onADMIN}>
+            ADMIN
           </button>
         </form>
       </div>

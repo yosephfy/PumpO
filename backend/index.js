@@ -33,7 +33,7 @@ app.use("/api/stories", storiesRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/settings", settingRoutes);
 
-app.listen(PORT, () => {
+app.listen(8080, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 

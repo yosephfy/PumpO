@@ -7,5 +7,10 @@ export const makeRequest = axios.create({
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json;charset=UTF-8",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Credentials": "false",
+    "Access-Control-Allow-Methods": "GET",
+    "Access-Control-Allow-Headers":
+      "Origin, OPTIONS, X-Requested-With, Content-Type, Accept",
   },
 });
