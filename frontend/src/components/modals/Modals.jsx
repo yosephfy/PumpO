@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { getImage } from "../../utility/utility";
 import DarkMode from "../darkmode/DarkMode";
 import "./modals.css";
+import { makeRequest } from "../../axios";
 
 export const MoreModal = ({ refM, toggleModal }) => {
   const navigate = useNavigate();
@@ -87,6 +88,18 @@ export const ProfileModal = ({ userInfo, refM, toggleModal }) => {
     navigate(link);
     toggleModal(false);
   };
+  const handleLogout = (e) => {
+    e.preventDefault();
+    makeRequest
+      .post(`/auth/logout`)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="modal modal-profile" ref={refM}>
       <h3>Profile</h3>
@@ -105,7 +118,12 @@ export const ProfileModal = ({ userInfo, refM, toggleModal }) => {
             <h4>Edit Profile</h4>
           </div>
         </div>
-        <div onClick={() => goTo("/login")}>
+        <div
+          onClick={() => {
+            goTo("/login");
+            handleLogout();
+          }}
+        >
           <div className="item">
             <FontAwesomeIcon className="icons" icon={faRightFromBracket} />
             <h4>Logout</h4>

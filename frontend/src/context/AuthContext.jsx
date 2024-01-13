@@ -11,21 +11,21 @@ export const AuthContextProvider = ({ children }) => {
   );
 
   const settingsNeeded = [settingKeys.darkmmode.key];
-  
+
   const login = async (inputs) =>
-    makeRequest.post(`auth/login`, inputs).then((res) => {
+    makeRequest.post(`/auth/login`, inputs).then((res) => {
       setCurrentUser(res.data);
       Cookies.set("user", JSON.stringify(res.data));
       let settingObj = {};
       settingsNeeded.forEach((set) => {
         makeRequest
-          .get(`settings/get/${set}`)
+          .get(`/settings/get/${set}`)
           .then((res2) => {
             settingObj[`${set}`] = res2.data.value;
             Cookies.set("settings", JSON.stringify(settingObj));
           })
           .catch((err) => {
-            console.error(err);
+            console.error(err.response.data);
           });
       });
     });

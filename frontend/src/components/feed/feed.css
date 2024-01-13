@@ -33,6 +33,7 @@
 
 .feed .mid-content img {
     max-height: 500px;
+    background-color: var(--color-bg);
 }
 
 .feed .bottom-content {

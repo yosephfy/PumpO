@@ -17,7 +17,6 @@
     align-items: center;
     gap: 0.3rem;
     width: 5rem;
-    height: 5rem;
 
 }
 
@@ -61,11 +60,11 @@
 .userStory h5 {
     color: var(--text-color);
     text-align: center;
-    font-size: small;
+    font-size: x-small;
+    font-weight: 100;
 }
 
 .userStory {
-    top: 0;
     margin-right: 0.7rem;
     position: relative;
     user-select: none;
@@ -75,8 +74,6 @@
     align-items: center;
     gap: 0.3rem;
     width: 5rem;
-    height: 5rem;
-    background: transparent;
 }
 
 .userStory label {
@@ -84,9 +81,9 @@
     color: white;
     z-index: 1;
     font-size: 0.7rem;
-    left: 85%;
+    left: 70%;
     transform: translate(-50%, -50%);
-    top: 67%;
+    top: 60%;
     text-align: center;
     align-items: center;
     justify-content: center;

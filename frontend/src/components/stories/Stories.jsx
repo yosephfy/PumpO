@@ -23,8 +23,8 @@ export default function Stories() {
   });
   return (
     <div className="stories">
-      <Swiper style={{ width: "100%" }} slidesPerView="auto" spaceBetween={0}>
-        <SwiperSlide style={{ width: "fit-content" }}>
+      <Swiper style={{ width: "100%" }} slidesPerView="auto" spaceBetween={10}>
+        <SwiperSlide style={{ width: "min-content" }}>
           <UserStory />
         </SwiperSlide>
         {error
@@ -32,7 +32,7 @@ export default function Stories() {
           : isLoading
           ? "loading"
           : data.map((s) => (
-              <SwiperSlide style={{ width: "fit-content" }} key={s.id}>
+              <SwiperSlide style={{ width: "min-content" }} key={s.id}>
                 <div className="story">
                   <div className="story-circle">
                     <img src={getImage(s.data)} alt="" />
