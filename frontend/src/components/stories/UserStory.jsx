@@ -8,7 +8,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { getImage } from "../../utility/utility.js";
 import "./stories.css";
 
-export default function UserStory() {
+export default function UserStory({ handleClick }) {
   const { currentUser } = useContext(AuthContext);
 
   const { isLoading, error, data } = useQuery({
@@ -20,7 +20,12 @@ export default function UserStory() {
   });
 
   return (
-    <div className="userStory">
+    <div
+      className="userStory"
+      onClick={() => {
+        handleClick(true);
+      }}
+    >
       <div className="story-circle">
         <img
           src={
@@ -34,7 +39,6 @@ export default function UserStory() {
         />
         <label htmlFor="storyFiles">
           <FontAwesomeIcon icon={faAdd} />
-          <input type="file" name="" id="storyFiles" />
         </label>
       </div>
 

@@ -87,9 +87,6 @@
     width: 100%;
 }
 
-.comments .single-comment .comment-area h5 {
-    font-weight: bold;
-}
 
 .comments .single-comment .timestamp {
     display: flex;

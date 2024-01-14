@@ -2,44 +2,56 @@
     position: sticky;
     top: 3.6rem;
     background: var(--color-card);
-    height: calc(100vh - 3.6rem);
+    height: calc(100vh - var(--top-nav-height));
     overflow: auto;
+
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .leftbar::-webkit-scrollbar {
     display: none;
 }
 
-.left-container {
-    width: 80%;
-    margin: 0 auto;
+
+.leftbar .menu {
+    width: calc(100% - 2rem);
 }
 
-.left-container .user {
-    margin-top: 20px;
-}
-
-.left-container .item {
+.leftbar .item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin: 20px 0;
+    gap: 1.5rem;
+    margin: 1.7rem 0;
+    cursor: pointer;
 }
 
-.left-container .item .icons {
-    width: 28px;
+.leftbar .user-profile img {
+    border-radius: 50%;
+    width: 1.2rem;
+    height: 1.2rem;
+    aspect-ratio: 1/1;
+    border: 0.2px solid var(--color-border);
+}
+
+.leftbar .item .icons {
+    width: 1.2rem;
+    height: 1.2rem;
     color: var(--color-primary);
 }
 
 .leftbar h4 {
-    color: var(--color-primary);
+    color: var(--text-color) !important;
 }
 
 hr {
     background: var(--color-border);
     border: none;
     height: 0.4px;
-    margin-bottom: 20px;
 }
 
 .others {
@@ -48,11 +60,11 @@ hr {
 }
 
 @media (max-width:1024px) {
-    .left-container {
+    .leftbar {
         width: fit-content;
     }
 
-    .left-container h4 {
+    .leftbar h4 {
         display: none;
     }
 }
