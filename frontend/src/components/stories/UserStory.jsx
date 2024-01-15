@@ -27,16 +27,7 @@ export default function UserStory({ handleClick }) {
       }}
     >
       <div className="story-circle">
-        <img
-          src={
-            error || isLoading
-              ? reactIcon
-              : data.length === 0
-              ? getImage("")
-              : getImage(data[0].data)
-          }
-          alt=""
-        />
+        <img src={getImage(currentUser.profilePic, "profilePic")} alt="" />
         <label htmlFor="storyFiles">
           <FontAwesomeIcon icon={faAdd} />
         </label>

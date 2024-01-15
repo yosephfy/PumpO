@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import moment from "moment";
 import { db } from "../connect.js";
 import cript from "bcryptjs";
+import cloudinary from "../utils/cloudinary.js";
 
 export const getUsers = (req, res) => {
   const q = "SELECT * FROM users";
@@ -91,6 +92,37 @@ export const updateUserPrivateAccount = (req, res) => {
       if (data.affectedRows > 0) return res.json("Updated!");
       return res.status(403).json("You can update only your post!");
     });
+  });
+};
+
+export const updateUserProfilePic = (req, res) => {
+  const token = req.cookies.accessToken;
+  if (!token) return res.status(401).json("Not authenticated!");
+
+  jwt.verify(token, "secretkey", async (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+
+    const q = "UPDATE users SET `profilePic` = ? WHERE `id` = ? ";
+
+    let filestr = req.body.img.replace(/^"(.+(?="$))"$/, "$1");
+
+    cloudinary.uploader
+      .upload(filestr, {
+        folder: "pumpo/profilePics",
+      })
+      .then((resIMG) => {
+        let imgUrl = resIMG.url;
+        const value = [imgUrl, userInfo.id];
+        db.query(q, value, (err, data) => {
+          if (err) res.status(500).json(err);
+          if (data.affectedRows > 0) return res.json("Updated!");
+          return res.status(403).json("You can update only your profilePic!");
+        });
+      })
+      .catch((err2) => {
+        res.status(500).json(err2);
+        console.log(err2);
+      });
   });
 };
 

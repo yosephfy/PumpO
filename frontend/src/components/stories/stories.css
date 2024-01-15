@@ -37,12 +37,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 0.2rem solid var(--color-border);
 }
 
 .story .user,
 .userStory .user {
-
     border: 2px solid var(--color-primary);
     border-radius: 50%;
 }
@@ -81,14 +79,13 @@
     color: white;
     z-index: 1;
     font-size: 0.7rem;
-    left: 70%;
-    transform: translate(-50%, -50%);
-    top: 60%;
+
+    transform: translate(70%, 85%);
     text-align: center;
     align-items: center;
     justify-content: center;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
     background: var(--color-primary);
     display: flex;

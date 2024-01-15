@@ -20,6 +20,7 @@ import Notifications from "../pages/settings/Notifications";
 import Visibility from "../pages/settings/Visibility";
 import Display from "../pages/settings/Display";
 import BottomNav from "../components/nav/BottomNav";
+import VideoFeed from "../pages/videofeed/VideoFeed";
 
 export default function Layout() {
   const Feed = () => {
@@ -49,6 +50,7 @@ export default function Layout() {
         { path: "/chatbox/:userId", element: <ChatBox /> },
         { path: "/messages", element: <Messages /> },
         { path: "/followreqs", element: <FollowRequests /> },
+        { path: "/videofeed", element: <VideoFeed /> },
         {
           path: "/settings",
           element: <SetttingContainer />,

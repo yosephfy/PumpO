@@ -60,8 +60,9 @@ hr {
 }
 
 @media (max-width:1024px) {
-    .leftbar {
-        width: fit-content;
+    .leftbar .item {
+        align-items: center;
+        justify-content: center;
     }
 
     .leftbar h4 {

@@ -4,7 +4,7 @@
     padding: 20px;
     align-items: center;
     justify-content: stretch;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 0.1px solid var(--color-border);
     color: var(--color-primary);
     position: sticky;
     z-index: 10;
@@ -15,10 +15,10 @@
 .bottom-nav {
     height: var(--bottom-nav-height);
     display: flex;
-    padding: 1rem 2rem;
+    padding: 1.4rem 1rem;
     align-items: center;
     justify-content: stretch;
-    border-top: 1px solid var(--color-border);
+    border-top: 0.1px solid var(--color-border);
     color: var(--color-primary);
     position: fixed;
     overflow: hidden;
@@ -54,6 +54,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 1rem;
+    align-self: self-start;
 }
 
 
@@ -106,6 +107,18 @@
 
 }
 
+
+@media (min-width: 768px) {
+    .bottom-nav {
+        display: none;
+    }
+
+    :root {
+        --bottom-nav-height: 0rem;
+    }
+
+}
+
 @media (max-width:768px) {
     nav .user h4 {
         display: none;
@@ -138,16 +151,6 @@
     .nav-left,
     .nav-right {
         gap: 20px;
-    }
-
-
-    .bottom-nav {
-        padding: 1rem;
-    }
-
-    .bottom-nav .icon {
-        width: 1.2rem;
-        height: 1.2rem;
     }
 
     .bottom-nav .profilePic {

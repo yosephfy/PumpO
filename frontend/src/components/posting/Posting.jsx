@@ -34,7 +34,7 @@ export default function Posting({
   );
 }
 
-const PostSomething = ({ media, story, cancelPost }) => {
+const PostSomething = ({ media, story, text, cancelPost }) => {
   const { currentUser } = useContext(AuthContext);
   const queryClient = useQueryClient();
 
@@ -66,12 +66,23 @@ const PostSomething = ({ media, story, cancelPost }) => {
     console.log(currPreviewSrc);
 
     let postObj = { img: JSON.stringify(currPreviewSrc), desc: caption };
-    makeRequest
-      .post(`/posts/add`, postObj)
-      .then(() => {
-        queryClient.refetchQueries({ queryKey: ["feed"] });
-      })
-      .catch((err) => console.log(err.response.data));
+    if (media)
+      makeRequest
+        .post(`/posts/add`, postObj)
+        .then(() => {
+          queryClient.refetchQueries({ queryKey: ["feed"] });
+          setSelectedImage(false);
+        })
+        .catch((err) => console.log(err.response.data));
+
+    if (story)
+      makeRequest
+        .post(`/stories/add`, postObj)
+        .then(() => {
+          queryClient.refetchQueries({ queryKey: ["stories"] });
+          setSelectedImage(false);
+        })
+        .catch((err) => console.log(err.response.data));
 
     cancelPost(e);
   };

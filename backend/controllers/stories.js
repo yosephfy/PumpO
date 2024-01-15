@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import moment from "moment";
 import { db } from "../connect.js";
+import cloudinary from "../utils/cloudinary.js";
 
 export const getStory = (req, res) => {
   const q = `SELECT s.*, u.username, u.profilePic FROM users AS u JOIN stories AS s ON (u.id = s.userId) WHERE s.id = ?`;
@@ -44,22 +45,37 @@ export const addStory = (req, res) => {
   const token = req.cookies.accessToken;
   if (!token) return res.status(401).json("Not logged in!");
 
-  jwt.verify(token, "secretkey", (err, userInfo) => {
+  jwt.verify(token, "secretkey", async (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
+    ///
+    let filestr = req.body.img.replace(/^"(.+(?="$))"$/, "$1");
+    let imgUrl =
+      "https://blogs.oregonstate.edu/mulliganhr/wp-content/themes/koji/assets/images/default-fallback-image.png";
 
+    try {
+      const uploadedResponse = await cloudinary.uploader.upload(filestr, {
+        folder: "pumpo/stories",
+      });
+      imgUrl = uploadedResponse.url;
+      console.log(uploadedResponse);
+    } catch (err) {
+      res.status(500).json(err);
+      console.log(err);
+    }
+    ///
     const q =
-      "INSERT INTO stories(`data`, `duration`, `timestamp`, `public`, `userId`) VALUES (?)";
+      "INSERT INTO stories(`data`, `duration`, `timestamp`, `userId`, `public`) VALUES (?)";
     const values = [
-      req.body.data,
-      req.body.duration,
-      moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+      imgUrl,
+      req.body.duration ? req.body.duration : 5,
       moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
       userInfo.id,
+      "true",
     ];
 
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json("Post has been created.");
+      return res.status(200).json("Story has been created.");
     });
   });
 };

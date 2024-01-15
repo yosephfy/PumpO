@@ -14,6 +14,7 @@ import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
 import "./editprofile.css";
 import { useNavigate } from "react-router";
+import { getImage } from "../../utility/utility";
 
 export default function EditProfile() {
   const { currentUser } = useContext(AuthContext);
@@ -75,8 +76,6 @@ export default function EditProfile() {
     }
   }, [gymProfileQuery]);
 
-  const handleGoBack = () => {};
-
   const handleClick = (e) => {
     e.preventDefault();
 
@@ -109,6 +108,8 @@ export default function EditProfile() {
       .catch((err) => {
         console.error(err);
       });
+
+    handleChangePicture();
 
     console.log(userInputs);
   };
@@ -166,6 +167,40 @@ export default function EditProfile() {
     setFormChanged(true);
   };
 
+  const [selectedImage, setSelectedImage] = useState(false);
+  const [currMedia, setCurrMedia] = useState(null);
+  const [currPreviewSrc, setCurrPreviewSrc] = useState(null);
+  const [caption, setCaption] = useState("");
+
+  const previewSource = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setCurrPreviewSrc(reader.result);
+    };
+  };
+
+  const handleMediaUpload = (e) => {
+    setCurrMedia(e.target.files[0]);
+    console.log(e.target.files[0]);
+    setSelectedImage(true);
+    previewSource(e.target.files[0]);
+  };
+
+  const handleChangePicture = () => {
+    if (!currPreviewSrc) return;
+
+    console.log(currPreviewSrc);
+
+    let postObj = { img: JSON.stringify(currPreviewSrc) };
+    makeRequest
+      .put(`/users/updateProfilePic`, postObj)
+      .then(() => {
+        userQuery.refetch();
+      })
+      .catch((err) => console.log(err.response.data));
+  };
+
   return userQuery.error || gymProfileQuery.error ? (
     "Something went wrong..."
   ) : userQuery.isLoading || gymProfileQuery.isLoading ? (
@@ -179,7 +214,22 @@ export default function EditProfile() {
       </div>
       <div className="profile-img">
         <div className="profile-img-edit">
-          <img src={reactIcon} alt="" id="img" />
+          <label htmlFor="change-profile-pic">
+            <img
+              src={
+                selectedImage
+                  ? currPreviewSrc
+                  : getImage(userQuery.data.profilePic, "profilePic")
+              }
+              id="img"
+            />
+          </label>
+          <input
+            type="file"
+            name=""
+            id="change-profile-pic"
+            onChange={handleMediaUpload}
+          />
           <div className="icon">
             <FontAwesomeIcon className="" icon={faCamera} />
           </div>

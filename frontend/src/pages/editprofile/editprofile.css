@@ -29,6 +29,10 @@
     gap: 1rem;
 }
 
+.editprofile .profile-img .profile-img-edit input {
+    display: none;
+}
+
 .editprofile .profile-img .profile-img-edit .icon {
     position: absolute;
     display: flex;

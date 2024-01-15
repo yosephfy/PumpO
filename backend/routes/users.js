@@ -19,6 +19,7 @@ import {
   updateUser,
   updateUserPassword,
   updateUserPrivateAccount,
+  updateUserProfilePic,
 } from "../controllers/users.js";
 
 const router = express.Router();
@@ -32,6 +33,7 @@ router.get("/findbyEmail/:email", getUserByEmail);
 router.put("/update", updateUser);
 router.put("/updatePrivateProfile", updateUserPrivateAccount);
 router.put("/updatePassword", updateUserPassword);
+router.put("/updateProfilePic", updateUserProfilePic);
 
 router.get("/followers/:userId", getUserFollowers);
 router.get("/followed/:userId", getUserFollowed);
