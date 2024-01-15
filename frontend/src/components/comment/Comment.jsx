@@ -15,7 +15,7 @@ export default function Comment({ post }) {
   const { isLoading, error, data, refetch } = useQuery({
     queryKey: ["comments", post.id],
     queryFn: () =>
-      makeRequest.get(`/comments/get/${post.id}`).then((res) => {
+      makeRequest.get(`/comments/get/post/${post.id}`).then((res) => {
         return res.data;
       }),
   });
@@ -26,7 +26,8 @@ export default function Comment({ post }) {
       return; // Prevent sending empty messages
     }
     makeRequest
-      .post("/comments/add", {
+      .post("/post/add", {
+        elementType: "POST",
         postId: post.id,
         desc: newMessage,
       })

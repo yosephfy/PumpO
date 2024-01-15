@@ -20,7 +20,7 @@ export default function Feed({ feed }) {
 
   useEffect(() => {
     makeRequest
-      .get(`/likes/get/${feed.id}`)
+      .get(`/likes/get/post/${feed.id}`)
       .then((response) => {
         const data = response.data;
         setLikes(data.length || 0);
@@ -29,7 +29,7 @@ export default function Feed({ feed }) {
       .catch((error) => console.error("Error fetching interactions:", error));
 
     makeRequest
-      .get(`/comments/get/${feed.id}`)
+      .get(`/comments/get/post/${feed.id}`)
       .then((response) => {
         const data = response.data;
         setComments(data.length || 0);
@@ -39,7 +39,7 @@ export default function Feed({ feed }) {
 
   const handleLike = () => {
     makeRequest
-      .post(`/likes/add`, {
+      .post(`/likes/post/add`, {
         userId: currentUser.id,
         postId: feed.id,
       })
@@ -51,7 +51,7 @@ export default function Feed({ feed }) {
 
   const handleUnlike = () => {
     makeRequest
-      .delete(`/likes/delete/${feed.id}`, {
+      .delete(`/likes/post/delete/${feed.id}`, {
         userId: currentUser.id,
         postId: feed.id,
       })
