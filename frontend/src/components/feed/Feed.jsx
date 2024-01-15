@@ -1,11 +1,11 @@
-import { faEllipsisH, faListDots } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { makeRequest } from "../../axios.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { WhatTimeAgo, getImage } from "../../utility/utility.js";
-import Comment from "../comment/Comment";
+import Comment from "../comment/Comments.jsx";
 import Interactions from "./Interactions.jsx";
 import "./feed.css";
 

@@ -23,7 +23,7 @@ export const getCommentsFromStory = (req, res) => {
 export const getCommentsFromComment = (req, res) => {
   const q = `SELECT c.*, u.username, u.name, u.id AS userId, u.profilePic, u.email FROM comments AS c JOIN users AS u ON (u.id = c.userId) WHERE commentId = ? ORDER BY c.timestamp DESC`;
 
-  db.query(q, [req.params.postId], (err, data) => {
+  db.query(q, [req.params.commentId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });

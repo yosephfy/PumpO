@@ -18,7 +18,7 @@ router.get("/get/post/:postId", getLikesFromPost);
 router.get("/get/comment/:commentId", getLikesFromComment);
 router.get("/get/story/:commentId", getLikesFromStory);
 
-router.get("/getnum/:postId", getNumLikesFromPost);
+router.get("/getnum/post/:postId", getNumLikesFromPost);
 
 router.post("/post/add", addLikeOnPost);
 router.post("/comment/add", addLikeOnComment);
