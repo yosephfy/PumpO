@@ -14,6 +14,10 @@ export const AuthContextProvider = ({ children }) => {
     JSON.parse(Cookies.get("settings") || null) || null
   );
 
+  useEffect(() => {
+    applyDarkMode(settings);
+  }, [settings]);
+
   const applyDarkMode = (obj) => {
     if (!settings) return;
 
@@ -48,9 +52,9 @@ export const AuthContextProvider = ({ children }) => {
 
   const changeSettings = ({ name, value }) => {
     makeRequest
-      .put(`/settings/update`, { name: name, value: value })
+      .put(`/settings/update`, { name, value })
       .then((res) => {
-        Cookies.set("settings", JSON.stringify({ name, value }));
+        Cookies.set("settings", JSON.stringify({ [`${name}`]: value }));
         setSettings(JSON.parse(Cookies.get("settings")));
       })
       .catch((err) => console.log(err));
