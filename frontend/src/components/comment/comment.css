@@ -140,6 +140,10 @@
     gap: 0.1rem;
 }
 
+.comments .single-comment .comment-area small {
+    font-weight: 100;
+}
+
 .comments .single-comment .like .icon {
     width: 0.8rem;
     height: 0.8rem;

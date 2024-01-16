@@ -32,6 +32,8 @@ export default function Comment({ post }) {
       return; // Prevent sending empty messages
     }
 
+    setNewMessage("");
+
     if (!reply) {
       makeRequest
         .post("/comments/post/add", {
@@ -64,7 +66,7 @@ export default function Comment({ post }) {
         });
     }
     document.querySelector('input[name="sendComment"]').value = "";
-    setNewMessage("");
+    inputRef.current.value = "";
   };
 
   return (

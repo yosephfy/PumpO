@@ -106,7 +106,7 @@ export default function Feed({ feed }) {
         <p>{feed.desc}</p>
       </div>
 
-      {openComment && <Comment post={feed} />}
+      {openComment ? <Comment post={feed} /> : <br />}
     </div>
   );
 }

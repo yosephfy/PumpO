@@ -23,6 +23,7 @@
   --bottom-nav-height: 6rem;
   --top-nav-height: 3.6rem;
 
+  --text-writebox-height: 4rem;
   --left-bar-width: 20%;
   --container-width: 54%;
   --right-bar-width: 50%;
@@ -45,7 +46,6 @@ body {
   max-width: 991px;
   width: 100%;
   margin: 0 auto;
-  margin-bottom: var(--bottom-nav-height);
 }
 
 h1,

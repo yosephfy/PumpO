@@ -1,23 +1,32 @@
 import {
   faArrowAltCircleRight,
   faFileAlt,
+  faPaperPlane,
+  faPaperclip,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
 import { getImage, parseDateTime } from "../../utility/utility";
+
 import "./chatbox.css";
 
 export default function ChatBox() {
   const { userId } = useParams();
   const [newMessage, setNewMessage] = useState("");
   const { currentUser } = useContext(AuthContext);
+  const inputRef = useRef();
+
+  useEffect(() => {
+    scrollToBottom();
+  });
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
+    inputRef.current.focus();
     if (!newMessage.trim()) {
       return;
     }
@@ -35,6 +44,7 @@ export default function ChatBox() {
 
     setNewMessage("");
     document.querySelector('input[name="sendMessage"]').value = "";
+    scrollToBottom();
   };
 
   const messageData = useQuery({
@@ -53,12 +63,19 @@ export default function ChatBox() {
       }),
   });
 
+  function scrollToBottom() {
+    var messagesDiv = document.getElementsByClassName("chat-box-top");
+    if (messagesDiv.length < 1) return;
+    messagesDiv[0].scrollTop = messagesDiv[0].scrollHeight;
+    console.log(messagesDiv[0].scrollHeight);
+  }
+
   return userData.error ? (
     "Something went wrong..."
   ) : userData.isLoading ? (
     "Loading..."
   ) : (
-    <div>
+    <div className="chat-box-body">
       <div className="chat-box">
         <div className="chat-box-top">
           <img src={getImage(userData.data.profilePic, "profilePic")} alt="" />
@@ -86,21 +103,26 @@ export default function ChatBox() {
       </div>
       <div className="chat-box-bottom">
         <div className="chat-box-text-area">
-          <form action="#" onSubmit={handleSendMessage}>
+          <form onSubmit={handleSendMessage}>
             <input
+              ref={inputRef}
+              autoFocus
               type="text"
               name="sendMessage"
               id=""
               placeholder="Write Something"
               onChange={(e) => setNewMessage(e.target.value)}
             />
-            <button type="submit" className="btn btn-primary">
-              <FontAwesomeIcon icon={faArrowAltCircleRight} />
-            </button>
-            <label htmlFor="CFile" className="btn btn-primary">
-              <FontAwesomeIcon icon={faFileAlt} />
+            <div className="action-buttons">
+              <label htmlFor="send">
+                <FontAwesomeIcon className="icon" icon={faPaperPlane} />
+              </label>
+              <label htmlFor="CFile" className="">
+                <FontAwesomeIcon className="icon" icon={faPaperclip} />
+              </label>
+              <button id="send" type="submit" className="" />
               <input type="file" name="" id="CFile" />
-            </label>
+            </div>
           </form>
         </div>
       </div>

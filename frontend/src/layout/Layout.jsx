@@ -31,7 +31,6 @@ export default function Layout() {
           <LeftBar />
           <div className="container">
             <Outlet />
-            <BottomNav />
           </div>
           <RightBar />
         </main>

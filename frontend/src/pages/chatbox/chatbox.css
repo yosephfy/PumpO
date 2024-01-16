@@ -1,23 +1,35 @@
+.chat-box-body {
+    height: 100%;
+    margin: 0;
+}
+
 .chat-box {
     background: var(--color-card);
-    min-height: 90vh;
+    height: calc(100vh - var(--top-nav-height));
+
+    min-height: 100%;
     display: flex;
     align-items: center;
     flex-direction: column;
-    overflow: hidden;
     margin-bottom: -5rem;
     gap: 10px;
+    position: relative;
 }
 
 .chat-box-top {
-    width: 80%;
+    width: 100%;
     margin: 0 auto;
     display: flex;
     align-items: center;
     flex-direction: column;
     gap: 0.7rem;
     padding-top: 2rem;
-    padding-bottom: 6rem;
+    padding-bottom: var(--text-writebox-height);
+
+    position: absolute;
+    top: 0;
+    bottom: 3rem;
+    overflow-y: auto;
 }
 
 .chat-box-top .user-name {
@@ -42,15 +54,17 @@
     align-items: center;
     gap: 10px;
     position: sticky;
-    bottom: 0;
+    bottom: 3rem;
 }
 
 .chat-box-text-area {
-    background: var(--color-bg);
-    width: 90%;
-    margin: 0.7rem auto;
+    background: transparent;
+    backdrop-filter: blur(100px);
+    width: 96%;
     padding: 0.2rem 0.8rem;
-    border-radius: 0.5rem;
+    border-radius: 1.5rem;
+    border: 1px solid var(--color-primary);
+    z-index: 10;
 }
 
 .chat-box-text-area form {
@@ -65,6 +79,8 @@
     background: transparent;
     color: var(--color-primary);
     font-size: 1rem;
+    padding: 0.5rem 1rem;
+    height: auto;
 }
 
 
@@ -73,7 +89,7 @@
     display: flex;
     flex-direction: column-reverse;
     background-color: var(--color-card);
-    width: 90%;
+    width: 100%;
     padding: 1.4rem;
     gap: 15px;
 }
@@ -117,16 +133,23 @@
     font-size: xx-small;
 }
 
-.chat-box-bottom label input {
+.chat-box-bottom .action-buttons {
+    padding: 0rem;
+    gap: 1rem;
+    margin-right: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-box-bottom .action-buttons .icon {
+    width: 1.3rem;
+    height: 1.3rem;
+    color: var(--color-primary);
+}
+
+.chat-box-bottom .action-buttons input,
+.chat-box-bottom .action-buttons button {
     display: none;
 }
 
-@media (max-width:768px) {
-    .chat-box-top {
-        width: 90%;
-    }
-
-    .chat-box--text-area {
-        width: 90%;
-    }
-}
+@media (max-width:768px) {}
