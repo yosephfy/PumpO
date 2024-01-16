@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { makeRequest } from "../axios";
 import { settingKeys } from "../utility/enums";
 
@@ -9,6 +9,20 @@ export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(Cookies.get("user") || null) || null
   );
+
+  const [settings, setSettings] = useState(
+    JSON.parse(Cookies.get("settings") || null) || null
+  );
+
+  const applyDarkMode = (obj) => {
+    if (!settings) return;
+
+    if (obj.darkmode == 1) {
+      document.querySelector("body").classList.add("darkmode");
+    } else {
+      document.querySelector("body").classList.remove("darkmode");
+    }
+  };
 
   const settingsNeeded = [settingKeys.darkmmode.key];
 
@@ -22,7 +36,9 @@ export const AuthContextProvider = ({ children }) => {
           .get(`/settings/get/${set}`)
           .then((res2) => {
             settingObj[`${set}`] = res2.data.value;
+            setSettings(settingObj);
             Cookies.set("settings", JSON.stringify(settingObj));
+            applyDarkMode(settingObj);
           })
           .catch((err) => {
             console.error(err.response.data);
@@ -30,8 +46,20 @@ export const AuthContextProvider = ({ children }) => {
       });
     });
 
+  const changeSettings = ({ name, value }) => {
+    makeRequest
+      .put(`/settings/update`, { name: name, value: value })
+      .then((res) => {
+        Cookies.set("settings", JSON.stringify({ name, value }));
+        setSettings(JSON.parse(Cookies.get("settings")));
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
-    <AuthContext.Provider value={{ currentUser, login }}>
+    <AuthContext.Provider
+      value={{ currentUser, settings, login, changeSettings }}
+    >
       {children}
     </AuthContext.Provider>
   );
