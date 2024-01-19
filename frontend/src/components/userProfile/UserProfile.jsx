@@ -182,62 +182,54 @@ export default function UserProfile() {
             !followed &&
             userQuery.data.privateProfile &&
             !requested && (
-              <button
-                className="request-follow btn btn-primary"
-                onClick={handleRequestFollow}
-              >
+              <button className="request-follow" onClick={handleRequestFollow}>
                 Request Follow
-                <FontAwesomeIcon icon={faUserPlus} />
+                <FontAwesomeIcon className="icon" icon={faUserPlus} />
               </button>
             )}
           {id != currentUser.id &&
             !followed &&
             userQuery.data.privateProfile &&
             requested && (
-              <button
-                className="requested btn btn-primary"
-                onClick={handleCancelRequestFollow}
-              >
+              <button className="requested" onClick={handleCancelRequestFollow}>
                 Requested
               </button>
             )}
           {id != currentUser.id &&
             !followed &&
             !userQuery.data.privateProfile && (
-              <button className="follow btn btn-primary" onClick={handleFollow}>
+              <button className="follow" onClick={handleFollow}>
                 Follow
-                <FontAwesomeIcon icon={faUserPlus} />
+                <FontAwesomeIcon className="icon" icon={faUserPlus} />
               </button>
             )}
           {id != currentUser.id && followed && (
-            <button
-              className="unfollow btn btn-primary"
-              onClick={handleUnfollow}
-            >
+            <button className="unfollow" onClick={handleUnfollow}>
               Unfollow
-              <FontAwesomeIcon icon={faUserMinus} />
+              <FontAwesomeIcon className="icon" icon={faUserMinus} />
             </button>
           )}
           {id != currentUser.id &&
             (!userQuery.data.privateProfile || followed) && (
               <button
-                className="message-btn btn btn-primary"
+                className="message-btn"
                 onClick={() => navigate(`/chatbox/${id}`)}
               >
-                Message <FontAwesomeIcon icon={faMessage} />
+                Message <FontAwesomeIcon className="icon" icon={faMessage} />
               </button>
             )}
           {id == currentUser.id && (
             <button
-              className="edit-profile btn btn-primary"
+              className="edit-profile"
               onClick={() => navigate("/editProfile")}
             >
-              Edit Profile <FontAwesomeIcon icon={faUserEdit} />
+              Edit Profile{" "}
+              <FontAwesomeIcon className="icon" icon={faUserEdit} />
             </button>
           )}
           {id == currentUser.id && (
-            <button className="share-profile btn btn-primary">
-              Share Profile <FontAwesomeIcon icon={faShare} />
+            <button className="share-profile">
+              Share Profile <FontAwesomeIcon className="icon" icon={faShare} />
             </button>
           )}
         </div>

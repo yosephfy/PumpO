@@ -3,9 +3,11 @@ import {
   faFileAlt,
   faPaperPlane,
   faPaperclip,
+  faX,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { makeRequest } from "../../axios";
@@ -15,8 +17,12 @@ import { getImage, parseDateTime } from "../../utility/utility";
 import "./chatbox.css";
 
 export default function ChatBox() {
+  const queryClient = useQueryClient();
   const { userId } = useParams();
   const [newMessage, setNewMessage] = useState("");
+  const [attachment, setAttachment] = useState([]);
+  const [selectedAttachment, setSelectedAttachment] = useState(false);
+
   const { currentUser } = useContext(AuthContext);
   const inputRef = useRef();
 
@@ -24,23 +30,76 @@ export default function ChatBox() {
     scrollToBottom();
   });
 
+  useEffect(() => {
+    if (attachment.length <= 0) setSelectedAttachment(false);
+  }, [attachment]);
+
+  const handleRemoveAttachment = (image) => {
+    setAttachment((prev) => prev.filter((a) => a != image));
+  };
+
+  const previewSource = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setAttachment((prev) => [...prev, reader.result]);
+    };
+  };
+
+  const handleMediaUpload = (e) => {
+    setSelectedAttachment(true);
+    console.log(e.target.files["length"]);
+
+    for (let index = 0; index < e.target.files["length"]; index++) {
+      const element = e.target.files[index];
+      previewSource(element);
+      console.log(element);
+    }
+    /* e.target.files.forEach((element) => {
+      console.log(element);
+      previewSource(element);
+    }); */
+    //previewSource(e.target.files[0]);
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     inputRef.current.focus();
-    if (!newMessage.trim()) {
+    if (!newMessage.trim() && attachment.length == 0) {
       return;
     }
-    makeRequest
-      .post("/messages/send", {
-        receivingId: userId,
-        data: newMessage,
-      })
-      .then(() => {
-        messageData.refetch();
-      })
-      .catch((err) => {
-        console.error("Error sending message:", err);
+
+    if (attachment.length > 0) {
+      attachment.forEach((att) => {
+        let attObj = {
+          data: JSON.stringify(att),
+          receivingId: userId,
+        };
+
+        makeRequest
+          .post(`/messages/sendAttachment`, attObj)
+          .then(() => {
+            queryClient.refetchQueries({ queryKey: ["chatbox"] });
+            messageData.refetch();
+            setSelectedAttachment(false);
+            setAttachment([]);
+          })
+          .catch((err) => console.log(err));
       });
+    }
+
+    if (newMessage.trim())
+      makeRequest
+        .post("/messages/send", {
+          receivingId: userId,
+          data: newMessage,
+        })
+        .then(() => {
+          messageData.refetch();
+        })
+        .catch((err) => {
+          console.error("Error sending message:", err);
+        });
 
     setNewMessage("");
     document.querySelector('input[name="sendMessage"]').value = "";
@@ -67,7 +126,6 @@ export default function ChatBox() {
     var messagesDiv = document.getElementsByClassName("chat-box-top");
     if (messagesDiv.length < 1) return;
     messagesDiv[0].scrollTop = messagesDiv[0].scrollHeight;
-    console.log(messagesDiv[0].scrollHeight);
   }
 
   return userData.error ? (
@@ -89,14 +147,11 @@ export default function ChatBox() {
               : messageData.isLoading
               ? "Loading..."
               : messageData.data.map((m) => (
-                  <div
-                    className="single-message"
+                  <SingleMessage
                     key={m.id}
-                    name={currentUser.id === m.sendingUserId ? "true" : "false"}
-                  >
-                    <div>{m.data}</div>
-                    <small>{parseDateTime(m.timestamp)}</small>
-                  </div>
+                    message={m}
+                    currentUser={currentUser}
+                  />
                 ))}
           </div>
         </div>
@@ -104,6 +159,20 @@ export default function ChatBox() {
       <div className="chat-box-bottom">
         <div className="chat-box-text-area">
           <form onSubmit={handleSendMessage}>
+            {selectedAttachment && (
+              <div className="attachments">
+                {attachment.map((i) => (
+                  <div className="attached-image">
+                    <img src={i} alt="" />
+                    <FontAwesomeIcon
+                      className="icon"
+                      icon={faXmark}
+                      onClick={() => handleRemoveAttachment(i)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
             <input
               ref={inputRef}
               autoFocus
@@ -121,11 +190,40 @@ export default function ChatBox() {
                 <FontAwesomeIcon className="icon" icon={faPaperclip} />
               </label>
               <button id="send" type="submit" className="" />
-              <input type="file" name="" id="CFile" />
+              <input
+                type="file"
+                name=""
+                id="CFile"
+                multiple
+                onChange={handleMediaUpload}
+              />
             </div>
           </form>
         </div>
       </div>
     </div>
   );
+}
+
+function SingleMessage({ message, currentUser }) {
+  if (message.attachment) {
+    return (
+      <div
+        className="single-message"
+        name={currentUser.id === message.sendingUserId ? "true" : "false"}
+      >
+        <img src={message.attachment} alt="" />
+        <small>{parseDateTime(message.timestamp)}</small>
+      </div>
+    );
+  } else
+    return (
+      <div
+        className="single-message"
+        name={currentUser.id === message.sendingUserId ? "true" : "false"}
+      >
+        <div className="message-text">{message.data}</div>
+        <small>{parseDateTime(message.timestamp)}</small>
+      </div>
+    );
 }

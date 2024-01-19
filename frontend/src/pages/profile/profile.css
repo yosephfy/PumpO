@@ -1,0 +1,17 @@
+.MuiButtonBase-root {
+    background-color: var(--color-card) !important;
+    font-size: x-small !important;
+    font-weight: bold !important;
+}
+
+.MuiTab-textColorPrimary {
+    color: var(--color-soft) !important;
+}
+
+.Mui-selected {
+    color: var(--color-primary) !important;
+}
+
+.MuiTabs-indicator {
+    background-color: var(--color-primary) !important;
+}

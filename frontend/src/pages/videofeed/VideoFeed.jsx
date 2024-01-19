@@ -5,9 +5,9 @@ import b from "../../assets/videos/b.mp4";
 import c from "../../assets/videos/c.mp4";
 import ListVideos from "../../components/videofeed/ListVideos";
 import "./videofeed.css";
+import BottomNav from "../../components/nav/BottomNav";
 
 export default function VideoFeeds() {
-
   const videodata = [
     {
       id: 1,
@@ -40,6 +40,7 @@ export default function VideoFeeds() {
       </div>
 
       <ListVideos videos={videodata} />
+      <BottomNav />
     </div>
   );
 }

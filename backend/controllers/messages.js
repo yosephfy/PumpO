@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import moment from "moment";
 import { db } from "../connect.js";
+import cloudinary from "../utils/cloudinary.js";
 
 export const getAllMessages = (req, res) => {
   const token = req.cookies.accessToken;
@@ -109,6 +110,47 @@ export const sendMessage = (req, res) => {
       userInfo.id,
       req.body.receivingId,
       req.body.data,
+      moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+    ];
+
+    db.query(q, [values], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).json("Message has been sent");
+    });
+  });
+};
+
+export const sendMessageAttachment = (req, res) => {
+  const token = req.cookies.accessToken;
+  if (!token) return res.status(401).json("Not logged in!");
+
+  jwt.verify(token, "secretkey", async (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+
+    ///
+    ///
+    let filestr = req.body.data.replace(/^"(.+(?="$))"$/, "$1");
+    let attURL =
+      "https://blogs.oregonstate.edu/mulliganhr/wp-content/themes/koji/assets/images/default-fallback-image.png";
+
+    try {
+      const uploadedResponse = await cloudinary.uploader.upload(filestr, {
+        folder: "pumpo/attachments",
+      });
+      attURL = uploadedResponse.url;
+      console.log(uploadedResponse);
+    } catch (err2) {
+      console.log(err2);
+    }
+    ///
+    ///
+
+    const q =
+      "INSERT INTO messages (`sendingUserId`,`receivingUserId`,`attachment`, `timestamp`) VALUES (?)";
+    const values = [
+      userInfo.id,
+      req.body.receivingId,
+      attURL,
       moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
     ];
 
