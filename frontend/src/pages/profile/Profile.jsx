@@ -38,7 +38,7 @@ export default function Profile() {
         <FeedContainer domain={["profile"]} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <FeedContainer domain={["profile"]} />
+        <FeedContainer domain={["liked"]} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
         <FeedContainer domain={["profile"]} />
