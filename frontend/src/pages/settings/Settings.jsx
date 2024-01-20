@@ -1,7 +1,6 @@
 import {
   faBell,
   faCancel,
-  faChevronRight,
   faDisplay,
   faExchange,
   faEye,
@@ -14,12 +13,11 @@ import {
   faShield,
   faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from "react-router";
-import "./settings.css";
-import { SingleSettingComponent } from "../../utility/UtilityComponents";
 import { useContext } from "react";
+import { useNavigate } from "react-router";
 import { AuthContext } from "../../context/AuthContext";
+import { SingleSettingComponent } from "../../utility/UtilityComponents";
+import "./settings.css";
 
 export default function Settings() {
   const { currentUser } = useContext(AuthContext);

@@ -2,11 +2,11 @@ import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router";
 import FeedContainer from "../../components/feed/FeedContainer";
 import UserProfile from "../../components/userProfile/UserProfile";
-import "./profile.css";
-import { useParams } from "react-router";
 import { AuthContext } from "../../context/AuthContext";
+import "./profile.css";
 
 export default function Profile() {
   const [value, setValue] = useState(0);

@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { asyncCallWithTimeout } from "../../utility/utility";
 import "./login.css";
-import { makeRequest } from "../../axios";
-import Cookies from "js-cookie";
 
 export default function Login() {
   const [inputs, setInputs] = useState({

@@ -1,6 +1,7 @@
-import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { makeRequest } from "../../axios";
+import { apiCalls } from "../../utility/enums";
 import "./signup.css";
 
 export default function Signup() {
@@ -21,7 +22,21 @@ export default function Signup() {
   const handleClick = async (e) => {
     e.preventDefault();
 
-    try {
+    makeRequest
+      .post(apiCalls().auth.add.register, {
+        name: inputs.firstname + " " + inputs.lastname,
+        username: inputs.username,
+        password: inputs.password,
+        email: inputs.email,
+      })
+      .then((res) => {
+        navigate("/login");
+      })
+      .catch((errrr) => {
+        setErr(err);
+      });
+
+    /*  try {
       await axios.post("http://localhost:8080/api/auth/register", {
         name: inputs.firstname + " " + inputs.lastname,
         username: inputs.username,
@@ -31,7 +46,7 @@ export default function Signup() {
       navigate("/login");
     } catch (err) {
       setErr(err.response.data);
-    }
+    } */
   };
 
   console.log(err);

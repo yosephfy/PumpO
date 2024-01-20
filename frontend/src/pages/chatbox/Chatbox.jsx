@@ -1,9 +1,6 @@
 import {
-  faArrowAltCircleRight,
-  faFileAlt,
   faPaperPlane,
   faPaperclip,
-  faX,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,8 +9,8 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
+import { apiCalls } from "../../utility/enums";
 import { getImage, parseDateTime } from "../../utility/utility";
-
 import "./chatbox.css";
 
 export default function ChatBox() {
@@ -55,11 +52,6 @@ export default function ChatBox() {
       previewSource(element);
       console.log(element);
     }
-    /* e.target.files.forEach((element) => {
-      console.log(element);
-      previewSource(element);
-    }); */
-    //previewSource(e.target.files[0]);
   };
 
   const handleSendMessage = async (e) => {
@@ -77,7 +69,7 @@ export default function ChatBox() {
         };
 
         makeRequest
-          .post(`/messages/sendAttachment`, attObj)
+          .post(apiCalls().message.add.sendAttachment, attObj)
           .then(() => {
             queryClient.refetchQueries({ queryKey: ["chatbox"] });
             messageData.refetch();
@@ -90,7 +82,7 @@ export default function ChatBox() {
 
     if (newMessage.trim())
       makeRequest
-        .post("/messages/send", {
+        .post(apiCalls().message.add.sendText, {
           receivingId: userId,
           data: newMessage,
         })
@@ -109,7 +101,7 @@ export default function ChatBox() {
   const messageData = useQuery({
     queryKey: ["chatbox", userId],
     queryFn: () =>
-      makeRequest.get(`/messages/${userId}`).then((res) => {
+      makeRequest.get(apiCalls(userId).message.get.fromUser).then((res) => {
         return res.data;
       }),
   });
@@ -117,7 +109,7 @@ export default function ChatBox() {
   const userData = useQuery({
     queryKey: ["chatbox_user", userId],
     queryFn: () =>
-      makeRequest.get(`/users/findById/${userId}`).then((res) => {
+      makeRequest.get(apiCalls(userId).user.get.withId).then((res) => {
         return res.data;
       }),
   });

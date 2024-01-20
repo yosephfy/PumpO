@@ -4,6 +4,7 @@ import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { makeRequest } from "../../axios.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
+import { apiCalls } from "../../utility/enums.js";
 import { getImage } from "../../utility/utility.js";
 import Posting from "../posting/Posting.jsx";
 import UserStory from "./UserStory.jsx";
@@ -26,9 +27,11 @@ export default function Stories() {
   const { isLoading, error, data } = useQuery({
     queryKey: ["stories"],
     queryFn: () =>
-      makeRequest.get(`/stories/followed/${currentUser.id}`).then((res) => {
-        return res.data;
-      }),
+      makeRequest
+        .get(apiCalls(currentUser.id).story.get.followed)
+        .then((res) => {
+          return res.data;
+        }),
   });
   return (
     <div className="stories">

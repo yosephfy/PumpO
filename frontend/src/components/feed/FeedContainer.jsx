@@ -3,17 +3,18 @@ import { useContext } from "react";
 import { useParams } from "react-router";
 import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
+import { apiCalls } from "../../utility/enums";
 import Feed from "./Feed";
 import "./feed.css";
 
 export default function FeedContainer({ domain }) {
   const params = useParams();
   const { currentUser } = useContext(AuthContext);
-  const apiCalls = {
-    profile: `/feed/profile/${params.id}`,
-    followed: `/feed/followed`,
-    user: `/feed/profile/${currentUser.id}`,
-    liked: `/feed/liked`,
+  const apiFeedCalls = {
+    profile: apiCalls(params.id).feed.get.profile,
+    followed: apiCalls(params.id).feed.get.followed,
+    user: apiCalls(currentUser.id).feed.get.profile,
+    liked: apiCalls(params.id).feed.get.liked,
   };
   const { isLoading, error, data } = useQuery({
     queryKey: ["feed"],
@@ -22,7 +23,7 @@ export default function FeedContainer({ domain }) {
       await Promise.all(
         domain.map(async (element) => {
           try {
-            const res = await makeRequest.get(apiCalls[element]);
+            const res = await makeRequest.get(apiFeedCalls[element]);
             list = list.concat(res.data);
           } catch (error) {
             console.error(`Error fetching data for ${element}:`, error);

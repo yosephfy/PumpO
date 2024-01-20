@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import { createContext, useEffect, useState } from "react";
 import { makeRequest } from "../axios";
-import { settingKeys } from "../utility/enums";
+import { apiCalls, settingKeys } from "../utility/enums";
 
 export const AuthContext = createContext();
 
@@ -31,13 +31,13 @@ export const AuthContextProvider = ({ children }) => {
   const settingsNeeded = [settingKeys.darkmmode.key];
 
   const login = async (inputs) =>
-    makeRequest.post(`/auth/login`, inputs).then((res) => {
+    makeRequest.post(apiCalls().auth.add.login, inputs).then((res) => {
       setCurrentUser(res.data);
       Cookies.set("user", JSON.stringify(res.data));
       let settingObj = {};
       settingsNeeded.forEach((set) => {
         makeRequest
-          .get(`/settings/get/${set}`)
+          .get(apiCalls(set).setting.get.withKey)
           .then((res2) => {
             settingObj[`${set}`] = res2.data.value;
             setSettings(settingObj);
@@ -52,7 +52,7 @@ export const AuthContextProvider = ({ children }) => {
 
   const changeSettings = ({ name, value }) => {
     makeRequest
-      .put(`/settings/update`, { name, value })
+      .put(apiCalls().setting.update.setting, { name, value })
       .then((res) => {
         Cookies.set("settings", JSON.stringify({ [`${name}`]: value }));
         setSettings(JSON.parse(Cookies.get("settings")));

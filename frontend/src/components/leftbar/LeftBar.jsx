@@ -12,8 +12,8 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { getImage } from "../../utility/utility";
-import "./leftbar.css";
 import Posting from "../posting/Posting";
+import "./leftbar.css";
 
 export default function LeftBar() {
   const { currentUser } = useContext(AuthContext);

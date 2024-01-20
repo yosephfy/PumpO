@@ -1,6 +1,6 @@
 import {
   faCircleCheck,
-  faCircleXmark
+  faCircleXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +8,7 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
+import { apiCalls } from "../../utility/enums";
 import { getImage } from "../../utility/utility";
 import "./followrequests.css";
 
@@ -17,14 +18,16 @@ export default function FollowRequests() {
   const { error, isLoading, data, refetch } = useQuery({
     queryKey: ["followRequest"],
     queryFn: () =>
-      makeRequest.get(`/users/friendRequests/${currentUser.id}`).then((res) => {
-        return res.data;
-      }),
+      makeRequest
+        .get(apiCalls(currentUser.id).user.get.friendReq)
+        .then((res) => {
+          return res.data;
+        }),
   });
 
   const handleFollow = (followerId) => {
     makeRequest
-      .post(`/users/relationships/add`, {
+      .post(apiCalls().user.add.relationship, {
         followedId: currentUser.id,
         followerId: followerId,
       })
@@ -38,7 +41,7 @@ export default function FollowRequests() {
   const handleDelete = (followerId) => {
     console.log(followerId, currentUser.id);
     makeRequest
-      .delete("/users/friendRequests/delete", {
+      .delete(apiCalls().user.delete.friendReq, {
         headers: {
           "Content-Type": "application/json",
         },

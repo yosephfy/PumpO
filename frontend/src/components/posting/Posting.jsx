@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
+import { apiCalls } from "../../utility/enums";
 import "./posting.css";
 
 export default function Posting({
@@ -68,7 +69,7 @@ const PostSomething = ({ media, story, text, cancelPost }) => {
     let postObj = { img: JSON.stringify(currPreviewSrc), desc: caption };
     if (media)
       makeRequest
-        .post(`/posts/add`, postObj)
+        .post(apiCalls().post.add.upload, postObj)
         .then(() => {
           queryClient.refetchQueries({ queryKey: ["feed"] });
           setSelectedImage(false);
@@ -77,7 +78,7 @@ const PostSomething = ({ media, story, text, cancelPost }) => {
 
     if (story)
       makeRequest
-        .post(`/stories/add`, postObj)
+        .post(apiCalls().story.add.upload, postObj)
         .then(() => {
           queryClient.refetchQueries({ queryKey: ["stories"] });
           setSelectedImage(false);

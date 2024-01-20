@@ -3,12 +3,13 @@ import {
   faTrash,
   faUserEdit,
 } from "@fortawesome/free-solid-svg-icons";
-import { SingleSettingComponent } from "../../utility/UtilityComponents";
-import "./settings.css";
-import { useNavigate } from "react-router";
 import { useContext, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router";
 import { makeRequest } from "../../axios";
+import { AuthContext } from "../../context/AuthContext";
+import { SingleSettingComponent } from "../../utility/UtilityComponents";
+import { apiCalls } from "../../utility/enums";
+import "./settings.css";
 
 export default function Account() {
   const { currentUser } = useContext(AuthContext);
@@ -18,7 +19,7 @@ export default function Account() {
   const onEmailSave = (e) => {
     console.log(e);
     makeRequest
-      .put(`/users/update`, {
+      .put(apiCalls().user.update.user, {
         email: e,
         name: currentUser.name,
         bio: currentUser.bio,

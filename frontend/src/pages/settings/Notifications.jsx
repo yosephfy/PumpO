@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { makeRequest } from "../../axios";
 import { SingleSettingComponent } from "../../utility/UtilityComponents";
-import { settingKeys } from "../../utility/enums";
+import { apiCalls, settingKeys } from "../../utility/enums";
 import "./settings.css";
 
 export default function Notifications() {
@@ -29,7 +29,7 @@ export default function Notifications() {
     queryKey: ["notificationsSetting"],
     queryFn: () => {
       makeRequest
-        .get(`/settings/get/${settingKeys.likesNotification.key}`)
+        .get(apiCalls(settingKeys.likesNotification.key).setting.get.withKey)
         .then((res) => {
           setLikeNotif(
             res.data == -1 ? true : res.data.value == 1 ? true : false
@@ -39,7 +39,7 @@ export default function Notifications() {
         .catch((errr) => console.log(errr));
 
       makeRequest
-        .get(`/settings/get/${settingKeys.commentsNotification.key}`)
+        .get(apiCalls(settingKeys.commentsNotification.key).setting.get.withKey)
         .then((res) => {
           setCommentNotif(
             res.data == -1 ? true : res.data.value == 1 ? true : false
@@ -49,7 +49,9 @@ export default function Notifications() {
         .catch((errr) => console.log(errr));
 
       makeRequest
-        .get(`/settings/get/${settingKeys.newFollowerNotification.key}`)
+        .get(
+          apiCalls(settingKeys.newFollowerNotification.key).setting.get.withKey
+        )
         .then((res) => {
           setFollowNotif(
             res.data == -1 ? true : res.data.value == 1 ? true : false
@@ -59,7 +61,9 @@ export default function Notifications() {
         .catch((errr) => console.log(errr));
 
       makeRequest
-        .get(`/settings/get/${settingKeys.friendReqNotification.key}`)
+        .get(
+          apiCalls(settingKeys.friendReqNotification.key).setting.get.withKey
+        )
         .then((res) => {
           setFriendReqNotif(
             res.data == -1 ? true : res.data.value == 1 ? true : false
@@ -69,7 +73,7 @@ export default function Notifications() {
         .catch((errr) => console.log(errr));
 
       makeRequest
-        .get(`/settings/get/${settingKeys.tagNotification.key}`)
+        .get(apiCalls(settingKeys.tagNotification.key).setting.get.withKey)
         .then((res) => {
           setTagNotif(
             res.data == -1 ? true : res.data.value == 1 ? true : false
@@ -79,7 +83,10 @@ export default function Notifications() {
         .catch((errr) => console.log(errr));
 
       makeRequest
-        .get(`/settings/get/${settingKeys.directMessageNotification.key}`)
+        .get(
+          apiCalls(settingKeys.directMessageNotification.key).setting.get
+            .withKey
+        )
         .then((res) => {
           setDirectMessageNotif(res.data == -1 ? 2 : res.data.value);
           return res.data;
@@ -92,7 +99,7 @@ export default function Notifications() {
 
   const handleValueChange = (nam, val) => {
     makeRequest
-      .put(`/settings/update`, { name: nam, value: val })
+      .put(apiCalls().setting.update.setting, { name: nam, value: val })
       .then((res) => {
         console.log(res.data);
       })

@@ -6,7 +6,6 @@ export default function Home() {
   return (
     <div>
       <Stories />
-      
       <FeedContainer domain={["followed", "user"]} />
       <BottomNav />
     </div>

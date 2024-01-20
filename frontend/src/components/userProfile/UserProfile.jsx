@@ -13,6 +13,7 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
+import { apiCalls } from "../../utility/enums";
 import { getImage } from "../../utility/utility";
 import "./userprofile.css";
 
@@ -25,7 +26,7 @@ export default function UserProfile({ userId }) {
   const userQuery = useQuery({
     queryKey: ["userProfile", userId],
     queryFn: () =>
-      makeRequest.get(`/users/findById/${userId}`).then((res) => {
+      makeRequest.get(apiCalls(userId).user.get.withId).then((res) => {
         return res.data;
       }),
   });
@@ -33,7 +34,7 @@ export default function UserProfile({ userId }) {
   const userPostQuery = useQuery({
     queryKey: ["userPosts", userId],
     queryFn: () =>
-      makeRequest.get(`/posts/all/${userId}`).then((res) => {
+      makeRequest.get(apiCalls(userId).post.get.all).then((res) => {
         return res.data.length;
       }),
   });
@@ -41,8 +42,8 @@ export default function UserProfile({ userId }) {
   const userRelationshipQuery = useQuery({
     queryKey: ["userRelationships", userId],
     queryFn: () =>
-      makeRequest.get(`/users/followers/${userId}`).then((res) =>
-        makeRequest.get(`/users/followed/${userId}`).then((res2) => {
+      makeRequest.get(apiCalls(userId).user.get.followers).then((res) =>
+        makeRequest.get(apiCalls(userId).user.get.followed).then((res2) => {
           let follow = res.data.some((d) => d["followerId"] === currentUser.id);
           setFollowed(follow);
           return {
@@ -56,7 +57,7 @@ export default function UserProfile({ userId }) {
   const requestQuery = useQuery({
     queryKey: ["followRequest", userId],
     queryFn: () =>
-      makeRequest.get(`/users/friendRequests/${userId}`).then((res) => {
+      makeRequest.get(apiCalls(userId).user.get.friendReq).then((res) => {
         let request = res.data.some(
           (d) => d["requestingId"] === currentUser.id
         );
@@ -67,7 +68,7 @@ export default function UserProfile({ userId }) {
 
   const handleFollow = () => {
     makeRequest
-      .post(`/users/follow/${userId}`)
+      .post(apiCalls(userId).user.add.follow)
       .then(() => setFollowed(true))
       .catch((error) => console.error("Error following:", error));
     console.log("followed: " + userId);
@@ -79,7 +80,7 @@ export default function UserProfile({ userId }) {
 
   const handleRequestFollow = () => {
     makeRequest
-      .post(`/users/friendRequests/add`, {
+      .post(apiCalls(userId).user.add.friendReq, {
         requestingId: currentUser.id,
         requestedId: userId,
       })
@@ -90,7 +91,7 @@ export default function UserProfile({ userId }) {
   };
   const handleCancelRequestFollow = () => {
     makeRequest
-      .delete(`/users/friendRequests/delete`, {
+      .delete(apiCalls(userId).user.delete.friendReq, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -109,7 +110,7 @@ export default function UserProfile({ userId }) {
 
   const handleUnfollow = () => {
     makeRequest
-      .delete(`/users/unfollow/${userId}`)
+      .delete(apiCalls(userId).user.delete.unfollow)
       .then(() => {
         setFollowed(false);
         handleCancelRequestFollow();

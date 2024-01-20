@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { makeRequest } from "../../axios";
+import { apiCalls } from "../../utility/enums";
 import { getImage, parseDateTime } from "../../utility/utility";
 import "./messages.css";
 
@@ -10,7 +11,7 @@ export default function MessageBar() {
   const { isLoading, error, data } = useQuery({
     queryKey: ["messageBar"],
     queryFn: () =>
-      makeRequest.get(`/messages/list`).then((res) => {
+      makeRequest.get(apiCalls().message.get.list).then((res) => {
         return res.data;
       }),
   });

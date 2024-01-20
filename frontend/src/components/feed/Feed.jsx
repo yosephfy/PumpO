@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { makeRequest } from "../../axios.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
+import { apiCalls } from "../../utility/enums.js";
 import { WhatTimeAgo, getImage } from "../../utility/utility.js";
 import Comment from "../comment/Comments.jsx";
 import Interactions from "./Interactions.jsx";
@@ -20,7 +21,7 @@ export default function Feed({ feed }) {
 
   useEffect(() => {
     makeRequest
-      .get(`/likes/get/post/${feed.id}`)
+      .get(apiCalls(feed.id).like.get.fromPost)
       .then((response) => {
         const data = response.data;
         setLikes(data.length || 0);
@@ -29,7 +30,7 @@ export default function Feed({ feed }) {
       .catch((error) => console.error("Error fetching interactions:", error));
 
     makeRequest
-      .get(`/comments/get/post/${feed.id}`)
+      .get(apiCalls(feed.id).comment.get.fromPost)
       .then((response) => {
         const data = response.data;
         setComments(data.length || 0);
@@ -39,7 +40,7 @@ export default function Feed({ feed }) {
 
   const handleLike = () => {
     makeRequest
-      .post(`/likes/post/add`, {
+      .post(apiCalls().like.add.post, {
         userId: currentUser.id,
         postId: feed.id,
       })
@@ -51,7 +52,7 @@ export default function Feed({ feed }) {
 
   const handleUnlike = () => {
     makeRequest
-      .delete(`/likes/post/delete/${feed.id}`, {
+      .delete(apiCalls(feed.id).like.delete.post, {
         userId: currentUser.id,
         postId: feed.id,
       })

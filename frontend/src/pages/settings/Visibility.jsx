@@ -4,7 +4,7 @@ import {
   faImage,
   faMessage,
   faUserShield,
-  faUserTag
+  faUserTag,
 } from "@fortawesome/free-solid-svg-icons";
 import { MenuItem } from "@mui/material";
 import Select from "@mui/material/Select";
@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { makeRequest } from "../../axios";
 import { SingleSettingComponent } from "../../utility/UtilityComponents";
-import { settingKeys } from "../../utility/enums";
+import { apiCalls, settingKeys } from "../../utility/enums";
 import "./settings.css";
 
 export default function Visibility() {
@@ -30,7 +30,7 @@ export default function Visibility() {
     queryKey: ["visibilitySetting"],
     queryFn: () => {
       makeRequest
-        .get(`/settings/get/${settingKeys.activityStatus.key}`)
+        .get(apiCalls(settingKeys.activityStatus.key).setting.get.withKey)
         .then((res) => {
           setActivityStatus(
             res.data == -1 ? true : res.data.value == 1 ? true : false
@@ -40,7 +40,7 @@ export default function Visibility() {
         .catch((errr) => console.log(errr));
 
       makeRequest
-        .get(`/settings/get/${settingKeys.commentVisibility.key}`)
+        .get(apiCalls(settingKeys.commentVisibility.key).setting.get.withKey)
         .then((res) => {
           setCommentVisibility(res.data == -1 ? 2 : res.data.value);
           return res.data;
@@ -48,7 +48,7 @@ export default function Visibility() {
         .catch((errr) => console.log(errr));
 
       makeRequest
-        .get(`/settings/get/${settingKeys.postVisibility.key}`)
+        .get(apiCalls(settingKeys.postVisibility.key).setting.get.withKey)
         .then((res) => {
           setPostVisibility(res.data == -1 ? 2 : res.data.value);
           return res.data;
@@ -56,7 +56,10 @@ export default function Visibility() {
         .catch((errr) => console.log(errr));
 
       makeRequest
-        .get(`/settings/get/${settingKeys.discoverabilityVisibility.key}`)
+        .get(
+          apiCalls(settingKeys.discoverabilityVisibility.key).setting.get
+            .withKey
+        )
         .then((res) => {
           setDiscoverabilityVisibility(res.data == -1 ? 2 : res.data.value);
           return res.data;
@@ -64,7 +67,7 @@ export default function Visibility() {
         .catch((errr) => console.log(errr));
 
       makeRequest
-        .get(`/settings/get/${settingKeys.tagVisibility.key}`)
+        .get(apiCalls(settingKeys.tagVisibility.key).setting.get.withKey)
         .then((res) => {
           setTagVisibility(res.data == -1 ? 2 : res.data.value);
           return res.data;
@@ -72,7 +75,9 @@ export default function Visibility() {
         .catch((errr) => console.log(errr));
 
       makeRequest
-        .get(`/settings/get/${settingKeys.directMessageVisibility.key}`)
+        .get(
+          apiCalls(settingKeys.directMessageVisibility.key).setting.get.withKey
+        )
         .then((res) => {
           setDirectMessageVisibility(res.data == -1 ? 2 : res.data.value);
           return res.data;
@@ -85,7 +90,7 @@ export default function Visibility() {
 
   const handleValueChange = (nam, val) => {
     makeRequest
-      .put(`/settings/update`, { name: nam, value: val })
+      .put(apiCalls().setting.update.setting, { name: nam, value: val })
       .then((res) => {
         console.log(res.data);
       })

@@ -11,10 +11,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
+import { makeRequest } from "../../axios";
 import { getImage } from "../../utility/utility";
 import DarkMode from "../darkmode/DarkMode";
 import "./modals.css";
-import { makeRequest } from "../../axios";
 
 export const MoreModal = ({ refM, toggleModal }) => {
   const navigate = useNavigate();

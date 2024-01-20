@@ -6,6 +6,7 @@ import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
 import { WhatTimeAgo, getImage } from "../../utility/utility";
 import "./comment.css";
+import { apiCalls } from "../../utility/enums";
 
 export default function SingleComment({
   comment,
@@ -36,7 +37,7 @@ export default function SingleComment({
 
   useEffect(() => {
     makeRequest
-      .get(`/likes/get/comment/${comment.id}`)
+      .get(apiCalls(comment.id).like.get.fromComment)
       .then((response) => {
         const data = response.data;
         setLikes(data.length || 0);
@@ -47,7 +48,7 @@ export default function SingleComment({
 
   const handleLike = () => {
     makeRequest
-      .post(`/likes/comment/add`, {
+      .post(apiCalls().like.add.comment, {
         userId: currentUser.id,
         commentId: comment.id,
       })
@@ -59,7 +60,7 @@ export default function SingleComment({
 
   const handleUnlike = () => {
     makeRequest
-      .delete(`/likes/comment/delete/${comment.id}`, {
+      .delete(apiCalls(comment.id).like.delete.comment, {
         userId: currentUser.id,
         commentId: comment.id,
       })

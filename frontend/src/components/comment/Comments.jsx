@@ -7,6 +7,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { getImage } from "../../utility/utility";
 import SingleComment from "./SingleComment";
 import "./comment.css";
+import { apiCalls } from "../../utility/enums";
 
 export default function Comment({ post }) {
   const queryClient = useQueryClient();
@@ -20,7 +21,7 @@ export default function Comment({ post }) {
   const { isLoading, error, data, refetch } = useQuery({
     queryKey: ["comments", post.id],
     queryFn: () =>
-      makeRequest.get(`/comments/get/post/${post.id}`).then((res) => {
+      makeRequest.get(apiCalls(post.id).comment.get.fromPost).then((res) => {
         return res.data;
       }),
   });
@@ -36,7 +37,7 @@ export default function Comment({ post }) {
 
     if (!reply) {
       makeRequest
-        .post("/comments/post/add", {
+        .post(apiCalls().comment.add.post, {
           elementType: "POST",
           postId: post.id,
           desc: newMessage,
@@ -50,7 +51,7 @@ export default function Comment({ post }) {
         });
     } else {
       makeRequest
-        .post("/comments/comment/add", {
+        .post(apiCalls().comment.add.comment, {
           elementType: "COMMENT",
           commentId: reply.id,
           desc: newMessage,

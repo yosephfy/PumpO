@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { makeRequest } from "../../axios";
 import { SingleSettingComponent } from "../../utility/UtilityComponents";
-import { settingKeys } from "../../utility/enums";
+import { apiCalls, settingKeys } from "../../utility/enums";
 import "./settings.css";
 
 export default function Privacy() {
@@ -20,7 +20,7 @@ export default function Privacy() {
     queryKey: ["privacySetting"],
     queryFn: () => {
       makeRequest
-        .get(`/settings/get/${settingKeys.privateProfile.key}`)
+        .get(apiCalls(settingKeys.privateProfile.key).setting.get.withKey)
         .then((res) => {
           setCheckedPrivate(
             res.data == -1 ? true : res.data.value == 1 ? true : false
@@ -30,7 +30,7 @@ export default function Privacy() {
         .catch((errr) => console.log(errr));
 
       makeRequest
-        .get(`/settings/get/${settingKeys.activityStatus.key}`)
+        .get(apiCalls(settingKeys.activityStatus.key).setting.get.withKey)
         .then((res) => {
           setCheckedStatus(
             res.data == -1 ? true : res.data.value == 1 ? true : false
@@ -45,7 +45,7 @@ export default function Privacy() {
 
   const handleValueChange = (nam, val) => {
     makeRequest
-      .put(`/settings/update`, { name: nam, value: val })
+      .put(apiCalls().setting.update.setting, { name: nam, value: val })
       .then((res) => {
         console.log(res.data);
       })

@@ -1,17 +1,22 @@
 import { Link } from "react-router-dom";
 import "./message.css";
 
-import { faChevronRight, faEdit, faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronRight,
+  faEdit,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import { makeRequest } from "../../axios";
+import { apiCalls } from "../../utility/enums";
 import { getImage } from "../../utility/utility";
 
 export default function MessageBar() {
   const { isLoading, error, data } = useQuery({
     queryKey: ["messageBar"],
     queryFn: () =>
-      makeRequest.get(`/messages/list`).then((res) => {
+      makeRequest.get(apiCalls().message.get.list).then((res) => {
         return res.data;
       }),
   });

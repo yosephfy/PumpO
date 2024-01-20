@@ -1,8 +1,3 @@
-import { useContext, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-
-import "./nav.css";
-
 import {
   faBars,
   faEnvelope,
@@ -11,10 +6,12 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { getImage } from "../../utility/utility";
 import { MoreModal, ProfileModal } from "../modals/Modals";
+import "./nav.css";
 
 export default function Nav() {
   const [openMoreModal, setOpenMoreModal] = useState(false);
@@ -36,7 +33,11 @@ export default function Nav() {
     <nav className="top-nav">
       {openMoreModal && <MoreModal refM={modalRef} />}
       {openProfileModal && (
-        <ProfileModal userInfo={currentUser} refM={modalRef} toggleModal={setOpenProfileModal}/>
+        <ProfileModal
+          userInfo={currentUser}
+          refM={modalRef}
+          toggleModal={setOpenProfileModal}
+        />
       )}
 
       <div className="nav-container">

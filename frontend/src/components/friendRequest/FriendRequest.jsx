@@ -1,16 +1,13 @@
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import "./friendrequest.css";
-
-import { AuthContext } from "../../context/AuthContext";
-
-import {
-  faChevronRight
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { makeRequest } from "../../axios";
+import { AuthContext } from "../../context/AuthContext";
+import { apiCalls } from "../../utility/enums";
 import { getImage } from "../../utility/utility";
+import "./friendrequest.css";
 
 export default function FriendRequest() {
   const { currentUser } = useContext(AuthContext);
@@ -18,9 +15,11 @@ export default function FriendRequest() {
   const { error, isLoading, data } = useQuery({
     queryKey: ["friendRequest"],
     queryFn: () =>
-      makeRequest.get(`/users/friendRequests/${currentUser.id}`).then((res) => {
-        return res.data;
-      }),
+      makeRequest
+        .get(apiCalls(currentUser.id).user.get.friendReq)
+        .then((res) => {
+          return res.data;
+        }),
   });
 
   return (

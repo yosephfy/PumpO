@@ -4,6 +4,7 @@ import moment from "moment";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { makeRequest } from "../../axios.js";
+import { apiCalls } from "../../utility/enums.js";
 import "./gymprofile.css";
 
 export default function GymProfile() {
@@ -49,7 +50,7 @@ export default function GymProfile() {
   const HandleSave = (e) => {
     e.preventDefault();
     makeRequest
-      .post(`/users/gymProfile/add`, {
+      .post(apiCalls().user.add.gymProfile, {
         gymType: gymType.toUpperCase(),
         weightStatus: weight.toUpperCase(),
         height: height,

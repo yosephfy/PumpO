@@ -28,7 +28,7 @@ router.get("/", getUsers);
 
 router.get("/findById/:userId", getUserById);
 router.get("/findByUsername/:username", getUserByUsername);
-router.get("/findbyEmail/:email", getUserByEmail);
+router.get("/findByEmail/:email", getUserByEmail);
 
 router.put("/update", updateUser);
 router.put("/updatePrivateProfile", updateUserPrivateAccount);

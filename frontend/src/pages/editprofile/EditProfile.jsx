@@ -9,12 +9,12 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
-import reactIcon from "../../assets/react.svg";
+import { useNavigate } from "react-router";
 import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
-import "./editprofile.css";
-import { useNavigate } from "react-router";
+import { apiCalls } from "../../utility/enums";
 import { getImage } from "../../utility/utility";
+import "./editprofile.css";
 
 export default function EditProfile() {
   const { currentUser } = useContext(AuthContext);
@@ -53,7 +53,7 @@ export default function EditProfile() {
     queryKey: ["editgymprofile", currentUser.id],
     queryFn: () =>
       makeRequest
-        .get(`/users/gymProfile/findByUserId/${currentUser.id}`)
+        .get(apiCalls(currentUser.id).user.get.gymProfile)
         .then((res) => {
           let userData = res.data;
           setGymType(userData.gymType.toLowerCase());
@@ -80,7 +80,7 @@ export default function EditProfile() {
     e.preventDefault();
 
     makeRequest
-      .put(`/users/update`, userInputs)
+      .put(apiCalls().user.update.user, userInputs)
       .then(() => {
         userQuery.refetch();
         setFormChanged(false);
@@ -90,7 +90,7 @@ export default function EditProfile() {
       });
 
     makeRequest
-      .put(`/users/gymProfile/update`, {
+      .put(apiCalls().user.update.gymProfile, {
         gymType: gymType.toUpperCase(),
         weightStatus: weight.toUpperCase(),
         startingDate: moment(Date.parse(startingDate.toString())).format(
@@ -194,7 +194,7 @@ export default function EditProfile() {
 
     let postObj = { img: JSON.stringify(currPreviewSrc) };
     makeRequest
-      .put(`/users/updateProfilePic`, postObj)
+      .put(apiCalls().user.update.profilePic, postObj)
       .then(() => {
         userQuery.refetch();
       })

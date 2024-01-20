@@ -1,7 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext } from "react";
-import ReactPlayer from "react-player";
-
 import {
   faComment,
   faHeart,
@@ -9,6 +5,9 @@ import {
   faPlay,
   faShare,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContext } from "react";
+import ReactPlayer from "react-player";
 import { AuthContext } from "../../context/AuthContext";
 import "./videofeed.css";
 
