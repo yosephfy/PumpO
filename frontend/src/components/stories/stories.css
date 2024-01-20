@@ -6,6 +6,7 @@
     flex-direction: row;
     background-color: var(--color-card);
     padding: 1rem 0rem;
+    margin-left: 0.2rem;
 }
 
 .story {

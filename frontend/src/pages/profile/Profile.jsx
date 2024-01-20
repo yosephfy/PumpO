@@ -1,13 +1,22 @@
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import FeedContainer from "../../components/feed/FeedContainer";
 import UserProfile from "../../components/userProfile/UserProfile";
 import "./profile.css";
+import { useParams } from "react-router";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Profile() {
   const [value, setValue] = useState(0);
+  const { id } = useParams();
+  const { currentUser } = useContext(AuthContext);
+  const [userId, setUserId] = useState(id);
+
+  useEffect(() => {
+    setUserId(id === currentUser.id ? currentUser : id);
+  }, [id]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -15,19 +24,18 @@ export default function Profile() {
 
   return (
     <>
-      <UserProfile />
-      <Box sx={{ bgcolor: "background.paper" }}>
+      <UserProfile userId={userId} />
+      <Box>
         <Tabs
           value={value}
           onChange={handleChange}
           variant="fullWidth"
           scrollButtons={false}
-          aria-label="scrollable prevent tabs example"
         >
-          <Tab label="My Posts" />
-          <Tab label="Draft" />
-          <Tab label="liked" />
-          <Tab label="Saved" />
+          <Tab label="Posts" />
+          {id == currentUser.id && <Tab label="Draft" />}
+          {id == currentUser.id && <Tab label="liked" />}
+          {id == currentUser.id && <Tab label="Saved" />}
         </Tabs>
       </Box>
 
