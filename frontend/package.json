@@ -3,7 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "expo-router/entry",
   "scripts": {
+    "start": "expo start",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
@@ -21,6 +23,8 @@
     "cookies-js": "^1.2.3",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
+    "expo": "^52.0.21",
+    "expo-router": "^4.0.14",
     "js-cookie": "^3.0.5",
     "js-cookies": "^1.0.4",
     "moment": "^2.30.1",

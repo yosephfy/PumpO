@@ -61,7 +61,7 @@ export default function BottomNav() {
         />
         <img
           className="profilePic"
-          src={getImage(currentUser.profilePic, "profilePic")}
+          src={getImage(currentUser?.profilePic, "profilePic") || ""}
           alt=""
           onClick={() => {
             navigate(`/profile/${currentUser.id}`);

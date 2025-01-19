@@ -1,2 +1,62 @@
-node_modules
-.vscode
+# Backend: Node.js
+/backend/node_modules
+/backend/package-lock.json
+/backend/npm-debug.log*
+/backend/yarn-error.log
+/backend/.env
+/backend/logs
+/backend/*.log
+/backend/npm-debug.log*
+/backend/yarn-debug.log*
+/backend/yarn-error.log*
+/backend/pnpm-debug.log*
+/backend/tmp/
+/backend/temp/
+/backend/*.tmp
+/backend/coverage
+/backend/.nyc_output
+/backend/coverage-final.json
+/backend/dist
+/backend/build
+
+# Frontend: React + Expo
+/PumpoFrontend/node_modules
+/PumpoFrontend/.expo/*
+/PumpoFrontend/.expo-shared/*
+/PumpoFrontend/*.expo
+/PumpoFrontend/web-build
+/PumpoFrontend/.android/*
+/PumpoFrontend/.ios/*
+/PumpoFrontend/ios/*
+/PumpoFrontend/android/*
+/PumpoFrontend/*.tsbuildinfo
+/PumpoFrontend/tmp/
+/PumpoFrontend/temp/
+/PumpoFrontend/*.tmp
+
+# Logs and temp files
+*.log
+*.tmp
+tmp/
+temp/
+
+# Lock files
+*.lock
+
+# Editor-specific files
+.vscode/
+.idea/
+.history/
+
+# OS-specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Icon?
+.DS_Store?
+
+# Expo cache files
+/PumpOFrontend/.cache/
+/PumpOFrontend/.packager-cache/

@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Cookies from "js-cookie";
 import { createContext, useEffect, useState } from "react";
 import { makeRequest } from "../axios";
@@ -9,14 +10,17 @@ export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(Cookies.get("user") || null) || null
   );
-
   const [settings, setSettings] = useState(
     JSON.parse(Cookies.get("settings") || null) || null
   );
 
+  const navigate = useNavigate(); // Create navigate function
+
   useEffect(() => {
-    applyDarkMode(settings);
-  }, [settings]);
+    if (!currentUser) {
+      navigate("/register"); // Redirect to login if currentUser is null
+    }
+  }, [currentUser, navigate]);
 
   const applyDarkMode = (obj) => {
     if (!settings) return;
@@ -27,6 +31,10 @@ export const AuthContextProvider = ({ children }) => {
       document.querySelector("body").classList.remove("darkmode");
     }
   };
+
+  useEffect(() => {
+    applyDarkMode(settings);
+  }, [settings]);
 
   const settingsNeeded = [settingKeys.darkmmode.key];
 
