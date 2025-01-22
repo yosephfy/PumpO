@@ -1,5 +1,8 @@
+import Carousel from "@/components/Carousel";
 import CollapsibleText from "@/components/CollapsibleText";
 import ProfilePicture from "@/components/ProfilePicture";
+import ShareSheet from "@/components/ShareSheet";
+import SlidingModal from "@/components/SlidingModal";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedIcon, ThemedView } from "@/components/ThemedView";
 import ToggleIcon from "@/components/ToggleIcon";
@@ -20,15 +23,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import WorkoutCard from "../WorkoutsPage/WorkoutCard";
 import PhotoPost from "./PhotoPost";
 import PostOptionsPopup from "./PostOptionsPopup";
 import TextPost from "./TextPost";
 import VideoPost from "./VideoPost";
-import SlidingModal from "@/components/SlidingModal";
-import ShareSheet from "@/components/ShareSheet";
-import WorkoutPost from "./WorkoutPost";
-import WorkoutCard from "../WorkoutsPage/WorkoutCard";
-import Carousel from "@/components/Carousel";
+import { openMessage } from "../MessagesPage/NewMessage";
 
 const PostComponent = ({ post }: { post: DT_Post }) => {
   const router = useRouter();
@@ -142,6 +142,28 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
     fetchInteractions();
   };
 
+  const postOptionFunctions = {
+    handleClickReport: () => {},
+    handleClickSavePost: () => {},
+    handleClickCopyLink: () => {},
+    handleClickShare: () => {
+      setShareSheetVisible(true);
+    },
+    handleClickMute: () => {},
+    handleClickBlock: () => {},
+    handleClickMessage: () => {
+      if (currentUser)
+        openMessage({
+          participants: [post.user_id],
+          userId: currentUser?.user_id,
+        });
+    },
+    handleClickEdit: () => {},
+    handleClickDelete: () => {},
+    handleClickInsights: () => {},
+    handleClickPin: () => {},
+  };
+
   return (
     <>
       <ThemedView style={styles.postContainer}>
@@ -165,6 +187,7 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
           <PostOptionsPopup
             isOwner={false}
             iconName="ellipsis-horizontal-outline"
+            {...postOptionFunctions}
           />
         </View>
         {/* Dynamic Post Content */}

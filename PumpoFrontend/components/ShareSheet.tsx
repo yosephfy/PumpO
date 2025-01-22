@@ -148,7 +148,7 @@ const ShareSheet = () => {
       <ScrollView bounces={false}>
         <View style={styles.userContainer}>
           {suggestedContacts.map((user) => (
-            <UserItem user={user} />
+            <UserItem key={user.user_id} user={user} />
           ))}
         </View>
       </ScrollView>
@@ -159,7 +159,7 @@ const ShareSheet = () => {
 const UserItem = ({ user }: { user: DT_UserProfile }) => {
   return (
     <View style={styles.userItem}>
-      <ProfilePicture imageUrl={user.profile_picture} size={90} />
+      <ProfilePicture imageUrl={user.profile_picture || ""} size={90} />
       <ThemedText style={styles.userItemText}>{user.username}</ThemedText>
     </View>
   );
