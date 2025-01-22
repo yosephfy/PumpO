@@ -1,5 +1,7 @@
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, SafeAreaView, StyleSheet } from "react-native";
 import Login from "./login";
 import Register from "./register";
 
@@ -7,18 +9,18 @@ const AuthIndex: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       {isLogin ? <Login /> : <Register />}
-      <View style={styles.toggleContainer}>
-        <Text style={styles.toggleText}>
+      <SafeAreaView style={styles.toggleContainer}>
+        <ThemedText style={styles.toggleText} darkColor="#aaa">
           {isLogin ? "Don't have an account?" : "Already have an account?"}
-        </Text>
+        </ThemedText>
         <Button
           title={isLogin ? "Register" : "Login"}
           onPress={() => setIsLogin(!isLogin)}
         />
-      </View>
-    </View>
+      </SafeAreaView>
+    </ThemedView>
   );
 };
 

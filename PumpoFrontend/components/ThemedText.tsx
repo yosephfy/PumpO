@@ -24,6 +24,9 @@ export type ThemedTextProps = TextProps & {
 export type ThemedTextInputProps = TextInputProps & {
   lightColor?: string;
   darkColor?: string;
+  borderWidth?: number;
+  borderLightColor?: string;
+  borderDarkColor?: string;
   type?:
     | "default"
     | "faded"
@@ -57,9 +60,24 @@ export const ThemedText = forwardRef<Text, ThemedTextProps>(
 );
 
 export const ThemedTextInput = forwardRef<TextInput, ThemedTextInputProps>(
-  ({ style, lightColor, darkColor, type = "default", ...rest }, ref) => {
+  (
+    {
+      style,
+      lightColor,
+      darkColor,
+      borderWidth = 0,
+      borderDarkColor = lightColor,
+      borderLightColor = darkColor,
+      type = "default",
+      ...rest
+    },
+    ref
+  ) => {
     const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
-
+    const borderColor = useThemeColor(
+      { light: borderLightColor, dark: borderDarkColor },
+      "text"
+    );
     return (
       <TextInput
         ref={ref}
@@ -71,6 +89,7 @@ export const ThemedTextInput = forwardRef<TextInput, ThemedTextInputProps>(
           type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
           type === "subtitle" ? styles.subtitle : undefined,
           type === "link" ? styles.link : undefined,
+          { borderWidth, borderColor },
           style,
         ]}
         {...rest}

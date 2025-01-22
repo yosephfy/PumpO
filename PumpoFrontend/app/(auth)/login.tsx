@@ -2,13 +2,22 @@ import { useAuth } from "@/context/AuthContext";
 import { LoginService } from "@/Services/authServices";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { generateLikesData } from "@/Services/RANDOMLIKESDATA";
 import { generateRandomChatData } from "@/Services/RANDOMMESSAGEDATA";
 import { generateRandomPostsAndInteractions } from "@/Services/RANDOMPOSTSDATA";
 import { generateRandomExercises } from "@/Services/RANDOMEXERCISEDATA";
 import { generateRandomWorkoutPlans } from "@/Services/RANDOMWORKOUTDATA";
 import { addCommentsToAllPosts } from "@/Services/RANDOMCOMMENTDATA";
+import { ThemedText, ThemedTextInput } from "@/components/ThemedText";
 
 const Login: React.FC = () => {
   const { signIn } = useAuth();
@@ -19,7 +28,7 @@ const Login: React.FC = () => {
     LoginService({ email, password })
       .then((res) => {
         signIn(res?.user);
-        Alert.alert("Login Successful", `Welcome back, ${res?.user.username}`);
+        //Alert.alert("Login Successful", `Welcome back, ${res?.user.username}`);
       })
       .catch((err) => {
         Alert.alert(
@@ -33,7 +42,7 @@ const Login: React.FC = () => {
     LoginService({ email: "test3@g.com", password: "12345" })
       .then((res) => {
         signIn(res?.user);
-        Alert.alert("Login Successful", `Welcome back, ${res?.user.username}`);
+        //Alert.alert("Login Successful", `Welcome back, ${res?.user.username}`);
         router.replace("/(app)");
       })
       .catch((err) => {
@@ -46,54 +55,35 @@ const Login: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TextInput
+      <ThemedText style={styles.title}>Login</ThemedText>
+      <ThemedTextInput
         style={styles.input}
+        borderWidth={1.5}
+        borderDarkColor="#333"
+        borderLightColor="#666"
         placeholder="Email"
         value={email}
         onChangeText={(text) => setEmail(text)}
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
+      <ThemedTextInput
         style={styles.input}
+        borderWidth={1.5}
+        borderDarkColor="#333"
+        borderLightColor="#666"
         placeholder="Password"
         value={password}
         onChangeText={(text) => setPassword(text)}
         secureTextEntry
       />
-      <Button title="Login" onPress={handleLogin} />
+      <View style={styles.buttonContainers}>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <ThemedText style={styles.buttonText}>Login</ThemedText>
+        </TouchableOpacity>
+      </View>
+
       <Button title="ADMIN" onPress={handleAdminLogin} />
-      <Button title="generate likes" onPress={() => generateLikesData(10000)} />
-      <Button
-        title="generate posts"
-        onPress={() =>
-          generateRandomPostsAndInteractions({
-            numberOfPosts: 500,
-            maxPhotos: 3,
-            maxVideos: 2,
-            maxTexts: 2,
-            maxComments: 50,
-            maxSubComments: 20,
-          })
-        }
-      />
-      <Button
-        title="generate messages"
-        onPress={() => generateRandomChatData(100, 50)}
-      />
-      <Button
-        title="generate Exercises"
-        onPress={() => generateRandomExercises(50)}
-      />
-      <Button
-        title="generate Workouts"
-        onPress={() => generateRandomWorkoutPlans(50, 7)}
-      />
-      <Button
-        title="generate comments"
-        onPress={() => addCommentsToAllPosts()}
-      />
     </View>
   );
 };
@@ -111,12 +101,23 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
     padding: 8,
     marginBottom: 16,
     borderRadius: 4,
   },
+  buttonContainers: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    width: 150,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 7,
+    backgroundColor: "#007bff",
+  },
+  buttonText: { color: "#eee", fontSize: 18 },
 });
 
 export default Login;

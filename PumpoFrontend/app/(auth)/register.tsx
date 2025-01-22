@@ -1,7 +1,16 @@
+import { ThemedText, ThemedTextInput } from "@/components/ThemedText";
 import { RegisterService } from "@/Services/authServices";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -25,30 +34,43 @@ const Register: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
-      <TextInput
+      <ThemedText style={styles.title}>Register</ThemedText>
+      <ThemedTextInput
         style={styles.input}
+        borderWidth={1.5}
+        borderDarkColor="#333"
+        borderLightColor="#666"
         placeholder="Username"
         value={username}
         onChangeText={(text) => setUsername(text)}
         autoCapitalize="none"
       />
-      <TextInput
+      <ThemedTextInput
         style={styles.input}
+        borderWidth={1.5}
+        borderDarkColor="#333"
+        borderLightColor="#666"
         placeholder="Email"
         value={email}
         onChangeText={(text) => setEmail(text)}
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
+      <ThemedTextInput
         style={styles.input}
+        borderWidth={1.5}
+        borderDarkColor="#333"
+        borderLightColor="#666"
         placeholder="Password"
         value={password}
         onChangeText={(text) => setPassword(text)}
         secureTextEntry
       />
-      <Button title="Register" onPress={handleRegister} />
+      <View style={styles.buttonContainers}>
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <ThemedText style={styles.buttonText}>Register</ThemedText>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -72,6 +94,19 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 4,
   },
+  buttonContainers: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    width: 150,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 7,
+    backgroundColor: "#007bff",
+  },
+  buttonText: { color: "#eee", fontSize: 18 },
 });
 
 export default Register;
