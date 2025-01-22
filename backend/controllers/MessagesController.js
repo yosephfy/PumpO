@@ -1,78 +1,78 @@
 import { db } from "../connect.js";
 
 // --------------------- CHATS ---------------------
-
 export const createChat = (req, res) => {
-  const { chat_type, participant_ids = [] } = req.body;
+  const { participant_ids = [] } = req.body;
+  const chat_type = participant_ids.length == 2 ? "one-to-one" : "group";
+  // Step 1: Check if a one-on-one chat with the same participants already exists
+  if (participant_ids.length == 2) {
+    const checkChatQuery = `
+      SELECT c.chat_id
+      FROM Chats c
+      JOIN ChatParticipants cp1 ON c.chat_id = cp1.chat_id
+      JOIN ChatParticipants cp2 ON c.chat_id = cp2.chat_id
+      WHERE c.chat_type = ?
+        AND cp1.user_id = ?
+        AND cp2.user_id = ?
+    `;
 
-  // Step 1: Check if a chat with the same participants and roles already exists
-  const checkChatQuery = `
-    SELECT c.chat_id
-    FROM Chats c
-    JOIN ChatParticipants cp ON c.chat_id = cp.chat_id
-    WHERE c.chat_type = ?
-    GROUP BY c.chat_id
-    HAVING COUNT(
-      CASE 
-        WHEN cp.user_id IN (?) AND cp.role IN (?) THEN 1
-        ELSE NULL
-      END
-    ) = ?
-  `;
+    db.query(
+      checkChatQuery,
+      ["one-to-one", participant_ids[0], participant_ids[1]],
+      (checkErr, existingChats) => {
+        if (checkErr) return res.status(500).json(checkErr);
 
-  const roles = participant_ids.map((_, index) =>
-    chat_type === "group" ? (index === 0 ? "admin" : "member") : "none"
-  );
+        // If a chat already exists, return the chat_id
+        if (existingChats.length > 0) {
+          return res.status(200).json({
+            chat_id: existingChats[0].chat_id,
+            message: "Chat already exists.",
+          });
+        }
 
-  const participantCount = participant_ids.length;
-
-  db.query(
-    checkChatQuery,
-    [chat_type, participant_ids, roles, participantCount],
-    (checkErr, existingChats) => {
-      if (checkErr) return res.status(500).json(checkErr);
-      // If a chat already exists, return the chat_id
-      if (existingChats.length > 0) {
-        return res.status(200).json({
-          chat_id: existingChats[0].chat_id,
-          message: "Chat already exists.",
-        });
+        // If no chat exists, proceed to create a new chat
+        createNewChat();
       }
+    );
+  } else {
+    // For group chats, directly proceed to create a new chat
+    createNewChat();
+  }
 
-      // Step 2: Create a new chat if no existing chat is found
-      const createChatQuery = `
-        INSERT INTO Chats (chat_type)
-        VALUES (?)
+  function createNewChat() {
+    // Step 2: Create a new chat
+    const createChatQuery = `
+      INSERT INTO Chats (chat_type)
+      VALUES (?)
+    `;
+
+    db.query(createChatQuery, [chat_type], (err, chatResult) => {
+      if (err) return res.status(500).json(err);
+
+      const chatId = chatResult.insertId;
+
+      // Step 3: Add participants to the new chat
+      const participantsQuery = `
+        INSERT INTO ChatParticipants (chat_id, user_id, role)
+        VALUES ?
       `;
 
-      db.query(createChatQuery, [chat_type], (err, chatResult) => {
-        if (err) return res.status(500).json(err);
+      const values = participant_ids.map((user_id, index) => [
+        chatId,
+        user_id,
+        chat_type === "group" ? (index === 0 ? "admin" : "member") : "none",
+      ]);
 
-        const chatId = chatResult.insertId;
+      db.query(participantsQuery, [values], (participantErr) => {
+        if (participantErr) return res.status(500).json(participantErr);
 
-        // Step 3: Add participants to the new chat
-        const participantsQuery = `
-          INSERT INTO ChatParticipants (chat_id, user_id, role)
-          VALUES ?
-        `;
-
-        const values = participant_ids.map((user_id, index) => [
-          chatId,
-          user_id,
-          chat_type === "group" ? (index === 0 ? "admin" : "member") : "none",
-        ]);
-
-        db.query(participantsQuery, [values], (participantErr) => {
-          if (participantErr) return res.status(500).json(participantErr);
-
-          return res.status(201).json({
-            chat_id: chatId,
-            message: "Chat created successfully.",
-          });
+        return res.status(201).json({
+          chat_id: chatId,
+          message: "Chat created successfully.",
         });
       });
-    }
-  );
+    });
+  }
 };
 
 // Get all chats for a user

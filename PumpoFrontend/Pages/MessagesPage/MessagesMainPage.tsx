@@ -54,7 +54,7 @@ const MessagesMainPage = ({
                   }
                 : {
                     chat_name: other_users[0].username,
-                    profile_picture: other_users[0].profile_picture,
+                    profile_picture: other_users.map((x) => x.profile_picture),
                   };
 
             return {
@@ -79,10 +79,10 @@ const MessagesMainPage = ({
     fetchMessages();
   }, [userId, param]);
 
-  const handleClickMessage = (obj: any) => {
+  const handleClickMessage = (obj: DT_ChatItem) => {
     router.push({
       pathname: "/(messages)/message",
-      params: obj,
+      params: obj as any,
     });
   };
 
@@ -106,7 +106,7 @@ const MessagesMainPage = ({
           {item.chat_type === "group" && Array.isArray(item.profile_picture) ? (
             <GroupProfilePicture imageUrl={item.profile_picture} size={50} />
           ) : (
-            <ProfilePicture imageUrl={item.profile_picture} size={50} />
+            <ProfilePicture imageUrl={item.profile_picture[0]} size={50} />
           )}
         </View>
         <View style={styles.messageContent}>

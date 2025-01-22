@@ -188,7 +188,7 @@ const ConversationPage = ({
         >
           {item.content}
         </ThemedText>
-        <ThemedText lightColor="#999" darkColor="#bbb" style={styles.timestamp}>
+        <ThemedText lightColor="#eee" darkColor="#bbb" style={styles.timestamp}>
           {item.created_at}
         </ThemedText>
         {item.sender === "other_user" && chat_type === "group" && (

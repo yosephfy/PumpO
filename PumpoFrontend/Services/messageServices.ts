@@ -8,10 +8,7 @@ import {
 // --------------------- CHATS ---------------------
 
 // Create a new chat
-export const CreateChat = async (chatData: {
-  chat_type: string;
-  participant_ids: string[];
-}) => {
+export const CreateChat = async (chatData: { participant_ids: string[] }) => {
   try {
     const response = await postRequest("/messages/chats", chatData);
     const { chat_id } = response;

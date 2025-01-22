@@ -103,7 +103,7 @@ type DT_Feed = {
 type DT_ChatItem = {
   id: string;
   chat_name: string;
-  profile_picture: string | string[];
+  profile_picture: string[];
   latest_message: string;
   timestamp: string;
   is_read: boolean;

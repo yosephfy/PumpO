@@ -41,6 +41,9 @@ const MessageInput: React.FC<MessageInputProps> = ({
       <ThemedTextInput
         ref={inputRef}
         style={styles.input}
+        borderWidth={1}
+        borderDarkColor="#444"
+        borderLightColor="#ddd"
         placeholder="Type a message..."
         placeholderTextColor="#888"
         value={value}
@@ -67,8 +70,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 40,
-    borderWidth: 1,
-    borderColor: "#ddd",
+
     borderRadius: 20,
     paddingHorizontal: 15,
     fontSize: 14,

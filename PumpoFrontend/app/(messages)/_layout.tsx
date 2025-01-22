@@ -46,10 +46,7 @@ const MessagesLayout: React.FC = () => {
               </TouchableOpacity>
             ),
             headerLeft: () => (
-              <TouchableOpacity
-                style={{}}
-                onPress={() => router.replace("/(app)")}
-              >
+              <TouchableOpacity style={{}} onPress={() => router.dismiss()}>
                 <Ionicons
                   name="chevron-back-outline"
                   size={30}
@@ -88,7 +85,7 @@ const MessagesLayout: React.FC = () => {
                   <TouchableOpacity
                     style={{}}
                     onPress={() => {
-                      router.dismissTo("/(messages)");
+                      router.dismiss();
                     }}
                   >
                     <Ionicons

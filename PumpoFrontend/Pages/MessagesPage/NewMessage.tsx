@@ -24,6 +24,7 @@ import {
 import { timeAgo } from "@/utility/utilities";
 import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import { useAuth } from "@/context/AuthContext";
 
 const NewMessage = ({ userId }: { userId: string }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -86,54 +87,7 @@ const NewMessage = ({ userId }: { userId: string }) => {
   };
 
   const handleStartChat = async () => {
-    if (selectedIds.length === 0) {
-      console.error("No participants selected");
-      return;
-    }
-
-    try {
-      const chatType = selectedIds.length > 1 ? "group" : "one-to-one";
-
-      const chat_id = await CreateChat({
-        chat_type: chatType,
-        participant_ids: [userId, ...selectedIds],
-      });
-
-      const chat = await GetChatDetails(chat_id);
-
-      const enrichedMessages = async () => {
-        const chatParticipants = await GetChatParticipants(chat.chat_id);
-        const otherUsers = getOtherParticipantId(chatParticipants);
-
-        const userProfile =
-          chat.chat_type === "group"
-            ? {
-                chat_name: otherUsers.map((x) => x.username).toString(),
-                profile_picture: otherUsers.map((x) => x.profile_picture),
-              }
-            : {
-                chat_name: otherUsers[0].username,
-                profile_picture: otherUsers[0].profile_picture,
-              };
-
-        return {
-          id: chat.chat_id,
-          ...userProfile,
-          latest_message: chat.last_message || "No messages yet",
-          timestamp: timeAgo(chat.updated_at).short,
-          is_read: chat.is_read || false,
-          chat_type: chat.chat_type,
-        };
-      };
-
-      const chatObj: DT_ChatItem | any = await enrichedMessages();
-      router.replace({
-        pathname: "/(messages)/message",
-        params: chatObj,
-      });
-    } catch (error) {
-      console.error("Error starting chat:", error);
-    }
+    openMessage({ participants: selectedIds, userId });
   };
 
   const renderContactItem = (item: any) => (
@@ -198,6 +152,58 @@ const NewMessage = ({ userId }: { userId: string }) => {
       </ThemedView>
     </KeyboardAvoidingView>
   );
+};
+export const openMessage = async ({
+  userId,
+  participants,
+}: {
+  participants: string[];
+  userId: string;
+}) => {
+  const getOtherParticipantId = (participants: any[], userId: string) => {
+    return participants.filter((x) => x.user_id !== userId);
+  };
+  console.log("yurr");
+  try {
+    const chat_id = await CreateChat({
+      participant_ids: [userId, ...participants],
+    });
+
+    const chat = await GetChatDetails(chat_id);
+
+    const enrichedMessages = async () => {
+      const chatParticipants = await GetChatParticipants(chat.chat_id);
+      const otherUsers = getOtherParticipantId(chatParticipants, userId);
+
+      const userProfile =
+        chat.chat_type === "group"
+          ? {
+              chat_name: otherUsers.map((x) => x.username).toString(),
+              profile_picture: otherUsers.map((x) => x.profile_picture),
+            }
+          : {
+              chat_name: otherUsers[0].username,
+              profile_picture: otherUsers.map((x) => x.profile_picture),
+            };
+
+      return {
+        id: chat.chat_id,
+        ...userProfile,
+        latest_message: chat.last_message || "No messages yet",
+        timestamp: timeAgo(chat.updated_at).short,
+        is_read: chat.is_read || false,
+        chat_type: chat.chat_type,
+      };
+    };
+
+    const chatObj: DT_ChatItem | any = await enrichedMessages();
+    router.push({
+      pathname: "/(messages)/message",
+      params: chatObj,
+    });
+  } catch (error) {
+    console.error("Error starting chat:", error);
+  }
 };
 
 const styles = StyleSheet.create({

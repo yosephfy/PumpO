@@ -17,6 +17,7 @@ import {
 } from "@/components/ThemedView";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "@/components/ThemedText";
+import { openMessage } from "../MessagesPage/NewMessage";
 
 type ProfileInteractionProps = {
   other_user: boolean;
@@ -47,33 +48,11 @@ const ProfileInteraction: React.FC<ProfileInteractionProps> = ({
   };
 
   const handleMessage = async () => {
-    if (currentUser) {
-      try {
-        const chat_id = await CreateChat({
-          chat_type: "one-to-one",
-          participant_ids: [currentUser.user_id, data.user_profile.user_id],
-        });
-
-        const chat = await GetChatDetails(chat_id);
-        const chatObj: DT_ChatItem | any = {
-          id: chat.chat_id,
-          chat_name: data.user_profile.username,
-          profile_picture: data.user_profile.profile_picture,
-          latest_message: chat.last_message || "No messages yet",
-          timestamp: timeAgo(chat.updated_at).short,
-          is_read: chat.is_read || false,
-          chat_type: chat.chat_type,
-        };
-
-        router.replace({
-          pathname: "/(messages)/message",
-          params: chatObj,
-        });
-      } catch (error) {
-        console.error("Error starting chat:", error);
-        Alert.alert("Error", "Unable to start a chat.");
-      }
-    }
+    if (currentUser)
+      await openMessage({
+        participants: [data.user_profile.user_id],
+        userId: currentUser.user_id,
+      });
   };
 
   const handleWorkoutTimeline = () => {
