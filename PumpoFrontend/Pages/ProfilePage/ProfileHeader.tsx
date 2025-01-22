@@ -17,7 +17,10 @@ const ProfileHeader = ({
     <ThemedView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.profilePicture}>
-          <ProfilePicture imageUrl={user_profile.profile_picture} size={80} />
+          <ProfilePicture
+            imageUrl={user_profile.profile_picture || ""}
+            size={80}
+          />
         </View>
         <View style={styles.profileDetails}>
           <ThemedText style={styles.username}>

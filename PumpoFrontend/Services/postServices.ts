@@ -6,15 +6,16 @@ import {
 } from "@/utility/axios";
 
 // ------------------ POST SERVICES ------------------
-
 // Create a new post
 export const CreatePost = async (postData: {
   user_id: string;
-  post_type: string;
-  media_url?: string;
-  tagged_users?: any[];
-  tagged_exercises?: any[];
+  content: {
+    photos?: { order: number; media_url: string }[];
+    videos?: { order: number; media_url: string; is_pulse?: boolean }[];
+    texts?: { order: number; content: string }[];
+  };
   description?: string;
+  tagged_users?: string[];
 }) => {
   try {
     const response = await postRequest("/posts", postData);
@@ -37,7 +38,23 @@ export const GetPostById = async (postId: string) => {
 };
 
 // Update a post
-export const UpdatePost = async (postId: string, updatedData: object) => {
+export const UpdatePost = async (
+  postId: string,
+  updatedData: {
+    content: {
+      photos?: { order: number; id?: string; media_url: string }[];
+      videos?: {
+        order: number;
+        id?: string;
+        media_url: string;
+        is_pulse?: boolean;
+      }[];
+      texts?: { order: number; id?: string; content: string }[];
+    };
+    description?: string;
+    tagged_users?: string[];
+  }
+) => {
   try {
     const response = await putRequest(`/posts/${postId}`, updatedData);
     return response;
@@ -47,21 +64,10 @@ export const UpdatePost = async (postId: string, updatedData: object) => {
   }
 };
 
-// Delete a post
-export const DeletePost = async (postId: string) => {
-  try {
-    const response = await deleteRequest(`/posts/${postId}`);
-    return response;
-  } catch (error: any) {
-    console.error("Error deleting post:", error.response || error);
-    throw new Error(error.response?.data?.message || "Failed to delete post");
-  }
-};
-
 // Lazy load posts
 export const LazyLoadPosts = async (params: {
-  postType?: string;
   userId?: string;
+  tagged_users?: string;
   page: number;
   limit: number;
 }) => {
@@ -201,6 +207,23 @@ export const GetTopTaggedUsers = async () => {
     console.error("Error fetching top tagged users:", error.response || error);
     throw new Error(
       error.response?.data?.message || "Failed to fetch top tagged users"
+    );
+  }
+};
+
+// Get pulse feed
+export const GetPulseFeed = async (params: {
+  page: number;
+  limit: number;
+  userId?: string;
+}) => {
+  try {
+    const response = await getRequest("/posts/pulse/feed", params);
+    return response;
+  } catch (error: any) {
+    console.error("Error fetching pulse feed:", error.response || error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch pulse feed"
     );
   }
 };

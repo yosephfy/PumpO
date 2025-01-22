@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleProp,
@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 type ProfilePictureProps = {
-  imageUrl: string | any;
+  imageUrl: string;
   size?: number;
   borderWidth?: number;
   borderColor?: string;
@@ -28,7 +28,14 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
   disabled = false,
   ...rest
 }) => {
-  const url = imageUrl ? imageUrl : "";
+  const [url, setUrl] = useState("https://via.placeholder.com/50?text=User");
+
+  useEffect(() => {
+    try {
+      new URL(imageUrl);
+      if (imageUrl.trim() != "") setUrl(imageUrl);
+    } catch (error: any) {}
+  }, [imageUrl]);
   return (
     <TouchableOpacity
       disabled={disabled}

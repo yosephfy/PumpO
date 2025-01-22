@@ -1,3 +1,4 @@
+import { LazyLoadPosts } from "./postServices";
 import {
   getRequest,
   postRequest,
@@ -70,15 +71,15 @@ const addCommentsToPost = async (postId: any) => {
 };
 
 // Main function to add comments to all posts
-const addCommentsToAllPosts = async () => {
+export const addCommentsToAllPosts = async () => {
   try {
     // Fetch all posts
-    //const posts = await getRequest(`${API_BASE_URL}/posts`);
+    const posts: DT_Post[] = await LazyLoadPosts({ limit: 10000, page: 1 });
 
     // Iterate over each post and add comments
-    for (const post of Array.from({ length: 1000 }, (_, i) => i + 1)) {
-      console.log(`Adding comments to post ID: ${post + 6000}`);
-      await addCommentsToPost(post + 6000);
+    for (const post of posts) {
+      console.log(`Adding comments to post ID: ${post.post_id}`);
+      await addCommentsToPost(post.post_id);
     }
 
     console.log("Finished adding comments to all posts.");
@@ -86,6 +87,3 @@ const addCommentsToAllPosts = async () => {
     console.error("Error fetching posts:", error.message);
   }
 };
-
-// Run the script
-addCommentsToAllPosts();

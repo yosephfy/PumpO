@@ -11,7 +11,7 @@ import {
   Text,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
-import { FilterPostsByType } from "@/Services/postServices";
+import { FilterPostsByType, GetPulseFeed } from "@/Services/postServices";
 import {
   CheckUserFollow,
   FollowUser,
@@ -52,33 +52,32 @@ const Pulse: React.FC = () => {
     setLoading(true);
     if (currentUser)
       try {
-        const response: DT_Post[] = await FilterPostsByType({
-          post_type: "Video",
+        const response: DT_Pulse[] = await GetPulseFeed({
           limit: 10,
           page: pageToFetch,
         });
 
-        const fetchSinglePulse = async (post: DT_Post) => {
-          const user: DT_UserProfile = await GetUserProfile(post.user_id);
+        const fetchSinglePulse = async (pulse: DT_Pulse) => {
+          const user: DT_UserProfile = await GetUserProfile(pulse.user_id);
           const interaction: DT_PostInteraction =
             await GetInteractionSummaryByPost(
-              post.post_id,
+              pulse.post_id,
               currentUser?.user_id
             );
           const checkUserFollow: boolean = await CheckUserFollow({
             follower_id: currentUser.user_id,
-            followee_id: post.user_id,
+            followee_id: pulse.user_id,
           });
           let relationship: DT_relationship = { followed: checkUserFollow };
           return {
-            ...post,
+            ...pulse,
             user_profile: user,
             interactions: interaction,
             relationship: relationship,
           };
         };
         const pulseData: DT_Pulse[] = await Promise.all(
-          response.map(async (post: DT_Post) => fetchSinglePulse(post))
+          response.map(async (post: DT_Pulse) => fetchSinglePulse(post))
         );
 
         if (isUpdating) {
@@ -181,7 +180,7 @@ const Pulse: React.FC = () => {
             handleClickFollow={handleClickFollow}
           />
         )}
-        keyExtractor={(item) => item.post_id}
+        keyExtractor={(item) => item.video_id}
         pagingEnabled
         snapToStart
         decelerationRate="fast"

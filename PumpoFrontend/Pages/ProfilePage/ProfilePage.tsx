@@ -1,41 +1,37 @@
-import React, { useEffect, useState } from "react";
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  ActivityIndicator,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-  RefreshControl,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import ProfileExtraInfo from "./ProfileExtraInfo";
-import ProfileHeader from "./ProfileHeader";
-import ProfileInteraction from "./ProfileInteraction";
-import {
-  GetUserProfile,
-  GetUserFitnessProfile,
-  GetFollowCounts,
-} from "@/Services/userServices";
-import { GetUserAchievements } from "@/Services/achievementServices";
-import {
-  CountPostsByUser,
-  LazyLoadPosts,
-  GetPostsWithTaggedUsers,
-} from "@/Services/postServices";
-import { LikedTab, PostsTab, TaggedTab, WorkoutsTab } from "./ProfileTabViews";
-import { GetLikedPostsByUser } from "@/Services/postInteractionServices";
+import { ThemedText } from "@/components/ThemedText";
 import {
   ThemedFadedView,
   ThemedIcon,
   ThemedView,
 } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
+import { GetUserAchievements } from "@/Services/achievementServices";
+import { GetLikedPostsByUser } from "@/Services/postInteractionServices";
+import {
+  CountPostsByUser,
+  GetPostsWithTaggedUsers,
+  LazyLoadPosts,
+} from "@/Services/postServices";
+import {
+  GetFollowCounts,
+  GetUserFitnessProfile,
+  GetUserProfile,
+} from "@/Services/userServices";
 import { GetWorkoutPlansByUser } from "@/Services/workoutServices";
 import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import ProfileExtraInfo from "./ProfileExtraInfo";
+import ProfileHeader from "./ProfileHeader";
+import ProfileInteraction from "./ProfileInteraction";
+import { PostsTab, WorkoutsTab } from "./ProfileTabViews";
 
 const ProfilePage = ({
   user_id,
@@ -79,14 +75,13 @@ const ProfilePage = ({
   const [wokroutPage, setWorkoutPage] = useState(1);
 
   useEffect(() => {
-    if (user_id) {
-      fetchUserData();
-      fetchPosts(1, true);
-      fetchTaggedPosts(1, true);
-      fetchLikedPosts(1, true);
-      fetchWorkouts(1, true);
-    }
-  }, [user_id]);
+    fetchUserData();
+    fetchPosts(1, true);
+    fetchTaggedPosts(1, true);
+    fetchLikedPosts(1, true);
+    fetchWorkouts(1, true);
+  }, [user_id, other_user]);
+
   const fetchUserData = async () => {
     try {
       if (user_id) {
@@ -162,8 +157,8 @@ const ProfilePage = ({
     setLoadingTagged(true);
 
     try {
-      const fetchedTaggedPosts = await GetPostsWithTaggedUsers({
-        user_id,
+      const fetchedTaggedPosts = await LazyLoadPosts({
+        tagged_users: user_id,
         limit: 10,
         page: pageToFetch,
       });
@@ -286,33 +281,37 @@ const ProfilePage = ({
       liked: activeTab === "Liked" ? 1 : 0,
       workout: activeTab === "Workouts" ? 1 : 0,
     };
-    router.push({
-      pathname: "/(feed)",
-      params: { user_id: user_id, post_id: post.post_id, ...tabs },
-    });
+    if (activeTab === "Workouts")
+      router.push({
+        pathname: "/(app)/(workout)/workout",
+        params: { workoutId: post.workout_id },
+      });
+    else
+      router.push({
+        pathname: "/(feed)",
+        params: { user_id: user_id, post_id: post.post_id, ...tabs },
+      });
   };
 
-  const renderTabContent = () => {
+  const RenderTabContent = ({
+    postsData,
+    workoutsData,
+    taggedData,
+    likedData,
+  }: any) => {
     switch (activeTab) {
       case "Posts":
-        return (
-          <PostsTab posts={postsContent} handlePostClick={handlePostClick} />
-        );
+        return <PostsTab posts={postsData} handlePostClick={handlePostClick} />;
       case "Workouts":
         return (
-          <WorkoutsTab
-            posts={wokroutsContent}
-            handlePostClick={handlePostClick}
-          />
+          <WorkoutsTab posts={workoutsData} handlePostClick={handlePostClick} />
         );
       case "Tagged":
         return (
-          <PostsTab posts={taggedPosts} handlePostClick={handlePostClick} />
+          <PostsTab posts={taggedData} handlePostClick={handlePostClick} />
         );
       case "Liked":
-        return (
-          <PostsTab posts={likedPosts} handlePostClick={handlePostClick} />
-        );
+        return <PostsTab posts={likedData} handlePostClick={handlePostClick} />;
       default:
         return null;
     }
@@ -392,7 +391,12 @@ const ProfilePage = ({
         </>
 
         <ThemedView style={styles.tabsContainer}>
-          {renderTabContent()}
+          <RenderTabContent
+            postsData={postsContent}
+            workoutsData={wokroutsContent}
+            taggedData={taggedPosts}
+            likedData={likedPosts}
+          />
         </ThemedView>
         {(loadingPosts || loadingLiked || loadingTagged) && (
           <ActivityIndicator

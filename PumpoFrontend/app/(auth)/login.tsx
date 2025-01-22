@@ -5,9 +5,10 @@ import React, { useState } from "react";
 import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { generateLikesData } from "@/Services/RANDOMLIKESDATA";
 import { generateRandomChatData } from "@/Services/RANDOMMESSAGEDATA";
-import { generateRandomPosts } from "@/Services/RANDOMPOSTSDATA";
+import { generateRandomPostsAndInteractions } from "@/Services/RANDOMPOSTSDATA";
 import { generateRandomExercises } from "@/Services/RANDOMEXERCISEDATA";
 import { generateRandomWorkoutPlans } from "@/Services/RANDOMWORKOUTDATA";
+import { addCommentsToAllPosts } from "@/Services/RANDOMCOMMENTDATA";
 
 const Login: React.FC = () => {
   const { signIn } = useAuth();
@@ -66,7 +67,16 @@ const Login: React.FC = () => {
       <Button title="generate likes" onPress={() => generateLikesData(10000)} />
       <Button
         title="generate posts"
-        onPress={() => generateRandomPosts(1000)}
+        onPress={() =>
+          generateRandomPostsAndInteractions({
+            numberOfPosts: 500,
+            maxPhotos: 3,
+            maxVideos: 2,
+            maxTexts: 2,
+            maxComments: 50,
+            maxSubComments: 20,
+          })
+        }
       />
       <Button
         title="generate messages"
@@ -79,6 +89,10 @@ const Login: React.FC = () => {
       <Button
         title="generate Workouts"
         onPress={() => generateRandomWorkoutPlans(50, 7)}
+      />
+      <Button
+        title="generate comments"
+        onPress={() => addCommentsToAllPosts()}
       />
     </View>
   );

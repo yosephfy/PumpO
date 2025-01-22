@@ -48,7 +48,10 @@ export const CommentInputArea = ({
           </ThemedView>
         )}
         <View style={styles.commentInputWrapper}>
-          <ProfilePicture imageUrl={currentUser?.profile_picture} size={40} />
+          <ProfilePicture
+            imageUrl={currentUser?.profile_picture || ""}
+            size={40}
+          />
           <MessageInput
             value={newComment}
             onChangeText={setNewComment}

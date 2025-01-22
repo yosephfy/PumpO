@@ -1,36 +1,29 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
-import { useRoute } from "@react-navigation/native";
-import {
-  GetWorkoutPlanById,
-  GetAllExercisesInWorkoutPlan,
-  AddExerciseToWorkoutPlan,
-  RemoveExerciseFromWorkoutPlan,
-} from "@/Services/workoutServices";
-import { Ionicons } from "@expo/vector-icons";
+import PopupCard from "@/components/PopupCard";
+import { ThemedText } from "@/components/ThemedText";
 import {
   ThemedFadedView,
   ThemedIcon,
   ThemedView,
 } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
-import PopupCard from "@/components/PopupCard";
+import {
+  GetAllExercisesInWorkoutPlan,
+  GetWorkoutPlanById,
+  RemoveExerciseFromWorkoutPlan,
+} from "@/Services/workoutServices";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import ExerciseDetailPage from "./ExercisePage";
-import SlidingModal from "@/components/SlidingModal";
 
-const SingleWorkoutPage: React.FC = () => {
-  const route = useRoute();
-  const { workoutId } = route.params as { workoutId: string };
-
+const SingleWorkoutPage = ({ workoutId }: { workoutId: string }) => {
   const [workout, setWorkout] = useState<any>(null);
   const [exercises, setExercises] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

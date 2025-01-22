@@ -179,9 +179,10 @@ export const removeLike = (req, res) => {
 export const getLikedPostsByUser = (req, res) => {
   const { user_id, limit = 10, page = 1 } = req.query;
   const offset = (page - 1) * limit;
+
   const query = `
     WITH RankedPosts AS (
-      SELECT p.*, ROW_NUMBER() OVER (PARTITION BY p.post_id ORDER BY created_at DESC) AS row_num
+      SELECT p.*, ROW_NUMBER() OVER (PARTITION BY p.post_id ORDER BY p.created_at DESC) AS row_num
       FROM Likes l
       INNER JOIN Posts p ON l.post_id = p.post_id
       WHERE l.user_id = ?
@@ -193,10 +194,61 @@ export const getLikedPostsByUser = (req, res) => {
     LIMIT ? OFFSET ?
   `;
 
-  db.query(query, [user_id, parseInt(limit), parseInt(offset)], (err, data) => {
-    if (err) return res.status(500).json(err);
-    return res.status(200).json(data);
-  });
+  db.query(
+    query,
+    [user_id, parseInt(limit), parseInt(offset)],
+    (err, posts) => {
+      if (err) return res.status(500).json(err);
+
+      const fetchContentPromises = posts.map((post) => {
+        return new Promise((resolve, reject) => {
+          const contentPromises = [
+            new Promise((resolve, reject) => {
+              db.query(
+                `SELECT * FROM Photos WHERE post_id = ?`,
+                [post.post_id],
+                (err, photos) => {
+                  if (err) reject(err);
+                  else resolve(photos);
+                }
+              );
+            }),
+            new Promise((resolve, reject) => {
+              db.query(
+                `SELECT * FROM Videos WHERE post_id = ?`,
+                [post.post_id],
+                (err, videos) => {
+                  if (err) reject(err);
+                  else resolve(videos);
+                }
+              );
+            }),
+            new Promise((resolve, reject) => {
+              db.query(
+                `SELECT * FROM Texts WHERE post_id = ?`,
+                [post.post_id],
+                (err, texts) => {
+                  if (err) reject(err);
+                  else resolve(texts);
+                }
+              );
+            }),
+          ];
+
+          Promise.all(contentPromises)
+            .then(([photos, videos, texts]) => {
+              post.content = { photos, videos, texts };
+              resolve(post);
+            })
+            .catch((err) => reject(err));
+        });
+      });
+
+      Promise.all(fetchContentPromises)
+        .then((postsWithContent) => res.status(200).json(postsWithContent))
+        .catch((err) => res.status(500).json(err));
+    }
+  );
 };
 
 // Get all comments liked by a user
@@ -295,15 +347,62 @@ export const getSharesByUser = (req, res) => {
   const { userId } = req.params;
 
   const query = `
-    SELECT s.*, p.description AS post_description
+    SELECT s.*, p.*
     FROM Shares s
     JOIN Posts p ON s.post_id = p.post_id
     WHERE s.user_id = ?
   `;
 
-  db.query(query, [userId], (err, data) => {
+  db.query(query, [userId], (err, shares) => {
     if (err) return res.status(500).json(err);
-    return res.status(200).json(data);
+
+    const fetchContentPromises = shares.map((post) => {
+      return new Promise((resolve, reject) => {
+        const contentPromises = [
+          new Promise((resolve, reject) => {
+            db.query(
+              `SELECT * FROM Photos WHERE post_id = ?`,
+              [post.post_id],
+              (err, photos) => {
+                if (err) reject(err);
+                else resolve(photos);
+              }
+            );
+          }),
+          new Promise((resolve, reject) => {
+            db.query(
+              `SELECT * FROM Videos WHERE post_id = ?`,
+              [post.post_id],
+              (err, videos) => {
+                if (err) reject(err);
+                else resolve(videos);
+              }
+            );
+          }),
+          new Promise((resolve, reject) => {
+            db.query(
+              `SELECT * FROM Texts WHERE post_id = ?`,
+              [post.post_id],
+              (err, texts) => {
+                if (err) reject(err);
+                else resolve(texts);
+              }
+            );
+          }),
+        ];
+
+        Promise.all(contentPromises)
+          .then(([photos, videos, texts]) => {
+            post.content = { photos, videos, texts };
+            resolve(post);
+          })
+          .catch((err) => reject(err));
+      });
+    });
+
+    Promise.all(fetchContentPromises)
+      .then((sharesWithContent) => res.status(200).json(sharesWithContent))
+      .catch((err) => res.status(500).json(err));
   });
 };
 
@@ -349,15 +448,64 @@ export const getBookmarksByUser = (req, res) => {
   const { userId } = req.params;
 
   const query = `
-    SELECT b.*, p.description AS post_description
+    SELECT b.*, p.*
     FROM Bookmarks b
     JOIN Posts p ON b.post_id = p.post_id
     WHERE b.user_id = ?
   `;
 
-  db.query(query, [userId], (err, data) => {
+  db.query(query, [userId], (err, bookmarks) => {
     if (err) return res.status(500).json(err);
-    return res.status(200).json(data);
+
+    const fetchContentPromises = bookmarks.map((post) => {
+      return new Promise((resolve, reject) => {
+        const contentPromises = [
+          new Promise((resolve, reject) => {
+            db.query(
+              `SELECT * FROM Photos WHERE post_id = ?`,
+              [post.post_id],
+              (err, photos) => {
+                if (err) reject(err);
+                else resolve(photos);
+              }
+            );
+          }),
+          new Promise((resolve, reject) => {
+            db.query(
+              `SELECT * FROM Videos WHERE post_id = ?`,
+              [post.post_id],
+              (err, videos) => {
+                if (err) reject(err);
+                else resolve(videos);
+              }
+            );
+          }),
+          new Promise((resolve, reject) => {
+            db.query(
+              `SELECT * FROM Texts WHERE post_id = ?`,
+              [post.post_id],
+              (err, texts) => {
+                if (err) reject(err);
+                else resolve(texts);
+              }
+            );
+          }),
+        ];
+
+        Promise.all(contentPromises)
+          .then(([photos, videos, texts]) => {
+            post.content = { photos, videos, texts };
+            resolve(post);
+          })
+          .catch((err) => reject(err));
+      });
+    });
+
+    Promise.all(fetchContentPromises)
+      .then((bookmarksWithContent) =>
+        res.status(200).json(bookmarksWithContent)
+      )
+      .catch((err) => res.status(500).json(err));
   });
 };
 

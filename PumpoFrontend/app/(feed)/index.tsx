@@ -85,8 +85,8 @@ const Feed: React.FC = () => {
     setLoading(true);
     if (user_id)
       try {
-        const fetchedTaggedPosts = await GetPostsWithTaggedUsers({
-          user_id,
+        const fetchedTaggedPosts = await LazyLoadPosts({
+          tagged_users: user_id,
           limit: 10,
           page: pageToFetch,
         });

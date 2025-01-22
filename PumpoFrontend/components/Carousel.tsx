@@ -12,9 +12,14 @@ import {
 type CarouselProps = {
   items: React.ReactNode[]; // List of components to display in the carousel
   containerStyle?: StyleProp<ViewStyle>; // Adjustable styles for the main container
+  indicatorStyle?: StyleProp<ViewStyle>;
 };
 
-const Carousel: React.FC<CarouselProps> = ({ items, containerStyle }) => {
+const Carousel: React.FC<CarouselProps> = ({
+  items,
+  containerStyle,
+  indicatorStyle,
+}) => {
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const { width: windowWidth } = useWindowDimensions();
 
@@ -39,21 +44,25 @@ const Carousel: React.FC<CarouselProps> = ({ items, containerStyle }) => {
           </View>
         ))}
       </ScrollView>
-      <View style={styles.indicatorContainer}>
-        {items.map((_, index) => {
-          const width = scrollX.interpolate({
-            inputRange: [
-              windowWidth * (index - 1),
-              windowWidth * index,
-              windowWidth * (index + 1),
-            ],
-            outputRange: [8, 16, 8],
-            extrapolate: "clamp",
-          });
-          return (
-            <Animated.View key={index} style={[styles.normalDot, { width }]} />
-          );
-        })}
+      <View style={[styles.indicatorContainer, indicatorStyle]}>
+        {items.length > 1 &&
+          items.map((_, index) => {
+            const width = scrollX.interpolate({
+              inputRange: [
+                windowWidth * (index - 1),
+                windowWidth * index,
+                windowWidth * (index + 1),
+              ],
+              outputRange: [8, 16, 8],
+              extrapolate: "clamp",
+            });
+            return (
+              <Animated.View
+                key={index}
+                style={[styles.normalDot, { width }]}
+              />
+            );
+          })}
       </View>
     </View>
   );

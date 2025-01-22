@@ -13,6 +13,7 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { AuthProvider } from "@/context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -22,6 +23,9 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+
+  const backgroundColor: any = useThemeColor({}, "background");
+  const titleColor: any = useThemeColor({}, "text");
 
   useEffect(() => {
     if (loaded) {
@@ -36,7 +40,12 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView>
       <AuthProvider>
-        <Stack>
+        <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor },
+            headerTitleStyle: { color: titleColor },
+          }}
+        >
           <Stack.Screen
             name="(app)"
             options={{
@@ -90,7 +99,7 @@ export default function RootLayout() {
             name="(feed)"
             options={{
               title: "Feed",
-              headerShown: false,
+              headerShown: true,
             }}
           />
         </Stack>

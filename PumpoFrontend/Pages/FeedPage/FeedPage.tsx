@@ -23,7 +23,7 @@ const FeedPage = ({
   landingPost,
 }: {
   refreshControlComponent: ReactElement;
-  posts: any[];
+  posts: DT_Post[];
   handleLoadMore: () => any;
   loading: boolean;
   landingPost?: string;

@@ -10,20 +10,27 @@ import {
   View,
 } from "react-native";
 
-const VideoPost = ({ post }: { post: DT_Post }) => {
+const VideoPost = ({ post }: { post: DT_Video }) => {
   const videoRef = useRef<Video>(null);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isViewable, setIsViewable] = useState<boolean>(false);
-  const { height: windowHeight } = useWindowDimensions();
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const postRef = useRef<View>(null);
   const isFocused = useIsFocused();
+
   useEffect(() => {
     const checkVisibility = () => {
       if (postRef.current) {
         postRef.current.measureInWindow((x, y, width, height) => {
-          // Calculate visibility based on component position and screen height
-          const fullyVisible = y - 100 >= 0 && y + height <= windowHeight - 100;
-          setIsViewable(fullyVisible && isFocused);
+          // Check if the component is fully visible both vertically and horizontally
+          const fullyVisibleVertically =
+            y - 100 >= 0 && y + height <= windowHeight - 100;
+          const fullyVisibleHorizontally =
+            x >= 0 - 1 && x + width <= windowWidth + 1;
+
+          const fullyVisible =
+            fullyVisibleVertically && fullyVisibleHorizontally && isFocused;
+          setIsViewable(fullyVisible);
         });
       }
     };
@@ -32,7 +39,7 @@ const VideoPost = ({ post }: { post: DT_Post }) => {
     const intervalId = setInterval(checkVisibility, 200); // Periodic checks for scrolling
 
     return () => clearInterval(intervalId); // Clean up
-  }, [windowHeight, isFocused]);
+  }, [windowHeight, windowWidth, isFocused]);
 
   useEffect(() => {
     if (isViewable) {
@@ -93,7 +100,6 @@ const styles = StyleSheet.create({
     minHeight: 200,
     maxHeight: 400,
     justifyContent: "center",
-    //backgroundColor: "pink",
   },
   video: {
     width: "100%",

@@ -46,13 +46,28 @@ type DT_ProfilePage = {
   posts?: any;
 };
 
+type DT_Photo = { order: number; photo_id: string; media_url: string };
+type DT_Video = {
+  order: number;
+  video_id: string;
+  media_url: string;
+  thumbnail_url?: string;
+};
+type DT_Text = { order: number; text_id: string; content: string };
+type DT_Workout = any;
+
+type DT_Post_Content = {
+  photos: DT_Photo[] | undefined;
+  videos: DT_Video[] | undefined;
+  texts: DT_Text[] | undefined;
+  workouts: DT_Workout[] | undefined;
+};
+
 type DT_Post = {
   post_id: string;
   user_id: string;
-  post_type: "Photo" | "Video" | "Text";
-  media_url?: string;
-  tagged_items?: object;
-  tagged_exercises?: object;
+  tagged_users?: string[];
+  content: DT_Post_Content;
   description?: string;
   created_at?: string;
   updated_at?: string;
@@ -89,7 +104,7 @@ type DT_ChatItem = {
   id: string;
   chat_name: string;
   profile_picture: string | string[];
-  latest_message: "string";
+  latest_message: string;
   timestamp: string;
   is_read: boolean;
   chat_type: string;
@@ -102,4 +117,5 @@ type DT_Pulse = {
   user_profile: DT_UserProfile;
   interactions: DT_PostInteraction;
   relationship: DT_relationship;
-} & DT_Post;
+} & DT_Video &
+  DT_Post;

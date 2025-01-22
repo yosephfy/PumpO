@@ -1,27 +1,14 @@
-import React from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
-import WorkoutFeedPage from "@/Pages/WorkoutsPage/WorkoutsFeedPage";
 import SingleWorkoutPage from "@/Pages/WorkoutsPage/SingleWorkoutPage";
+import { useGlobalSearchParams } from "expo-router";
+import React from "react";
 
 const WorkoutIndex: React.FC = () => {
-  const router = useRouter();
+  const params: { workoutId: string } = useGlobalSearchParams();
+  if (!params.workoutId) return null;
 
-  return <SingleWorkoutPage />;
+  return (
+    <SingleWorkoutPage key={params.workoutId} workoutId={params.workoutId} />
+  );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-});
 
 export default WorkoutIndex;

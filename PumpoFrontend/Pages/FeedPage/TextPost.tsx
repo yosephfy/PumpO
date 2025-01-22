@@ -3,12 +3,12 @@ import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
 import React from "react";
 import { StyleSheet } from "react-native";
 
-const TextPost = ({ post }: { post: DT_Post }) => {
+const TextPost = ({ post }: { post: DT_Text }) => {
   return (
     <ThemedFadedView style={styles.postContent}>
       {/* Description */}
       <ThemedView style={styles.card}>
-        <ThemedText style={styles.description}>{post.description}</ThemedText>
+        <ThemedText style={styles.description}>{post.content}</ThemedText>
       </ThemedView>
     </ThemedFadedView>
   );
@@ -17,6 +17,7 @@ const TextPost = ({ post }: { post: DT_Post }) => {
 const styles = StyleSheet.create({
   postContent: {
     padding: 12,
+    width: "100%",
     //backgroundColor: "#fff",
   },
 
@@ -24,6 +25,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 12,
     padding: 10,
+    marginBottom: 20,
   },
   description: {
     fontSize: 18,

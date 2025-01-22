@@ -13,13 +13,22 @@ import { GetUserProfile } from "@/Services/userServices";
 import { timeAgo } from "@/utility/utilities";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import PhotoPost from "./PhotoPost";
 import PostOptionsPopup from "./PostOptionsPopup";
 import TextPost from "./TextPost";
 import VideoPost from "./VideoPost";
 import SlidingModal from "@/components/SlidingModal";
 import ShareSheet from "@/components/ShareSheet";
+import WorkoutPost from "./WorkoutPost";
+import WorkoutCard from "../WorkoutsPage/WorkoutCard";
+import Carousel from "@/components/Carousel";
 
 const PostComponent = ({ post }: { post: DT_Post }) => {
   const router = useRouter();
@@ -37,18 +46,47 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
   const [shareSheetVisible, setShareSheetVisible] = useState(false);
 
   const renderPostContent = () => {
-    switch (post.post_type) {
-      case "Photo":
-        return <PhotoPost post={post} />;
-      case "Video":
-        return <VideoPost post={post} />;
-      case "Text":
-        return <TextPost post={post} />;
-      default:
-        return (
-          <Text style={styles.unsupportedText}>Unsupported Post Type</Text>
-        );
-    }
+    const photos = post.content.photos || [];
+    const videos = post.content.videos || [];
+    const texts = post.content.texts || [];
+    const workouts = post.content.workouts || [];
+
+    const photosElement = photos.map((x) => ({
+      order: x.order,
+      elem: <PhotoPost post={x} key={x.photo_id} />,
+    }));
+    const videosElement = videos.map((x) => ({
+      order: x.order,
+      elem: <VideoPost post={x} key={x.video_id} />,
+    }));
+
+    const textsElement = texts.map((x) => ({
+      order: x.order,
+      elem: <TextPost post={x} key={x.text_id} />,
+    }));
+
+    const workoutsElement = workouts.map((x) => ({
+      order: x.order,
+      elem: <WorkoutCard workout={x} onPress={() => {}} key={x.workout_id} />,
+    }));
+
+    const items: React.ReactNode[] = [
+      ...photosElement,
+      ...videosElement,
+      ...textsElement,
+      ...workoutsElement,
+    ]
+      .sort((a, b) => a.order - b.order)
+      .map((x) => x.elem);
+
+    if (items.length == 0)
+      return <Text style={styles.unsupportedText}>Unsupported Post Type</Text>;
+    return (
+      <Carousel
+        items={items}
+        indicatorStyle={{ position: "absolute", bottom: 10 }}
+      />
+    );
   };
 
   useEffect(() => {
@@ -129,10 +167,8 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
             iconName="ellipsis-horizontal-outline"
           />
         </View>
-
         {/* Dynamic Post Content */}
         <View style={styles.postContent}>{renderPostContent()}</View>
-
         {/* Post Actions */}
         <View style={styles.actionContainer}>
           <View style={styles.actionIcons}>
@@ -177,22 +213,19 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
             </View>
           </View>
         </View>
-
         {/* Post Details */}
-        {post.post_type !== "Text" && (
-          <View style={styles.detailsContainer}>
-            <Text style={styles.captionText}>
-              <CollapsibleText
-                text={post.description}
-                maxWords={15}
-                style={styles.captionText}
-              />
-            </Text>
-            <Text style={styles.timestampText}>
-              {timeAgo(post.created_at).long}
-            </Text>
-          </View>
-        )}
+        <View style={styles.detailsContainer}>
+          <Text style={styles.captionText}>
+            <CollapsibleText
+              text={post.description}
+              maxWords={15}
+              style={styles.captionText}
+            />
+          </Text>
+          <Text style={styles.timestampText}>
+            {timeAgo(post.created_at).long}
+          </Text>
+        </View>
       </ThemedView>
       <SlidingModal
         isVisible={shareSheetVisible}
@@ -228,8 +261,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   postContent: {
-    width: "100%",
-    backgroundColor: "#eee",
+    width: Dimensions.get("screen").width,
+    //backgroundColor: "#eee",
   },
   actionContainer: {
     flexDirection: "row",

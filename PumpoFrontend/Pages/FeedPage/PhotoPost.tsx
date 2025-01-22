@@ -2,10 +2,14 @@ import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
 import React from "react";
 import { View, Image, StyleSheet } from "react-native";
 
-const PhotoPost = ({ post }: { post: DT_Post }) => {
+const PhotoPost = ({ post }: { post: DT_Photo }) => {
   return (
     <ThemedFadedView style={styles.postContent}>
-      <Image source={{ uri: post.media_url }} style={styles.postImage} />
+      <Image
+        source={{ uri: post.media_url }}
+        style={styles.postImage}
+        resizeMode="cover"
+      />
     </ThemedFadedView>
   );
 };

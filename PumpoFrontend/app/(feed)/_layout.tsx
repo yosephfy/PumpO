@@ -9,7 +9,7 @@ const FeedLayout: React.FC = () => {
         name="index"
         options={{
           title: "Feed",
-          headerShown: true,
+          headerShown: false,
         }}
       />
     </Stack>
