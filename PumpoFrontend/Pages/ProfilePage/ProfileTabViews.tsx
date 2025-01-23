@@ -7,7 +7,7 @@ export const PostsTab = ({
   handlePostClick,
 }: {
   posts: DT_Post[];
-  handlePostClick: (post: any) => any;
+  handlePostClick: (post: DT_Post) => any;
 }) => (
   <ThemedFadedView style={styles.postsContainer}>
     {posts.map((post) => {

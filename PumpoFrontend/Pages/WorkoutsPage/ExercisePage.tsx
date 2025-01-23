@@ -15,31 +15,22 @@ import { Ionicons } from "@expo/vector-icons";
 import { Video } from "expo-av";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedIcon, ThemedView } from "@/components/ThemedView";
-
+import { useQuery } from "@tanstack/react-query";
 const ExerciseDetailPage = ({ exerciseId }: { exerciseId: string }) => {
   const route = useRoute();
 
-  const [exercise, setExercise] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: exercise,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["exercise", exerciseId],
+    queryFn: async () => {
+      return await GetExerciseById(exerciseId);
+    },
+  });
 
-  useEffect(() => {
-    const fetchExerciseDetails = async () => {
-      try {
-        setLoading(true);
-        const exerciseData = await GetExerciseById(exerciseId);
-        setExercise(exerciseData);
-      } catch (error) {
-        console.error("Error fetching exercise details:", error);
-        Alert.alert("Error", "Failed to load exercise details.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchExerciseDetails();
-  }, [exerciseId]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color="#007BFF" />
@@ -47,7 +38,7 @@ const ExerciseDetailPage = ({ exerciseId }: { exerciseId: string }) => {
     );
   }
 
-  if (!exercise) {
+  if (isError || !exercise) {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>Exercise not found.</Text>

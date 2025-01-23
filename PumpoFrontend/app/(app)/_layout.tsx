@@ -187,6 +187,7 @@ const AppLayout: React.FC = () => {
           options={{
             title: "Create",
             tabBarLabel: "Create",
+            animation: "none",
           }}
         />
         <Tabs.Screen

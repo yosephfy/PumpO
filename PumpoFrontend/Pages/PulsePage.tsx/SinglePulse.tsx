@@ -134,7 +134,7 @@ const SinglePulse = ({
         <View style={styles.detailsContainer}>
           <View style={styles.userInfo}>
             <ProfilePicture
-              imageUrl={pulse.user_profile.profile_picture}
+              imageUrl={pulse.user_profile.profile_picture || ""}
               size={40}
               style={{ marginRight: 10 }}
               onPress={() => {

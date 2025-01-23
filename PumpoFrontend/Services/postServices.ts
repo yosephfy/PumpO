@@ -72,7 +72,7 @@ export const LazyLoadPosts = async (params: {
   limit: number;
 }) => {
   try {
-    const response = await getRequest("/posts", params);
+    const response: DT_Post[] = await getRequest("/posts", params);
     return response;
   } catch (error: any) {
     console.error("Error lazy loading posts:", error.response || error);

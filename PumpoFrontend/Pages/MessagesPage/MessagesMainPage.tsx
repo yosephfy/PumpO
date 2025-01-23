@@ -18,6 +18,7 @@ import { timeAgo } from "@/utility/utilities";
 import GroupProfilePicture from "@/components/GroupProfilePicture";
 import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import { useQuery } from "@tanstack/react-query";
 
 const MessagesMainPage = ({
   userId,
@@ -27,57 +28,48 @@ const MessagesMainPage = ({
   param: any;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [messages, setMessages] = useState<DT_ChatItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: messages,
+    isLoading: loading,
+    refetch,
+  } = useQuery({
+    queryKey: ["messages", userId],
+    queryFn: async () => {
+      const chats = await GetChatsForUser(userId);
 
-  const getOtherParticipantId = (participants: any[]) => {
-    return participants.filter((x) => x.user_id !== userId);
-  };
+      return Promise.all(
+        chats.map(async (chat: any) => {
+          const chat_participants: any[] = await GetChatParticipants(
+            chat.chat_id
+          );
+          const other_users = chat_participants.filter(
+            (x) => x.user_id !== userId
+          );
+          const is_read = await GetUnreadCountByChat(chat.chat_id);
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        setLoading(true);
-        const chats = await GetChatsForUser(userId);
-        const enrichedMessages: DT_ChatItem[] = await Promise.all(
-          chats.map(async (chat: any) => {
-            const chat_participants: any[] = await GetChatParticipants(
-              chat.chat_id
-            );
-            const other_users = getOtherParticipantId(chat_participants);
-            const is_read = await GetUnreadCountByChat(chat.chat_id);
-            const user_profile =
-              chat.chat_type === "group"
-                ? {
-                    chat_name: other_users.map((x) => x.username).join(", "),
-                    profile_picture: other_users.map((x) => x.profile_picture),
-                  }
-                : {
-                    chat_name: other_users[0].username,
-                    profile_picture: other_users.map((x) => x.profile_picture),
-                  };
+          const user_profile =
+            chat.chat_type === "group"
+              ? {
+                  chat_name: other_users.map((x) => x.username).join(", "),
+                  profile_picture: other_users.map((x) => x.profile_picture),
+                }
+              : {
+                  chat_name: other_users[0].username,
+                  profile_picture: other_users.map((x) => x.profile_picture),
+                };
 
-            return {
-              id: chat.chat_id,
-              ...user_profile,
-              latest_message: chat.last_message || "No messages yet",
-              timestamp: timeAgo(chat.updated_at).short,
-              is_read: is_read == 0 || false,
-              chat_type: chat.chat_type,
-            };
-          })
-        );
-
-        setMessages(enrichedMessages);
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMessages();
-  }, [userId, param]);
+          return {
+            id: chat.chat_id,
+            ...user_profile,
+            latest_message: chat.last_message || "No messages yet",
+            timestamp: timeAgo(chat.updated_at).short,
+            is_read: is_read === 0 || false,
+            chat_type: chat.chat_type,
+          };
+        })
+      );
+    },
+  });
 
   const handleClickMessage = (obj: DT_ChatItem) => {
     router.push({
@@ -91,10 +83,7 @@ const MessagesMainPage = ({
   };
 
   const renderMessageItem = ({ item }: { item: DT_ChatItem }) => (
-    <TouchableOpacity
-      //style={[styles.messageItem, !item.is_read && styles.unreadMessageItem]}
-      onPress={() => handleClickMessage(item)}
-    >
+    <TouchableOpacity onPress={() => handleClickMessage(item)}>
       <ThemedView
         style={[
           { flex: 1 },
@@ -139,9 +128,11 @@ const MessagesMainPage = ({
     <ThemedFadedView style={styles.container}>
       <SearchBar onSearch={handleSearch} style={{ marginHorizontal: 10 }} />
       <FlatList
-        data={messages.filter((msg) =>
-          msg.chat_name.toLowerCase().includes(searchQuery.toLowerCase())
-        )}
+        data={
+          messages?.filter((msg) =>
+            msg.chat_name.toLowerCase().includes(searchQuery.toLowerCase())
+          ) || []
+        }
         keyExtractor={(item) => item.id}
         renderItem={renderMessageItem}
         style={styles.messageList}

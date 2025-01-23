@@ -7,7 +7,7 @@ import {
   StyleProp,
   ViewStyle,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SearchBar from "./SearchBar";
 import { ThemedFadedView, ThemedIcon, ThemedView } from "./ThemedView";
 import ProfilePicture from "./ProfilePicture";
@@ -21,6 +21,7 @@ import {
 } from "@/Services/userServices";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useQuery } from "@tanstack/react-query";
 
 type OptionType = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -28,27 +29,24 @@ type OptionType = {
   title: string;
   handler: (param: any) => any;
 };
+
 const ShareSheet = () => {
   const { currentUser } = useAuth();
-  const [userProfile, setUserProfile] = useState<DT_UserProfile | null>();
-  const [suggestedContacts, setSuggestedContacts] = useState<DT_UserProfile[]>(
-    []
-  );
-  const fetchUserProfile = async () => {
-    if (currentUser) {
-      const response = await GetUserProfile(currentUser.user_id);
 
-      setUserProfile(response);
-    }
-  };
+  const { data: userProfile } = useQuery({
+    queryKey: ["userProfile", currentUser?.user_id],
+    queryFn: () => currentUser && GetUserProfile(currentUser.user_id),
+    enabled: !!currentUser,
+  });
 
-  const fetchSuggestedContacts = async () => {
-    if (currentUser)
-      try {
+  const { data: suggestedContacts = [] } = useQuery({
+    queryKey: ["suggestedContacts", currentUser?.user_id],
+    queryFn: async () => {
+      if (currentUser) {
         const followers = await GetFollowers(currentUser.user_id);
         const following = await GetFollowing(currentUser.user_id);
 
-        const combinedContacts = [
+        return [
           ...followers,
           ...following.filter(
             (follow: any) =>
@@ -57,28 +55,11 @@ const ShareSheet = () => {
               )
           ),
         ];
-        setSuggestedContacts(combinedContacts);
-      } catch (error) {
-        console.error("Error fetching suggested contacts:", error);
       }
-  };
-
-  useEffect(() => {
-    fetchUserProfile();
-    fetchSuggestedContacts();
-  }, [currentUser]);
-
-  const data: {
-    icon: keyof typeof Ionicons.glyphMap;
-    title: string;
-    color: string;
-    handler: (param: any) => any;
-  }[] = Array.from({ length: 10 }, (index) => ({
-    icon: "add-circle",
-    color: "white",
-    title: "Right",
-    handler: () => {},
-  }));
+      return [];
+    },
+    enabled: !!currentUser,
+  });
 
   const options: OptionType[] = [
     {
@@ -108,7 +89,7 @@ const ShareSheet = () => {
     },
     {
       icon: "logo-facebook",
-      title: "facebook",
+      title: "Facebook",
       handler: () => {},
     },
     {
@@ -190,9 +171,9 @@ const OptionItem = ({ icon, title, color, handler }: OptionType) => {
 };
 
 export default ShareSheet;
+
 const styles = StyleSheet.create({
   userContainer: {
-    //backgroundColor: "pink",
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
@@ -200,33 +181,26 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: "5%",
   },
-  optionContainer: {
-    //backgroundColor: "pink",
-    //height: 100,
-  },
+  optionContainer: {},
   optionItems: {
     gap: 10,
     paddingHorizontal: 20,
     paddingVertical: 10,
     alignSelf: "center",
   },
-
   userItem: {
     height: 130,
     width: "30%",
-    //backgroundColor: "pink",
     justifyContent: "space-around",
     alignItems: "center",
   },
   userItemText: {
     fontSize: 14,
   },
-
   optionItem: {
     height: 80,
     justifyContent: "space-around",
     alignItems: "center",
-    //backgroundColor: "pink",
   },
   optionItemText: { fontSize: 12 },
   optionItemIcon: {

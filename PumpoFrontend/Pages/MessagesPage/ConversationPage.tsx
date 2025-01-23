@@ -24,6 +24,7 @@ import ProfilePicture from "@/components/ProfilePicture";
 import MessageInput from "@/components/MessageInput";
 import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import { useInfiniteQuery } from "@tanstack/react-query";
 type MessageType = {
   message_id: string;
   content: string;
@@ -41,52 +42,29 @@ const ConversationPage = ({
   chat_type: string;
 }) => {
   const { currentUser } = useAuth();
-  const [messages, setMessages] = useState<MessageType[]>([]);
-  const [participants, setParticipants] = useState<any[]>([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
   const flatListRef = useRef<FlatList>(null);
+  const [newMessage, setNewMessage] = useState("");
 
-  const scrollToBottom = () => {
-    if (flatListRef.current && messages.length > 0) {
-      flatListRef.current.scrollToIndex({ index: 0, animated: true });
-    }
-  };
-
-  useEffect(() => {
-    const fetchChatData = async () => {
-      try {
-        const chatParticipants = await GetChatParticipants(chatId);
-        setParticipants(chatParticipants);
-        fetchMessages(1, true);
-      } catch (error) {
-        console.error("Error fetching chat data:", error);
-      }
-    };
-
-    fetchChatData();
-  }, [chatId]);
-
-  const fetchMessages = async (pageToFetch: number, refresh = false) => {
-    if (loading) return;
-
-    setLoading(true);
-    try {
+  const {
+    data: messagesData,
+    fetchNextPage,
+    hasNextPage: hasMore,
+    isFetchingNextPage: loading,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ["chatMessages", chatId],
+    queryFn: async ({ pageParam = 1 }) => {
       const fetchedMessages = await GetMessagesByChat({
         chatId,
         limit: 20,
-        page: pageToFetch,
+        page: pageParam,
       });
 
       await MarkAllMessagesAsRead(
         fetchedMessages.map((x: any) => x.message_id)
       );
 
-      const chatParticipants = participants.length
-        ? participants
-        : await GetChatParticipants(chatId);
+      const chatParticipants = await GetChatParticipants(chatId);
 
       const enrichedMessages = fetchedMessages.map((msg: any) => {
         const sender = chatParticipants.find(
@@ -99,26 +77,28 @@ const ConversationPage = ({
           sender_id: msg.sender_id,
           profile_picture: sender?.profile_picture || "",
           sender:
-            sender.user_id === currentUser?.user_id
+            sender?.user_id === currentUser?.user_id
               ? "current_user"
               : "other_user",
           username: sender?.username,
         };
       });
 
-      if (refresh) {
-        setMessages(enrichedMessages);
-        setPage(1);
-        setHasMore(fetchedMessages.length === 20);
-      } else {
-        setMessages((prevMessages) => [...prevMessages, ...enrichedMessages]);
-        setPage((prevOffset) => prevOffset + 1);
-        setHasMore(fetchedMessages.length === 20);
-      }
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    } finally {
-      setLoading(false);
+      return {
+        messages: enrichedMessages,
+        currentPage: pageParam,
+      };
+    },
+    getNextPageParam: (lastPage) =>
+      lastPage.messages.length === 20 ? lastPage.currentPage + 1 : undefined,
+    initialPageParam: 1,
+  });
+
+  const messages = messagesData?.pages.flatMap((page) => page.messages) || [];
+
+  const scrollToBottom = () => {
+    if (flatListRef.current && messages.length > 0) {
+      flatListRef.current.scrollToIndex({ index: 0, animated: true });
     }
   };
 
@@ -128,23 +108,11 @@ const ConversationPage = ({
         const msg_id = await SendMessage({
           chat_id: chatId,
           sender_id: currentUser.user_id,
-          receiver_id: participants[0]?.user_id,
           content: newMessage,
           message_type: "text",
         });
         await MarkMessageAsRead(msg_id);
-        setMessages((prevMessages) => [
-          {
-            message_id: Date.now().toString(),
-            content: newMessage,
-            created_at: timeAgo(new Date().toISOString()).long,
-            sender_id: currentUser.user_id,
-            profile_picture: currentUser.profile_picture,
-            sender: "current_user",
-            username: currentUser.username,
-          },
-          ...prevMessages,
-        ]);
+        refetch();
         setNewMessage("");
         setTimeout(scrollToBottom, 200);
       } catch (error) {
@@ -219,7 +187,7 @@ const ConversationPage = ({
             renderItem={renderMessageItem}
             onEndReached={() => {
               if (hasMore && !loading) {
-                fetchMessages(page);
+                fetchNextPage();
               }
             }}
             ListHeaderComponent={

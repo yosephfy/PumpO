@@ -5,7 +5,7 @@ import {
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
 import { useAuth } from "@/context/AuthContext";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -16,51 +16,51 @@ import {
 } from "react-native";
 import { CommentInputArea } from "./CommentInput";
 import Comment from "./SingleComment";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const CommentPage = ({ post_id }: { post_id: string }) => {
-  const [commentData, setCommentData] = useState<DT_comment[]>([]);
-  const [newComment, setNewComment] = useState("");
   const { currentUser } = useAuth();
+  const [newComment, setNewComment] = useState("");
   const [commentParent, setCommentParent] = useState<DT_comment | undefined>(
     undefined
   );
-  const [changed, setChanged] = useState(0);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response: DT_comment[] = await GetCommentsByPost(post_id);
-        const topLevelComments = response.filter(
-          (x) => x.parent_comment_id == undefined
-        );
-        setCommentData(topLevelComments);
-      } catch (error) {
-        console.error("Error fetching comments:", error);
-      }
-    };
-    fetchComments();
-  }, [post_id, changed]);
+  const { data: commentData = [] } = useQuery({
+    queryKey: ["comments", post_id],
+    queryFn: async () => {
+      const response: DT_comment[] = await GetCommentsByPost(post_id);
+      return response.filter((x) => x.parent_comment_id == undefined);
+    },
+  });
 
-  const handleAddComment = async () => {
+  const addCommentMutation = useMutation({
+    mutationFn: async (commentData: {
+      post_id?: string;
+      parent_comment_id?: string;
+      user_id: string;
+      content: string;
+    }) => AddComment(commentData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", post_id] });
+      setNewComment("");
+      setCommentParent(undefined);
+    },
+  });
+
+  const handleAddComment = () => {
     if (newComment.trim() && currentUser) {
-      try {
-        const commentData = {
-          post_id: post_id,
-          parent_comment_id: commentParent?.parent_comment_id
-            ? commentParent?.parent_comment_id
-            : commentParent?.comment_id,
-          user_id: currentUser.user_id,
-          content: commentParent
-            ? `@${commentParent.username} ${newComment}`
-            : newComment,
-        };
-        await AddComment(commentData);
-        setChanged((prev) => prev + 1);
-        setNewComment("");
-        setCommentParent(undefined);
-      } catch (error) {
-        console.error("Error adding comment:", error);
-      }
+      const commentData = {
+        post_id: post_id,
+        parent_comment_id: commentParent?.parent_comment_id
+          ? commentParent?.parent_comment_id
+          : commentParent?.comment_id,
+        user_id: currentUser.user_id,
+        content: commentParent
+          ? `@${commentParent.username} ${newComment}`
+          : newComment,
+      };
+      addCommentMutation.mutate(commentData);
     }
   };
 
@@ -93,9 +93,7 @@ const CommentPage = ({ post_id }: { post_id: string }) => {
             style={styles.commentsList}
           />
         </SafeAreaView>
-        <ThemedView
-        //style={{ position: "absolute", width: "100%", bottom: 0, flex: 1 }}
-        >
+        <ThemedView>
           <CommentInputArea
             newComment={newComment}
             setNewComment={setNewComment}
@@ -104,7 +102,6 @@ const CommentPage = ({ post_id }: { post_id: string }) => {
             onClearReplyingTo={() => {
               setCommentParent(undefined);
             }}
-            //style={{ paddingBottom: 50 }}
           />
         </ThemedView>
       </KeyboardAvoidingView>

@@ -22,52 +22,37 @@ import {
   View,
 } from "react-native";
 import ExerciseDetailPage from "./ExercisePage";
-
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 const SingleWorkoutPage = ({ workoutId }: { workoutId: string }) => {
-  const [workout, setWorkout] = useState<any>(null);
-  const [exercises, setExercises] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const {
+    data: workout,
+    isLoading: workoutLoading,
+    isError: workoutError,
+  } = useQuery({
+    queryKey: ["workout", workoutId],
+    queryFn: () => GetWorkoutPlanById(workoutId),
+  });
 
-  // Fetch workout details and exercises
-  useEffect(() => {
-    const fetchWorkoutDetails = async () => {
-      try {
-        setLoading(true);
+  const {
+    data: exercises,
+    isLoading: exercisesLoading,
+    isError: exercisesError,
+  } = useQuery({
+    queryKey: ["exercises", workoutId],
+    queryFn: () => GetAllExercisesInWorkoutPlan(workoutId),
+  });
 
-        // Fetch workout details
-        const workoutData = await GetWorkoutPlanById(workoutId);
-        setWorkout(workoutData);
-
-        // Fetch exercises in the workout
-        const exercisesData = await GetAllExercisesInWorkoutPlan(workoutId);
-        setExercises(exercisesData);
-      } catch (error) {
-        console.error("Error fetching workout details:", error);
-        Alert.alert("Error", "Failed to load workout details.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWorkoutDetails();
-  }, [workoutId]);
-
-  // Handle bookmark
   const handleBookmarkWorkout = () => {
     Alert.alert("Bookmark", "Workout bookmarked for later.");
-    // Use bookmark logic here
   };
 
-  // Handle share
   const handleShareWorkout = () => {
     Alert.alert("Share", "Workout link copied to clipboard.");
-    // Use share logic here
   };
 
-  // Handle Duplicate
   const handleDuplicateWorkout = () => {
     Alert.alert("Duplicate", "Workout link copied to clipboard.");
-    // Use share logic here
   };
 
   const handleClickExercise = () => {};
@@ -75,9 +60,7 @@ const SingleWorkoutPage = ({ workoutId }: { workoutId: string }) => {
   const handleRemoveExercise = async (exerciseId: string) => {
     try {
       await RemoveExerciseFromWorkoutPlan(workoutId, exerciseId);
-      setExercises((prev) =>
-        prev.filter((ex) => ex.exercise_id !== exerciseId)
-      );
+      queryClient.invalidateQueries({ queryKey: ["exercises", workoutId] });
       Alert.alert("Success", "Exercise removed from workout.");
     } catch (error) {
       console.error("Error removing exercise:", error);
@@ -85,7 +68,7 @@ const SingleWorkoutPage = ({ workoutId }: { workoutId: string }) => {
     }
   };
 
-  if (loading) {
+  if (workoutLoading || exercisesLoading) {
     return (
       <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color="#007BFF" />
@@ -93,7 +76,7 @@ const SingleWorkoutPage = ({ workoutId }: { workoutId: string }) => {
     );
   }
 
-  if (!workout) {
+  if (workoutError || !workout) {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>Workout not found.</Text>
@@ -158,7 +141,7 @@ const SingleWorkoutPage = ({ workoutId }: { workoutId: string }) => {
 
         {/* Exercises List */}
         <ThemedText style={styles.sectionTitle}>Exercises</ThemedText>
-        {exercises.map((exercise) => (
+        {exercises.map((exercise: any) => (
           <SingleExercise
             exercise={exercise}
             key={exercise.exercise_id}

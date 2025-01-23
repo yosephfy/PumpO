@@ -9,6 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { AuthProvider } from "@/context/AuthContext";
@@ -27,6 +28,8 @@ export default function RootLayout() {
   const backgroundColor: any = useThemeColor({}, "background");
   const titleColor: any = useThemeColor({}, "text");
 
+  const queryClient = new QueryClient();
+
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -38,72 +41,74 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView>
-      <AuthProvider>
-        <Stack
-          screenOptions={{
-            headerStyle: { backgroundColor },
-            headerTitleStyle: { color: titleColor },
-          }}
-        >
-          <Stack.Screen
-            name="(app)"
-            options={{
-              headerShown: false,
-              title: "Home",
+    <QueryClientProvider client={queryClient}>
+      <GestureHandlerRootView>
+        <AuthProvider>
+          <Stack
+            screenOptions={{
+              headerStyle: { backgroundColor },
+              headerTitleStyle: { color: titleColor },
             }}
-          />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="(full_post)"
-            options={{
-              headerShown: false,
-              title: "Post",
-              headerBackButtonDisplayMode: "minimal",
-            }}
-          />
-          <Stack.Screen
-            name="(explore)"
-            options={{
-              headerShown: false,
-              title: "Explore",
-              headerBackButtonDisplayMode: "minimal",
-            }}
-          />
-          <Stack.Screen
-            name="(messages)"
-            options={{
-              headerShown: false,
-              title: "Messages",
-              headerBackButtonDisplayMode: "minimal",
-            }}
-          />
-          <Stack.Screen
-            name="(create)"
-            options={{
-              headerShown: false,
-              title: "Create",
-              headerBackButtonDisplayMode: "minimal",
-              presentation: "containedTransparentModal",
-            }}
-          />
-          <Stack.Screen
-            name="comment"
-            options={{
-              title: "Comments",
-              headerShown: false,
-              presentation: "modal",
-            }}
-          />
-          <Stack.Screen
-            name="(feed)"
-            options={{
-              title: "Feed",
-              headerShown: true,
-            }}
-          />
-        </Stack>
-      </AuthProvider>
-    </GestureHandlerRootView>
+          >
+            <Stack.Screen
+              name="(app)"
+              options={{
+                headerShown: false,
+                title: "Home",
+              }}
+            />
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(full_post)"
+              options={{
+                headerShown: false,
+                title: "Post",
+                headerBackButtonDisplayMode: "minimal",
+              }}
+            />
+            <Stack.Screen
+              name="(explore)"
+              options={{
+                headerShown: false,
+                title: "Explore",
+                headerBackButtonDisplayMode: "minimal",
+              }}
+            />
+            <Stack.Screen
+              name="(messages)"
+              options={{
+                headerShown: false,
+                title: "Messages",
+                headerBackButtonDisplayMode: "minimal",
+              }}
+            />
+            <Stack.Screen
+              name="(create)"
+              options={{
+                headerShown: false,
+                title: "Create",
+                headerBackButtonDisplayMode: "minimal",
+                presentation: "containedModal",
+              }}
+            />
+            <Stack.Screen
+              name="comment"
+              options={{
+                title: "Comments",
+                headerShown: false,
+                presentation: "modal",
+              }}
+            />
+            <Stack.Screen
+              name="(feed)"
+              options={{
+                title: "Feed",
+                headerShown: true,
+              }}
+            />
+          </Stack>
+        </AuthProvider>
+      </GestureHandlerRootView>
+    </QueryClientProvider>
   );
 }

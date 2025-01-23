@@ -9,7 +9,7 @@ const CreateLayout: React.FC = () => {
         options={{
           title: "Create",
           headerShown: false,
-          animation: "fade",
+          animation: "none",
         }}
       />
     </Stack>

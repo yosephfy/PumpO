@@ -1,19 +1,7 @@
-import SlidingModal from "@/components/SlidingModal";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
+import { ActivityIndicator, FlatList, StyleSheet } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import PostComponent from "@/Pages/FeedPage/PostComponent";
-import { GetInteractionSummaryByPost } from "@/Services/postInteractionServices";
-import { LazyLoadPosts } from "@/Services/postServices";
-import { GetUserProfile } from "@/Services/userServices";
-import React, { ReactElement, useEffect, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-  View,
-  Text,
-  RefreshControl,
-  TouchableOpacity,
-} from "react-native";
 
 const FeedPage = ({
   refreshControlComponent,
@@ -29,21 +17,31 @@ const FeedPage = ({
   landingPost?: string;
 }) => {
   const listRef = useRef<FlatList>(null);
-  const [landingIndex, setLandingIndex] = useState(0);
+  const [isListReady, setIsListReady] = useState(false);
+  const [landingIndex, setLanding] = useState(0);
+
   useEffect(() => {
-    if (landingIndex != 0)
-      listRef.current?.scrollToIndex({ index: landingIndex });
-  }, [landingIndex]);
+    const l = landingPost
+      ? posts.findIndex((post) => post.post_id == landingPost)
+      : 0;
+    setLanding(l);
+    /* console.log({
+      landingPost,
+      landingIndex,
+      posts: posts.map((x) => x.post_id),
+    }); */
+    if (isListReady && landingIndex >= 0 && posts.length) {
+      listRef.current?.scrollToIndex({ index: landingIndex, animated: true });
+    }
+  }, [isListReady, landingIndex]);
+
   return (
     <ThemedView style={styles.container}>
       <FlatList
         ref={listRef}
         refreshControl={refreshControlComponent}
         data={posts}
-        renderItem={({ item, index }) => {
-          if (item.post_id == landingPost) setLandingIndex(index);
-          return <PostComponent post={item} />;
-        }}
+        renderItem={({ item }) => <PostComponent post={item} />}
         keyExtractor={(item) => item.post_id}
         contentContainerStyle={{ paddingBottom: 90 }}
         showsVerticalScrollIndicator={false}
@@ -58,8 +56,12 @@ const FeedPage = ({
             />
           ) : null
         }
-        //initialScrollIndex={landingIndex}
-        onScrollToIndexFailed={() => {}}
+        onContentSizeChange={() => setIsListReady(true)} // Notify when list is ready
+        onLayout={() => setIsListReady(true)} // Backup for readiness
+        onScrollToIndexFailed={(error) => {
+          console.warn("Scroll to index failed", error);
+          listRef.current?.scrollToOffset({ offset: 0, animated: true }); // Fallback
+        }}
       />
     </ThemedView>
   );

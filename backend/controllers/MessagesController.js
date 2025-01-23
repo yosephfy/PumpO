@@ -231,30 +231,26 @@ export const updateParticipantRole = (req, res) => {
 
 // Send a message
 export const sendMessage = (req, res) => {
-  const { chat_id, sender_id, receiver_id, content, message_type } = req.body;
+  const { chat_id, sender_id, content, message_type } = req.body;
 
   const query = `
-    INSERT INTO Messages (chat_id, sender_id, receiver_id, content, message_type)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO Messages (chat_id, sender_id, content, message_type)
+    VALUES (?, ?, ?, ?)
   `;
 
-  db.query(
-    query,
-    [chat_id, sender_id, receiver_id, content, message_type],
-    (err, data) => {
-      if (err) return res.status(500).json(err);
+  db.query(query, [chat_id, sender_id, content, message_type], (err, data) => {
+    if (err) return res.status(500).json(err);
 
-      const updateChatQuery = `
+    const updateChatQuery = `
         UPDATE Chats SET last_message_id = ?
         WHERE chat_id = ?
       `;
 
-      db.query(updateChatQuery, [data.insertId, chat_id], (updateErr) => {
-        if (updateErr) return res.status(500).json(updateErr);
-        return res.status(201).json(data.insertId);
-      });
-    }
-  );
+    db.query(updateChatQuery, [data.insertId, chat_id], (updateErr) => {
+      if (updateErr) return res.status(500).json(updateErr);
+      return res.status(201).json(data.insertId);
+    });
+  });
 };
 
 // Get messages in a chat

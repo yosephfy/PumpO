@@ -52,6 +52,7 @@ const ProfileHeader = ({
           text={user_profile.bio}
           maxWords={15}
           style={styles.bioContentText}
+          allowMarkup
         />
       </View>
     </ThemedView>

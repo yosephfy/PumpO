@@ -47,7 +47,7 @@ export const getCommentsByPost = (req, res) => {
     FROM Comments c
     JOIN Users u ON c.user_id = u.user_id
     WHERE c.post_id = ?
-    ORDER BY c.created_at ASC
+    ORDER BY c.created_at DESC
   `;
 
   db.query(query, [postId], (err, data) => {

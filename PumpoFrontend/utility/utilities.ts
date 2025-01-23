@@ -76,3 +76,89 @@ export function parseStringArray(input: string): string[] {
 
   return items;
 }
+
+type ParsedSegment = {
+  type: "text" | "hashtag" | "mention" | "custom";
+  value: string;
+};
+
+type ParseConfig = {
+  customPatterns?: { type: string; regex: RegExp }[];
+  allowInvalidTokens?: boolean;
+};
+
+type MapConfig<T> = {
+  defaultMapFunction: (segment: ParsedSegment) => T;
+  customMapFunctions?: { [key: string]: (segment: ParsedSegment) => T };
+};
+export function parseSpecialString(
+  input: string,
+  config?: ParseConfig
+): {
+  segments: ParsedSegment[];
+  mapSegments: <T>(mapConfig: MapConfig<T>) => T[];
+} {
+  const defaultPatterns = [
+    { type: "hashtag", regex: /#[a-zA-Z0-9_]+/ },
+    { type: "mention", regex: /@[a-zA-Z0-9_]+/ },
+  ];
+
+  const patterns = config?.customPatterns
+    ? [...defaultPatterns, ...config.customPatterns]
+    : defaultPatterns;
+  const allowInvalidTokens = config?.allowInvalidTokens ?? false;
+
+  function processWord(word: string): ParsedSegment[] {
+    const segments: ParsedSegment[] = [];
+    let remainingWord = word;
+
+    while (remainingWord.length > 0) {
+      let firstMatch: { match: RegExpExecArray; type: string } | null = null;
+
+      for (const { type, regex } of patterns) {
+        const match = regex.exec(remainingWord);
+        if (
+          match &&
+          (firstMatch === null || match.index < firstMatch.match.index)
+        ) {
+          firstMatch = { match, type };
+        }
+      }
+
+      if (!firstMatch) {
+        // No matches found, treat the remaining part as text
+        segments.push({ type: "text", value: remainingWord });
+        break;
+      }
+
+      const { match, type } = firstMatch;
+      const beforeMatch = remainingWord.slice(0, match.index);
+      const matchedValue = match[0];
+      const afterMatch = remainingWord.slice(match.index + matchedValue.length);
+
+      if (beforeMatch.length > 0) {
+        segments.push({ type: "text", value: beforeMatch });
+      }
+
+      segments.push({ type, value: matchedValue } as ParsedSegment);
+      remainingWord = afterMatch;
+    }
+
+    return segments;
+  }
+
+  const segments: ParsedSegment[] = input
+    .split(" ")
+    .flatMap((word) => processWord(word));
+
+  const mapSegments = <T>(mapConfig: MapConfig<T>): T[] => {
+    return segments.map((segment) => {
+      const customMapper = mapConfig.customMapFunctions?.[segment.type];
+      return customMapper
+        ? customMapper(segment)
+        : mapConfig.defaultMapFunction(segment);
+    });
+  };
+
+  return { segments, mapSegments };
+}

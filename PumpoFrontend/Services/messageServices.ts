@@ -87,7 +87,6 @@ export const GetUnreadCountByChat = async (chatId: string) => {
 export const SendMessage = async (messageData: {
   chat_id: string;
   sender_id: string;
-  receiver_id: string;
   content: string;
   message_type: string;
 }) => {

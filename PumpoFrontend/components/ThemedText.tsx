@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { parseSpecialString } from "@/utility/utilities";
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;

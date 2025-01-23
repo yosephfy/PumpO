@@ -11,7 +11,11 @@ const CurrentUserProfile = () => {
       <Text style={styles.errorText}>ERROR</Text>
     </View>
   ) : (
-    <Profile user_id={currentUser.user_id} other_user={false} />
+    <Profile
+      key={currentUser.user_id}
+      user_id={currentUser.user_id}
+      other_user={false}
+    />
   );
 };
 

@@ -32,7 +32,11 @@ import ProfileExtraInfo from "./ProfileExtraInfo";
 import ProfileHeader from "./ProfileHeader";
 import ProfileInteraction from "./ProfileInteraction";
 import { PostsTab, WorkoutsTab } from "./ProfileTabViews";
-
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 const ProfilePage = ({
   user_id,
   other_user,
@@ -40,187 +44,150 @@ const ProfilePage = ({
   user_id: string;
   other_user: boolean;
 }) => {
-  const [profileData, setProfileData] = useState<DT_UserProfile | null>(null);
-  const [fitnessProfileData, setFitnessProfileData] =
-    useState<DT_FitnessProfile | null>(null);
-  const [userAchievements, setUserAchievements] = useState<DT_Achievement[]>(
-    []
-  );
-  const [followCounts, setFollowCounts] = useState({
-    followers: 0,
-    following: 0,
+  const [activeTab, setActiveTab] = useState("Posts"); // Preserve activeTab state
+  const queryClient = useQueryClient(); // Use queryClient for invalidation
+
+  const {
+    data: profileData,
+    isLoading: loadingProfile,
+    isError: profileError,
+  } = useQuery({
+    queryKey: ["profile", user_id],
+    queryFn: () => GetUserProfile(user_id),
   });
-  const [postsCount, setPostsCount] = useState(0);
-  const [activeTab, setActiveTab] = useState("Posts");
-  const [refreshing, setRefreshing] = useState(false);
 
-  const [postsContent, setPostsContent] = useState<DT_Post[]>([]);
-  const [loadingPosts, setLoadingPosts] = useState(false);
-  const [hasMorePosts, setHasMorePosts] = useState(true);
-  const [postPage, setPostPage] = useState(1);
+  const {
+    data: fitnessProfileData,
+    isLoading: loadingFitnessProfile,
+    isError: fitnessProfileError,
+  } = useQuery({
+    queryKey: ["fitnessProfile", user_id],
+    queryFn: () => GetUserFitnessProfile(user_id),
+  });
 
-  const [taggedPosts, setTaggedPosts] = useState<DT_Post[]>([]);
-  const [loadingTagged, setLoadingTagged] = useState(false);
-  const [hasMoreTagged, setHasMoreTagged] = useState(true);
-  const [taggedPostPage, setTaggedPostPage] = useState(1);
+  const {
+    data: userStats,
+    isLoading: loadingStats,
+    isError: userStatsError,
+  } = useQuery({
+    queryKey: ["followCounts", user_id],
+    queryFn: async () => {
+      const followStat = await GetFollowCounts(user_id);
+      const count = await CountPostsByUser(user_id);
+      return { ...followStat, posts: count.post_count };
+    },
+  });
 
-  const [likedPosts, setLikedPosts] = useState<DT_Post[]>([]);
-  const [loadingLiked, setLoadingLiked] = useState(false);
-  const [hasMoreLiked, setHasMoreLiked] = useState(true);
-  const [likedPostPage, setLikedPostPage] = useState(1);
+  const {
+    data: userAchievements,
+    isLoading: loadingAchievements,
+    isError: achievementsError,
+  } = useQuery({
+    queryKey: ["achievements", user_id],
+    queryFn: () => GetUserAchievements(user_id),
+  });
 
-  const [wokroutsContent, setWorkoutsContent] = useState<any[]>([]);
-  const [loadingWorkouts, setLoadingWorkout] = useState(false);
-  const [hasMoreWorkout, setHasMoreWorkouts] = useState(true);
-  const [wokroutPage, setWorkoutPage] = useState(1);
-
-  useEffect(() => {
-    fetchUserData();
-    fetchPosts(1, true);
-    fetchTaggedPosts(1, true);
-    fetchLikedPosts(1, true);
-    fetchWorkouts(1, true);
-  }, [user_id, other_user]);
-
-  const fetchUserData = async () => {
-    try {
-      if (user_id) {
-        const [profile, fitnessProfile, followCounts, achievements, postCount] =
-          await Promise.all([
-            GetUserProfile(user_id),
-            GetUserFitnessProfile(user_id),
-            GetFollowCounts(user_id),
-            GetUserAchievements(user_id),
-            CountPostsByUser(user_id),
-          ]);
-
-        setProfileData(profile);
-        setFitnessProfileData(fitnessProfile);
-        setFollowCounts(followCounts);
-        setUserAchievements(achievements);
-        setPostsCount(postCount.post_count);
-      }
-    } catch (error) {
-      console.error("Failed to fetch user data:", error);
-    }
-  };
-  const fetchPosts = async (pageToFetch: number, refresh = false) => {
-    if (loadingPosts) return;
-    setLoadingPosts(true);
-
-    try {
+  const {
+    data: postsContent,
+    fetchNextPage: fetchNextPosts,
+    hasNextPage: hasMorePosts,
+    isFetchingNextPage: loadingPosts,
+  } = useInfiniteQuery({
+    queryKey: ["posts", user_id],
+    queryFn: async ({ pageParam = 1 }) => {
       const fetchedPosts = await LazyLoadPosts({
-        page: pageToFetch,
+        page: pageParam,
         limit: 10,
         userId: user_id,
       });
+      return {
+        posts: fetchedPosts,
+        currentPage: pageParam,
+      };
+    },
+    getNextPageParam: (lastPage) =>
+      lastPage.posts.length === 10 ? lastPage.currentPage + 1 : undefined,
+    initialPageParam: 1,
+  });
 
-      setHasMorePosts(fetchedPosts.length === 10);
-
-      setPostsContent((prevPosts) =>
-        refresh ? fetchedPosts : [...prevPosts, ...fetchedPosts]
-      );
-    } catch (error: any) {
-      console.error("Error fetching posts:", error.message);
-    } finally {
-      setLoadingPosts(false);
-      setRefreshing(false);
-    }
-  };
-
-  const fetchWorkouts = async (pageToFetch: number, refresh = false) => {
-    if (loadingWorkouts) return;
-    setLoadingWorkout(true);
-
-    try {
+  const {
+    data: wokroutsContent,
+    fetchNextPage: fetchNextWorkouts,
+    hasNextPage: hasMoreWorkout,
+    isFetchingNextPage: loadingWorkouts,
+  } = useInfiniteQuery({
+    queryKey: ["workouts", user_id],
+    queryFn: async ({ pageParam = 1 }) => {
       const fetchedWorkouts = await GetWorkoutPlansByUser({
-        page: pageToFetch,
+        page: pageParam,
         limit: 10,
         userId: user_id,
       });
+      return {
+        workouts: fetchedWorkouts,
+        currentPage: pageParam,
+      };
+    },
+    getNextPageParam: (lastPage) =>
+      lastPage.workouts.length === 10 ? lastPage.currentPage + 1 : undefined,
+    initialPageParam: 1,
+  });
 
-      setHasMoreWorkouts(fetchedWorkouts.length === 10);
-
-      setWorkoutsContent((prevWorkout) =>
-        refresh ? fetchedWorkouts : [...prevWorkout, ...fetchedWorkouts]
-      );
-    } catch (error: any) {
-      console.error("Error fetching workouts:", error.message);
-    } finally {
-      setLoadingWorkout(false);
-      setRefreshing(false);
-    }
-  };
-
-  const fetchTaggedPosts = async (pageToFetch: number, refresh = false) => {
-    if (loadingTagged) return;
-    setLoadingTagged(true);
-
-    try {
+  const {
+    data: taggedPosts,
+    fetchNextPage: fetchNextTaggedPosts,
+    hasNextPage: hasMoreTagged,
+    isFetchingNextPage: loadingTagged,
+  } = useInfiniteQuery({
+    queryKey: ["taggedPosts", user_id],
+    queryFn: async ({ pageParam = 1 }) => {
       const fetchedTaggedPosts = await LazyLoadPosts({
-        tagged_users: user_id,
+        page: pageParam,
         limit: 10,
-        page: pageToFetch,
+        tagged_users: user_id,
       });
+      return {
+        posts: fetchedTaggedPosts,
+        currentPage: pageParam,
+      };
+    },
+    getNextPageParam: (lastPage) =>
+      lastPage.posts.length === 10 ? lastPage.currentPage + 1 : undefined,
+    initialPageParam: 1,
+  });
 
-      setHasMoreTagged(fetchedTaggedPosts.length === 10);
-
-      setTaggedPosts((prevPosts) =>
-        refresh ? fetchedTaggedPosts : [...prevPosts, ...fetchedTaggedPosts]
-      );
-    } catch (error: any) {
-      console.error("Error fetching tagged posts:", error.message);
-    } finally {
-      setLoadingTagged(false);
-      setRefreshing(false);
-    }
-  };
-
-  const fetchLikedPosts = async (pageToFetch: number, refresh = false) => {
-    if (loadingLiked) return;
-    setLoadingLiked(true);
-
-    try {
+  const {
+    data: likedPosts,
+    fetchNextPage: fetchNextLikedPosts,
+    hasNextPage: hasMoreLiked,
+    isFetchingNextPage: loadingLiked,
+  } = useInfiniteQuery({
+    queryKey: ["likedPosts", user_id],
+    queryFn: async ({ pageParam = 1 }) => {
       const fetchedLikedPosts = await GetLikedPostsByUser({
         user_id,
         limit: 6,
-        page: pageToFetch,
+        page: pageParam,
       });
-
-      setHasMoreLiked(fetchedLikedPosts.length === 6);
-
-      setLikedPosts((prevPosts) =>
-        refresh ? fetchedLikedPosts : [...prevPosts, ...fetchedLikedPosts]
-      );
-    } catch (error: any) {
-      console.error("Error fetching liked posts:", error.message);
-    } finally {
-      setLoadingLiked(false);
-      setRefreshing(false);
-    }
-  };
+      return {
+        posts: fetchedLikedPosts,
+        currentPage: pageParam,
+      };
+    },
+    getNextPageParam: (lastPage) =>
+      lastPage.posts.length === 6 ? lastPage.currentPage + 1 : undefined,
+    initialPageParam: 1,
+  });
 
   const handleRefresh = () => {
-    setRefreshing(true);
-    setPostPage(1);
-    setLikedPostPage(1);
-    setTaggedPostPage(1);
-    setWorkoutPage(1);
-    setHasMorePosts(true);
-    setHasMoreTagged(true);
-    setHasMoreLiked(true);
-    setHasMoreWorkouts(true);
-
-    fetchUserData();
-    if (activeTab === "Tagged") {
-      fetchTaggedPosts(1, true);
-    } else if (activeTab === "Liked") {
-      fetchLikedPosts(1, true);
-    } else if (activeTab === "Posts") {
-      fetchPosts(1, true);
-    } else if (activeTab === "Workouts") {
-      fetchWorkouts(1, true);
-    }
+    queryClient.invalidateQueries({ queryKey: ["profile", user_id] });
+    queryClient.invalidateQueries({ queryKey: ["fitnessProfile", user_id] });
+    queryClient.invalidateQueries({ queryKey: ["followCounts", user_id] });
+    queryClient.invalidateQueries({ queryKey: ["achievements", user_id] });
+    queryClient.invalidateQueries({ queryKey: ["posts", user_id] });
+    queryClient.invalidateQueries({ queryKey: ["workouts", user_id] });
+    queryClient.invalidateQueries({ queryKey: ["taggedPosts", user_id] });
+    queryClient.invalidateQueries({ queryKey: ["likedPosts", user_id] });
   };
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -231,40 +198,17 @@ const ProfilePage = ({
     if (isNearBottom) {
       switch (activeTab) {
         case "Posts":
-          if (!loadingPosts && hasMorePosts) {
-            setPostPage((prevPage) => {
-              const nextPage = prevPage + 1;
-              fetchPosts(nextPage);
-              return nextPage;
-            });
-          }
+          if (hasMorePosts) fetchNextPosts();
           break;
         case "Tagged":
-          if (!loadingTagged && hasMoreTagged) {
-            setTaggedPostPage((prevPage) => {
-              const nextPage = prevPage + 1;
-              fetchTaggedPosts(nextPage);
-              return nextPage;
-            });
-          }
+          if (hasMoreTagged) fetchNextTaggedPosts();
           break;
         case "Liked":
-          if (!loadingLiked && hasMoreLiked) {
-            setLikedPostPage((prevPage) => {
-              const nextPage = prevPage + 1;
-              fetchLikedPosts(nextPage);
-              return nextPage;
-            });
-          }
+          if (hasMoreLiked) fetchNextLikedPosts();
           break;
         case "Workouts":
-          if (!loadingWorkouts && hasMoreWorkout) {
-            setWorkoutPage((prevPage) => {
-              const nextPage = prevPage + 1;
-              fetchWorkouts(nextPage);
-              return nextPage;
-            });
-          }
+          if (hasMoreWorkout) fetchNextWorkouts();
+          break;
       }
     }
   };
@@ -286,10 +230,33 @@ const ProfilePage = ({
         pathname: "/(app)/(workout)/workout",
         params: { workoutId: post.workout_id },
       });
-    else
+    else if (activeTab === "Posts")
       router.push({
         pathname: "/(feed)",
-        params: { user_id: user_id, post_id: post.post_id, ...tabs },
+        params: {
+          user_id: user_id,
+          post_id: post.post_id,
+          ...tabs,
+        },
+      });
+    else if (activeTab === "Liked")
+      router.push({
+        pathname: "/(feed)",
+        params: {
+          user_id: user_id,
+          post_id: post.post_id,
+          ...tabs,
+        },
+      });
+    else if (activeTab === "Tagged")
+      router.push({
+        pathname: "/(feed)",
+        params: {
+          user_id: user_id,
+          post_id: post.post_id,
+
+          ...tabs,
+        },
       });
   };
 
@@ -317,7 +284,27 @@ const ProfilePage = ({
     }
   };
 
-  if (!profileData || !fitnessProfileData || !userAchievements) {
+  if (
+    loadingProfile ||
+    loadingFitnessProfile ||
+    loadingStats ||
+    loadingAchievements
+  ) {
+    return (
+      <ThemedView style={styles.errorContainer}>
+        <ThemedText style={styles.errorText}>
+          Loading profile data...
+        </ThemedText>
+      </ThemedView>
+    );
+  }
+
+  if (
+    profileError ||
+    fitnessProfileError ||
+    userStatsError ||
+    achievementsError
+  ) {
     return (
       <ThemedView style={styles.errorContainer}>
         <ThemedText style={styles.errorText}>
@@ -336,7 +323,7 @@ const ProfilePage = ({
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          <RefreshControl refreshing={false} onRefresh={handleRefresh} />
         }
         stickyHeaderIndices={[3]}
       >
@@ -345,7 +332,7 @@ const ProfilePage = ({
             user_profile: profileData,
             fitness_profile: fitnessProfileData,
             achievements: userAchievements,
-            user_stats: { ...followCounts, posts: postsCount },
+            user_stats: userStats,
           }}
           other_user={other_user}
         />
@@ -354,7 +341,7 @@ const ProfilePage = ({
             user_profile: profileData,
             fitness_profile: fitnessProfileData,
             achievements: userAchievements,
-            user_stats: { ...followCounts, posts: postsCount },
+            user_stats: userStats,
           }}
           other_user={other_user}
         />
@@ -363,7 +350,7 @@ const ProfilePage = ({
             user_profile: profileData,
             fitness_profile: fitnessProfileData,
             achievements: userAchievements,
-            user_stats: { ...followCounts, posts: postsCount },
+            user_stats: userStats,
           }}
           other_user={other_user}
         />
@@ -392,13 +379,15 @@ const ProfilePage = ({
 
         <ThemedView style={styles.tabsContainer}>
           <RenderTabContent
-            postsData={postsContent}
-            workoutsData={wokroutsContent}
-            taggedData={taggedPosts}
-            likedData={likedPosts}
+            postsData={postsContent?.pages.flatMap((page) => page.posts) || []}
+            workoutsData={
+              wokroutsContent?.pages.flatMap((page) => page.workouts) || []
+            }
+            taggedData={taggedPosts?.pages.flatMap((page) => page.posts) || []}
+            likedData={likedPosts?.pages.flatMap((page) => page.posts) || []}
           />
         </ThemedView>
-        {(loadingPosts || loadingLiked || loadingTagged) && (
+        {(loadingPosts || loadingLiked || loadingTagged || loadingWorkouts) && (
           <ActivityIndicator
             size="small"
             color="#007BFF"

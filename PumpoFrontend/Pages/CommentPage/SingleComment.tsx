@@ -1,4 +1,5 @@
 import ProfilePicture from "@/components/ProfilePicture";
+import { ThemedSpecialText } from "@/components/ThemedSpecialText";
 import { ThemedText } from "@/components/ThemedText";
 import ToggleIcon from "@/components/ToggleIcon";
 import { useAuth } from "@/context/AuthContext";
@@ -9,9 +10,10 @@ import {
   GetSubcomments,
   RemoveLike,
 } from "@/Services/postInteractionServices";
-import { timeAgo } from "@/utility/utilities";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { parseSpecialString, timeAgo } from "@/utility/utilities";
+import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 
 const Comment = ({
   comment,
@@ -21,43 +23,40 @@ const Comment = ({
   onClick: (clickedComment: DT_comment) => void;
 }) => {
   const { currentUser } = useAuth();
-  const [changed, setChanged] = useState(0);
-  const [showReplies, setShowReplies] = useState(false);
-  const [visibleReplies, setVisibleReplies] = useState(5);
 
-  const [likedByUser, setLikedByUser] = useState<string | undefined>(undefined);
-  const [numLikes, setNumLikes] = useState(0);
-  const [subComments, setSubComments] = useState<DT_comment[]>([]);
-
-  const handleViewMoreReplies = () => {
-    setVisibleReplies((prev) => prev + 5);
-  };
-
-  useEffect(() => {
-    const fetchCheckLike = async () => {
+  const { data: likedByUser, refetch: fetchLikedByUser } = useQuery({
+    queryKey: ["likedByUser", comment.comment_id, currentUser?.user_id],
+    queryFn: async () => {
       if (currentUser) {
         const { like_id } = await CheckIfUserLikedComment(
           currentUser.user_id,
           comment.comment_id
         );
-        setLikedByUser(like_id);
+        return like_id;
       }
-    };
+      return undefined;
+    },
+  });
 
-    const fetchLikeNumber = async () => {
+  const { data: numLikes, refetch: fetchNumLikes } = useQuery({
+    queryKey: ["likesCount", comment.comment_id],
+    queryFn: async () => {
       const response = await GetLikesByComment(comment.comment_id);
-      setNumLikes(parseInt(response));
-    };
+      return parseInt(response);
+    },
+  });
 
-    const fetchSubComments = async () => {
-      const response = await GetSubcomments(comment.comment_id);
-      setSubComments(response);
-    };
+  const { data: subComments, refetch: fetchSubComments } = useQuery({
+    queryKey: ["subComments", comment.comment_id],
+    queryFn: () => GetSubcomments(comment.comment_id),
+  });
 
-    fetchCheckLike();
-    fetchLikeNumber();
-    fetchSubComments();
-  }, [comment, currentUser, changed]);
+  const [showReplies, setShowReplies] = useState(false);
+  const [visibleReplies, setVisibleReplies] = useState(5);
+
+  const handleViewMoreReplies = () => {
+    setVisibleReplies((prev) => prev + 5);
+  };
 
   const handleClickLike = async (like: boolean) => {
     if (currentUser) {
@@ -69,7 +68,8 @@ const Comment = ({
       } else if (likedByUser) {
         await RemoveLike(likedByUser);
       }
-      setChanged((x) => x + 1);
+      fetchLikedByUser();
+      fetchNumLikes();
     }
   };
 
@@ -105,7 +105,7 @@ const Comment = ({
             lightColor="#333"
             style={styles.commentText}
           >
-            {comment.content}
+            <ThemedSpecialText text={comment.content} />
           </ThemedText>
         </View>
         <View style={styles.commentActions}>
@@ -122,12 +122,12 @@ const Comment = ({
             lightColor="#333"
             style={styles.likesCount}
           >
-            {numLikes}
+            {numLikes || 0}
           </ThemedText>
         </View>
       </TouchableOpacity>
 
-      {subComments.length > 0 && (
+      {subComments && subComments.length > 0 && (
         <>
           <TouchableOpacity
             onPress={() => setShowReplies(!showReplies)}
@@ -140,7 +140,7 @@ const Comment = ({
             </ThemedText>
           </TouchableOpacity>
           {showReplies &&
-            subComments.slice(0, visibleReplies).map((reply) => (
+            subComments.slice(0, visibleReplies).map((reply: any) => (
               <View key={reply.comment_id} style={styles.replyContainer}>
                 <Comment
                   comment={reply}

@@ -1,22 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  FlatList,
-  Dimensions,
-  StyleSheet,
-  RefreshControl,
-  ActivityIndicator,
-  Alert,
-  TouchableOpacity,
-  Text,
-} from "react-native";
-import { useIsFocused } from "@react-navigation/native";
-import { FilterPostsByType, GetPulseFeed } from "@/Services/postServices";
-import {
-  CheckUserFollow,
-  FollowUser,
-  GetUserProfile,
-} from "@/Services/userServices";
+import { MainTabBarHeight } from "@/constants/DimensionsConstants";
+import { useAuth } from "@/context/AuthContext";
 import {
   AddBookmark,
   AddLike,
@@ -25,39 +8,48 @@ import {
   GetInteractionSummaryByPost,
   RemoveLike,
 } from "@/Services/postInteractionServices";
+import { GetPulseFeed } from "@/Services/postServices";
+import {
+  CheckUserFollow,
+  FollowUser,
+  GetUserProfile,
+} from "@/Services/userServices";
+import { useIsFocused } from "@react-navigation/native";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from "react-native";
 import SinglePulse from "./SinglePulse";
-import { MainTabBarHeight } from "@/constants/DimensionsConstants";
-import { useAuth } from "@/context/AuthContext";
-import SlidingModal from "@/components/SlidingModal";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const { height } = Dimensions.get("window");
-
 const Pulse: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [videosData, setVideosData] = useState<DT_Pulse[]>([]);
-  const [page, setPage] = useState(1); // Current page for pagination
-  const [loading, setLoading] = useState(false); // Loading state for pagination
-  const [refreshing, setRefreshing] = useState(false); // Refreshing state
-  const [hasMore, setHasMore] = useState(true); // Whether more data can be loaded
   const isFocused = useIsFocused();
   const { currentUser } = useAuth();
 
-  const fetchVideos = async (
-    pageToFetch: number,
-    isRefreshing = false,
-    isUpdating: string | undefined = undefined
-  ) => {
-    if (loading || (!isRefreshing && !hasMore)) return; // Prevent duplicate fetches
-    setLoading(true);
-    if (currentUser)
-      try {
-        const response: DT_Pulse[] = await GetPulseFeed({
-          limit: 10,
-          page: pageToFetch,
-        });
+  const {
+    data: videosData,
+    fetchNextPage,
+    hasNextPage: hasMore,
+    isFetchingNextPage: loading,
+    refetch,
+    isRefetching,
+  } = useInfiniteQuery({
+    queryKey: ["pulseVideos"],
+    queryFn: async ({ pageParam = 1 }) => {
+      const response: DT_Pulse[] = await GetPulseFeed({
+        limit: 10,
+        page: pageParam,
+      });
 
-        const fetchSinglePulse = async (pulse: DT_Pulse) => {
+      const fetchSinglePulse = async (pulse: DT_Pulse) => {
+        if (currentUser) {
           const user: DT_UserProfile = await GetUserProfile(pulse.user_id);
           const interaction: DT_PostInteraction =
             await GetInteractionSummaryByPost(
@@ -75,56 +67,35 @@ const Pulse: React.FC = () => {
             interactions: interaction,
             relationship: relationship,
           };
-        };
-        const pulseData: DT_Pulse[] = await Promise.all(
-          response.map(async (post: DT_Pulse) => fetchSinglePulse(post))
-        );
-
-        if (isUpdating) {
-          const updated = await fetchSinglePulse(
-            videosData.filter((x) => x.post_id == isUpdating)[0]
-          );
-          setVideosData((prev) =>
-            prev.map((x) => (x.post_id === isUpdating ? updated : x))
-          );
-        } else if (isRefreshing) {
-          setVideosData(pulseData); // Replace data on refresh
-        } else {
-          setVideosData((prevData) => [...prevData, ...pulseData]); // Append new data
         }
+      };
 
-        if (pulseData.length < 10) setHasMore(false); // No more data to load
-      } catch (error) {
-        console.error("Error fetching videos:", error);
-      } finally {
-        setLoading(false);
-        setRefreshing(false);
-      }
-  };
+      const pulseData: DT_Pulse[] | any = await Promise.all(
+        response.map(async (post: DT_Pulse) => fetchSinglePulse(post))
+      );
 
-  useEffect(() => {
-    fetchVideos(1, true); // Initial fetch on mount
-  }, []);
+      return {
+        posts: pulseData,
+        currentPage: pageParam,
+      };
+    },
+    getNextPageParam: (lastPage) =>
+      lastPage.posts.length === 10 ? lastPage.currentPage + 1 : undefined,
+    initialPageParam: 1,
+  });
 
   const handleRefresh = () => {
-    setRefreshing(true);
-    setPage(1);
-    setHasMore(true);
-    fetchVideos(1, true); // Refresh from the first page
+    refetch(); // Trigger refetch to refresh data
   };
 
   const handleLoadMore = () => {
-    if (hasMore) {
-      const nextPage = page + 1;
-      setPage(nextPage);
-      fetchVideos(nextPage);
-    }
+    if (hasMore) fetchNextPage(); // Fetch next page if more data is available
   };
 
   const handleClickLike = (post_id: string) => async (liked: boolean) => {
     if (currentUser) {
       if (liked) {
-        const response = await AddLike({
+        await AddLike({
           post_id,
           user_id: currentUser.user_id,
         });
@@ -133,17 +104,17 @@ const Pulse: React.FC = () => {
           currentUser.user_id,
           post_id
         );
-        const response = RemoveLike(like_id);
+        await RemoveLike(like_id);
       }
     }
-    fetchVideos(page, false, post_id);
+    refetch();
   };
 
   const handleClickBookmark =
     (post_id: string) => async (bookmarked: boolean) => {
       if (currentUser) {
         if (bookmarked) {
-          const response = await AddBookmark({
+          await AddBookmark({
             post_id,
             user_id: currentUser.user_id,
           });
@@ -152,25 +123,25 @@ const Pulse: React.FC = () => {
             currentUser.user_id,
             post_id
           );
-          const response = RemoveLike(bookmark_id);
+          await RemoveLike(bookmark_id);
         }
       }
-      fetchVideos(page, false, post_id);
+      refetch();
     };
 
   const handleClickFollow = (user_id: string) => async (followed: boolean) => {
     if (currentUser) {
       if (followed) {
-        const response = await FollowUser(currentUser.user_id, user_id);
+        await FollowUser(currentUser.user_id, user_id);
       }
     }
-    const post_id = videosData.filter((x) => x.user_id == user_id)[0].post_id;
-    fetchVideos(page, false, post_id);
+    refetch();
   };
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={videosData}
+        data={videosData?.pages.flatMap((page) => page.posts) || []}
         renderItem={({ item, index }) => (
           <SinglePulse
             pulse={item}
@@ -191,12 +162,9 @@ const Pulse: React.FC = () => {
         }}
         viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
         onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5} // Trigger when the user scrolls near the bottom
+        onEndReachedThreshold={0.5}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-        ListHeaderComponent={
-          refreshing ? <ActivityIndicator size="small" color="#007BFF" /> : null
+          <RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} />
         }
         ListFooterComponent={
           loading && hasMore ? (

@@ -29,18 +29,40 @@ import PostOptionsPopup from "./PostOptionsPopup";
 import TextPost from "./TextPost";
 import VideoPost from "./VideoPost";
 import { openMessage } from "../MessagesPage/NewMessage";
+import { useQuery } from "@tanstack/react-query";
 
 const PostComponent = ({ post }: { post: DT_Post }) => {
   const router = useRouter();
   const { currentUser } = useAuth();
-  const [userProfile, setUserProfile] = useState<DT_UserProfile | undefined>(
-    undefined
-  );
-  const [interactionData, setInteractionData] = useState<DT_PostInteraction>({
-    comment_count: 0,
-    like_count: 0,
-    share_count: 0,
-    bookmark_count: 0,
+
+  const { data: userProfile, refetch: fetchUserProfile } = useQuery({
+    queryKey: ["userProfile", post.user_id],
+    queryFn: () => GetUserProfile(post.user_id),
+    enabled: !!post.user_id,
+  });
+
+  const { data: interactionData, refetch: fetchInteractions } = useQuery({
+    queryKey: ["postInteractions", post.post_id],
+    queryFn: async () => {
+      const {
+        comment_count,
+        like_count,
+        share_count,
+        bookmark_count,
+        like_id,
+        bookmark_id,
+        share_id,
+      } = await GetInteractionSummaryByPost(post.post_id, currentUser?.user_id);
+      return {
+        comment_count,
+        like_count,
+        share_count,
+        bookmark_count,
+        like_id,
+        bookmark_id,
+        share_id,
+      };
+    },
   });
 
   const [shareSheetVisible, setShareSheetVisible] = useState(false);
@@ -79,7 +101,7 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
       .sort((a, b) => a.order - b.order)
       .map((x) => x.elem);
 
-    if (items.length == 0)
+    if (items.length === 0)
       return <Text style={styles.unsupportedText}>Unsupported Post Type</Text>;
     return (
       <Carousel
@@ -89,38 +111,6 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
     );
   };
 
-  useEffect(() => {
-    fetchUserProfile();
-    fetchInteractions();
-  }, [post]);
-
-  const fetchUserProfile = async () => {
-    if (currentUser) {
-      const response = await GetUserProfile(post.user_id);
-      setUserProfile(response);
-    }
-  };
-
-  const fetchInteractions = async () => {
-    const {
-      comment_count,
-      like_count,
-      share_count,
-      bookmark_count,
-      like_id,
-      bookmark_id,
-      share_id,
-    } = await GetInteractionSummaryByPost(post.post_id, currentUser?.user_id);
-    setInteractionData({
-      comment_count,
-      like_count,
-      share_count,
-      bookmark_count,
-      like_id,
-      share_id,
-      bookmark_id,
-    });
-  };
   const handleClickComment = () => {
     router.push({
       pathname: "/comment",
@@ -136,7 +126,7 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
           post_id: post.post_id,
         });
       } else {
-        if (interactionData.like_id) await RemoveLike(interactionData.like_id);
+        if (interactionData?.like_id) await RemoveLike(interactionData.like_id);
       }
     }
     fetchInteractions();
@@ -200,7 +190,7 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
                 <ToggleIcon
                   iconName="heart"
                   onToggle={handleClickLike}
-                  isInitiallyToggled={interactionData.like_id != undefined}
+                  isInitiallyToggled={interactionData?.like_id != undefined}
                   style={{}}
                   toggledColor="red"
                   size={24}
@@ -243,6 +233,7 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
               text={post.description}
               maxWords={15}
               style={styles.captionText}
+              allowMarkup
             />
           </Text>
           <Text style={styles.timestampText}>

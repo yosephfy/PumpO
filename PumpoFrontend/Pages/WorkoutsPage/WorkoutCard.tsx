@@ -19,21 +19,18 @@ import {
   ThemedView,
 } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import { useQuery } from "@tanstack/react-query";
 // ------------------- WorkoutCard Component -------------------
-
 const WorkoutCard: React.FC<{ workout: any; onPress: () => void }> = ({
   workout,
   onPress,
 }) => {
-  const [exercises, setExercises] = useState([]);
-  const fetchExercises = async () => {
-    const exercises = await GetAllExercisesInWorkoutPlan(workout.workout_id);
-    setExercises(exercises);
-  };
+  const { data: exercises, isLoading } = useQuery({
+    queryKey: ["exercises", workout.workout_id],
+    queryFn: () => GetAllExercisesInWorkoutPlan(workout.workout_id),
+    enabled: !!workout.workout_id, // Ensure the query runs only if workout_id is defined
+  });
 
-  useEffect(() => {
-    fetchExercises();
-  }, [workout]);
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <ThemedFadedView style={styles.cardBody}>
@@ -66,7 +63,7 @@ const WorkoutCard: React.FC<{ workout: any; onPress: () => void }> = ({
           </ThemedText>
           <ThemedText style={styles.cardInfo} darkColor="#b6bfc9">
             Duration: {workout.duration_minutes || 0} min •{" "}
-            {exercises?.length || "N/A"} Exercises
+            {isLoading ? "Loading..." : exercises?.length || "N/A"} Exercises
           </ThemedText>
         </View>
 

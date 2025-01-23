@@ -1,8 +1,24 @@
 import ProfilePicture from "@/components/ProfilePicture";
 import SearchBar from "@/components/SearchBar";
+import SelectableFlatList from "@/components/SelectableFlatList";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import {
+  CreateChat,
+  GetChatDetails,
+  GetChatParticipants,
+} from "@/Services/messageServices";
+import {
+  GetFollowers,
+  GetFollowing,
+  SearchUsers,
+} from "@/Services/userServices";
+import { timeAgo } from "@/utility/utilities";
+import { Ionicons } from "@expo/vector-icons";
+import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-  FlatList,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -11,36 +27,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SearchUsers } from "@/Services/userServices";
-import { GetFollowers, GetFollowing } from "@/Services/userServices";
-import { router } from "expo-router";
-import SelectableFlatList from "@/components/SelectableFlatList";
-import { Ionicons } from "@expo/vector-icons";
-import {
-  CreateChat,
-  GetChatDetails,
-  GetChatParticipants,
-} from "@/Services/messageServices";
-import { timeAgo } from "@/utility/utilities";
-import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
-import { useAuth } from "@/context/AuthContext";
 
 const NewMessage = ({ userId }: { userId: string }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [contacts, setContacts] = useState<any[]>([]);
-  const [suggestedContacts, setSuggestedContacts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchSuggestedContacts = async () => {
-      try {
-        setLoading(true);
+  const { data: suggestedContacts, isLoading: loadingSuggestedContacts } =
+    useQuery({
+      queryKey: ["suggestedContacts", userId],
+      queryFn: async () => {
         const followers = await GetFollowers(userId);
         const following = await GetFollowing(userId);
-
-        const combinedContacts = [
+        return [
           ...followers,
           ...following.filter(
             (follow: any) =>
@@ -49,41 +47,37 @@ const NewMessage = ({ userId }: { userId: string }) => {
               )
           ),
         ];
-        setSuggestedContacts(combinedContacts);
-      } catch (error) {
-        console.error("Error fetching suggested contacts:", error);
-      } finally {
-        setLoading(false);
+      },
+    });
+
+  const {
+    data: contacts,
+    isFetching: searching,
+    refetch: searchContacts,
+  } = useQuery({
+    queryKey: ["searchContacts", searchQuery],
+    queryFn: async () => {
+      if (searchQuery.trim().length > 0) {
+        return await SearchUsers({ query: searchQuery, limit: 10, page: 1 });
+      } else {
+        return [];
       }
-    };
+    },
+    enabled: false, // Disable automatic fetch
+  });
 
-    fetchSuggestedContacts();
-  }, [userId]);
-
-  const handleSearch = async (query: string) => {
-    setSearchQuery(query);
-
-    if (query.trim().length > 0) {
-      try {
-        setLoading(true);
-        const results = await SearchUsers({ query: query, limit: 10, page: 1 });
-        setContacts(results);
-      } catch (error) {
-        console.error("Error searching users:", error);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      setContacts([]);
+  useEffect(() => {
+    if (searchQuery.trim().length > 0) {
+      searchContacts();
     }
+  }, [searchQuery]);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
   const handleContactSelect = (selectedIds: any[]) => {
     setSelectedIds(selectedIds);
-  };
-
-  const getOtherParticipantId = (participants: any[]) => {
-    return participants.filter((x) => x.user_id !== userId);
   };
 
   const handleStartChat = async () => {
@@ -117,7 +111,10 @@ const NewMessage = ({ userId }: { userId: string }) => {
 
         {searchQuery.trim().length > 0 ? (
           <SelectableFlatList
-            data={contacts.map((x) => ({ ...x, id: x.user_id }))}
+            data={
+              contacts?.map((x: DT_UserProfile) => ({ ...x, id: x.user_id })) ||
+              []
+            }
             onSelectionChange={handleContactSelect}
             renderItem={renderContactItem}
             containerStyle={styles.contactListContainer}
@@ -129,7 +126,9 @@ const NewMessage = ({ userId }: { userId: string }) => {
               Suggested
             </ThemedText>
             <SelectableFlatList
-              data={suggestedContacts.map((x) => ({ ...x, id: x.user_id }))}
+              data={
+                suggestedContacts?.map((x) => ({ ...x, id: x.user_id })) || []
+              }
               onSelectionChange={handleContactSelect}
               renderItem={renderContactItem}
               containerStyle={styles.contactListContainer}
@@ -153,6 +152,7 @@ const NewMessage = ({ userId }: { userId: string }) => {
     </KeyboardAvoidingView>
   );
 };
+
 export const openMessage = async ({
   userId,
   participants,
@@ -163,7 +163,6 @@ export const openMessage = async ({
   const getOtherParticipantId = (participants: any[], userId: string) => {
     return participants.filter((x) => x.user_id !== userId);
   };
-  console.log("yurr");
   try {
     const chat_id = await CreateChat({
       participant_ids: [userId, ...participants],

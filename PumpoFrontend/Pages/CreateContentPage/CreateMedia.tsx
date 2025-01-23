@@ -16,6 +16,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
+import { ThemedView } from "@/components/ThemedView";
 
 const CreateMedia: React.FC = () => {
   const [facing, setFacing] = useState<CameraType>("back"); // Camera direction
@@ -86,7 +87,7 @@ const CreateMedia: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <CameraView
         style={styles.camera}
         facing={facing}
@@ -126,7 +127,7 @@ const CreateMedia: React.FC = () => {
           </TouchableOpacity>
         </View>
       </CameraView>
-    </View>
+    </ThemedView>
   );
 };
 

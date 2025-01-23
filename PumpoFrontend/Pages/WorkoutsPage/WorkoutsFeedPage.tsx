@@ -16,44 +16,31 @@ import { Ionicons } from "@expo/vector-icons";
 import WorkoutCard from "./WorkoutCard";
 import { ThemedView } from "@/components/ThemedView";
 import { router } from "expo-router";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const WorkoutFeedPage: React.FC = () => {
-  const [workouts, setWorkouts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ["workouts"], // Query key
+      queryFn: async ({ pageParam = 1 }) => {
+        const fetchedWorkouts = await GetAllWorkoutPlans(
+          10,
+          (pageParam - 1) * 10
+        );
+        return {
+          workouts: fetchedWorkouts,
+          nextPage: fetchedWorkouts.length === 10 ? pageParam + 1 : null,
+        };
+      },
+      getNextPageParam: (lastPage) => lastPage.nextPage,
+      initialPageParam: 1,
+    });
 
-  const fetchWorkouts = async (pageToFetch: number) => {
-    if (loading || !hasMore) return; // Prevent duplicate requests
-    setLoading(true);
-    try {
-      const fetchedWorkouts = await GetAllWorkoutPlans(
-        10,
-        (pageToFetch - 1) * 10
-      );
-      if (fetchedWorkouts.length < 10) {
-        setHasMore(false); // No more data to load
-      }
-
-      setWorkouts((prevWorkouts) => [...prevWorkouts, ...fetchedWorkouts]);
-    } catch (error) {
-      console.error("Error fetching workouts:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchWorkouts(1); // Initial fetch
-  }, []);
+  const workouts = data?.pages.flatMap((page) => page.workouts) || [];
 
   const handleLoadMore = () => {
-    if (hasMore) {
-      setPage((prevPage) => {
-        const nextPage = prevPage + 1;
-        fetchWorkouts(nextPage);
-        return nextPage;
-      });
+    if (hasNextPage) {
+      fetchNextPage();
     }
   };
 
@@ -71,16 +58,22 @@ const WorkoutFeedPage: React.FC = () => {
 
   return (
     <ThemedView style={styles.container}>
-      <FlatList
-        data={workouts}
-        renderItem={renderWorkoutItem}
-        keyExtractor={(item) => item.workout_id}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5} // Trigger load more when 50% from the bottom
-        ListFooterComponent={
-          loading ? <ActivityIndicator size="large" color="#007BFF" /> : null
-        }
-      />
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#007BFF" />
+      ) : (
+        <FlatList
+          data={workouts}
+          renderItem={renderWorkoutItem}
+          keyExtractor={(item) => item.workout_id}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5} // Trigger load more when 50% from the bottom
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <ActivityIndicator size="large" color="#007BFF" />
+            ) : null
+          }
+        />
+      )}
     </ThemedView>
   );
 };
