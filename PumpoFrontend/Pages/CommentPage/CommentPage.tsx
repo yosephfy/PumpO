@@ -43,6 +43,7 @@ const CommentPage = ({ post_id }: { post_id: string }) => {
     }) => AddComment(commentData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", post_id] });
+      queryClient.invalidateQueries({ queryKey: ["subComments"] });
       setNewComment("");
       setCommentParent(undefined);
     },

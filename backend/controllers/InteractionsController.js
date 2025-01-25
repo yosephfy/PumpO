@@ -81,7 +81,7 @@ export const getRepliesByComment = (req, res) => {
     FROM Comments c
     JOIN Users u ON c.user_id = u.user_id
     WHERE c.parent_comment_id = ?
-    ORDER BY c.created_at DESC
+    ORDER BY c.created_at ASC
   `;
 
   db.query(query, [commentId], (err, data) => {
