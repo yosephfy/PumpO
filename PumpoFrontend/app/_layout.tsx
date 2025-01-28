@@ -15,6 +15,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { AuthProvider } from "@/context/AuthContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { SettingsProvider } from "@/context/SettingContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -44,69 +45,71 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView>
         <AuthProvider>
-          <Stack
-            screenOptions={{
-              headerStyle: { backgroundColor },
-              headerTitleStyle: { color: titleColor },
-            }}
-          >
-            <Stack.Screen
-              name="(app)"
-              options={{
-                headerShown: false,
-                title: "Home",
+          <SettingsProvider>
+            <Stack
+              screenOptions={{
+                headerStyle: { backgroundColor },
+                headerTitleStyle: { color: titleColor },
               }}
-            />
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="(full_post)"
-              options={{
-                headerShown: false,
-                title: "Post",
-                headerBackButtonDisplayMode: "minimal",
-              }}
-            />
-            <Stack.Screen
-              name="(explore)"
-              options={{
-                headerShown: false,
-                title: "Explore",
-                headerBackButtonDisplayMode: "minimal",
-              }}
-            />
-            <Stack.Screen
-              name="(messages)"
-              options={{
-                headerShown: false,
-                title: "Messages",
-                headerBackButtonDisplayMode: "minimal",
-              }}
-            />
-            <Stack.Screen
-              name="(create)"
-              options={{
-                headerShown: false,
-                title: "Create",
-                headerBackButtonDisplayMode: "minimal",
-                presentation: "containedModal",
-              }}
-            />
-            <Stack.Screen
-              name="comment"
-              options={{
-                title: "Comments",
-                headerShown: false,
-                presentation: "modal",
-              }}
-            />
-            <Stack.Screen
-              name="(feed)"
-              options={{
-                title: "Feed",
-                headerShown: true,
-              }}
-            />
-          </Stack>
+            >
+              <Stack.Screen
+                name="(app)"
+                options={{
+                  headerShown: false,
+                  title: "Home",
+                }}
+              />
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="(full_post)"
+                options={{
+                  headerShown: false,
+                  title: "Post",
+                  headerBackButtonDisplayMode: "minimal",
+                }}
+              />
+              <Stack.Screen
+                name="(explore)"
+                options={{
+                  headerShown: false,
+                  title: "Explore",
+                  headerBackButtonDisplayMode: "minimal",
+                }}
+              />
+              <Stack.Screen
+                name="(messages)"
+                options={{
+                  headerShown: false,
+                  title: "Messages",
+                  headerBackButtonDisplayMode: "minimal",
+                }}
+              />
+              <Stack.Screen
+                name="(create)"
+                options={{
+                  headerShown: false,
+                  title: "Create",
+                  headerBackButtonDisplayMode: "minimal",
+                  presentation: "containedModal",
+                }}
+              />
+              <Stack.Screen
+                name="comment"
+                options={{
+                  title: "Comments",
+                  headerShown: false,
+                  presentation: "modal",
+                }}
+              />
+              <Stack.Screen
+                name="(feed)"
+                options={{
+                  title: "Feed",
+                  headerShown: true,
+                }}
+              />
+            </Stack>
+          </SettingsProvider>
         </AuthProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>

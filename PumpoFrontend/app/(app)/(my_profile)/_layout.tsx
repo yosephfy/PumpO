@@ -2,12 +2,14 @@ import { ThemedIcon } from "@/components/ThemedView";
 import { useAuth } from "@/context/AuthContext";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Ionicons } from "@expo/vector-icons";
-import { Stack, useRouter } from "expo-router";
+import { Stack, usePathname, useRouter } from "expo-router";
 import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 
 const ProfileLayout: React.FC = () => {
   const router = useRouter();
+  const path = usePathname();
+
   const { currentUser } = useAuth();
   const backgroundColor: any = useThemeColor({}, "background");
   const titleColor: any = useThemeColor({}, "text");
@@ -38,7 +40,7 @@ const ProfileLayout: React.FC = () => {
               </TouchableOpacity>
               {/* Settings Icon */}
               <TouchableOpacity
-                onPress={() => router.push("/(app)/(my_profile)/settings")}
+                onPress={() => router.push("/(app)/(my_profile)/(settings)")}
               >
                 <ThemedIcon
                   name="settings-outline"
@@ -52,8 +54,11 @@ const ProfileLayout: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="settings"
-        options={{ title: "Settings", headerShown: true }}
+        name="(settings)"
+        options={{
+          title: "Settings",
+          headerShown: false,
+        }}
       />
       <Stack.Screen
         name="edit"
