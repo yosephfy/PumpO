@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 import React, {
   createContext,
   ReactNode,
@@ -10,6 +11,7 @@ import React, {
 interface AuthContextType {
   isAuthenticated: boolean;
   currentUser: DT_UserProfile | null;
+  loading: boolean; // New loading state
   signIn: (user: DT_UserProfile) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -19,15 +21,24 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<DT_UserProfile | null>(null);
+  const [loading, setLoading] = useState(true); // Indicates loading state
 
   // Load authentication state and current user from AsyncStorage on app load
   useEffect(() => {
     const loadAuthState = async () => {
-      const storedAuthState = await AsyncStorage.getItem("isAuthenticated");
-      const storedUser = await AsyncStorage.getItem("currentUser");
-      if (storedAuthState === "true" && storedUser) {
-        setIsAuthenticated(true);
-        setCurrentUser(JSON.parse(storedUser));
+      setLoading(true); // Start loading
+      try {
+        const storedAuthState = await AsyncStorage.getItem("isAuthenticated");
+        const storedUser = await AsyncStorage.getItem("currentUser");
+        if (storedAuthState === "true" && storedUser) {
+          setIsAuthenticated(true); // Set state directly without redundant writes
+          setCurrentUser(JSON.parse(storedUser));
+          router.replace("/(app)");
+        }
+      } catch (error) {
+        console.error("Error loading auth state:", error);
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
     loadAuthState();
@@ -49,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, currentUser, signIn, signOut }}
+      value={{ isAuthenticated, currentUser, loading, signIn, signOut }}
     >
       {children}
     </AuthContext.Provider>

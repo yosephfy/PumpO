@@ -29,6 +29,7 @@ const Login: React.FC = () => {
       .then((res) => {
         signIn(res?.user);
         //Alert.alert("Login Successful", `Welcome back, ${res?.user.username}`);
+        router.replace("/(app)");
       })
       .catch((err) => {
         Alert.alert(
