@@ -15,24 +15,66 @@ import { ThemedFadedView, ThemedIcon } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
+import DropdownMenu from "./DropDownComponent";
 
-export type SettingOptionProp = {
+/** 🔹 Stronger Types for Each Option Type */
+export type SettingOptionBase = {
   id: string;
   label: string;
-  type: "toggle" | "dropdown" | "navigation" | "button" | "datetime" | "text";
-  value?: boolean;
   icon?: keyof typeof Ionicons.glyphMap;
-  onToggle?: (value: boolean) => void;
-  dropdownOptions?: { label: string; value: string }[];
-  dropdownValue?: string;
-  onDropdownChange?: (value: string) => void;
-  screen?: string;
-  onPress?: () => void;
-  datetimeValue?: Date;
-  onDateTimeChange?: (date: Date) => void;
-  mode?: "date" | "time" | "datetime";
   disabled?: boolean;
 };
+
+/** Toggle Type */
+export type SettingToggleOptionProps = SettingOptionBase & {
+  type: "toggle";
+  value: boolean;
+  onToggle: (value: boolean) => void;
+};
+
+/** Dropdown Type */
+export type SettingDropdownOptionProps = SettingOptionBase & {
+  type: "dropdown";
+  dropdownOptions: { label: string; value: string }[];
+  dropdownValue: string;
+  onDropdownChange: (value: string) => void;
+};
+
+/** Navigation Type */
+export type SettingNavigationOptionProps = SettingOptionBase & {
+  type: "navigation";
+  screen?: string;
+  onPress?: () => void;
+};
+
+/** Button Type */
+export type SettingButtonOptionProps = SettingOptionBase & {
+  type: "button";
+  onPress: () => void;
+};
+
+/** DateTime Picker Type */
+export type SettingDateTimeOptionProps = SettingOptionBase & {
+  type: "datetime";
+  datetimeValue: Date;
+  onDateTimeChange: (date: Date) => void;
+  mode?: "date" | "time" | "datetime";
+};
+
+/** Read-Only Text Type */
+export type SettingTextOptionProps = SettingOptionBase & {
+  type: "text";
+};
+
+/** 🔹 Union of All Setting Types */
+export type SettingOptionProp =
+  | SettingToggleOptionProps
+  | SettingDropdownOptionProps
+  | SettingNavigationOptionProps
+  | SettingButtonOptionProps
+  | SettingDateTimeOptionProps
+  | SettingTextOptionProps;
 
 export type SettingOptionGroupProp = {
   id: string;
@@ -49,7 +91,7 @@ type ReusableOptionsListProps = Omit<
 
 // Individual Components for Each Option Type
 export const SettingToggleOption: React.FC<{
-  item: SettingOptionProp;
+  item: SettingToggleOptionProps;
 }> = ({ item }) => (
   <View style={styles.optionContainer}>
     {item.icon && (
@@ -69,7 +111,7 @@ export const SettingToggleOption: React.FC<{
 );
 
 export const SettingNavigationOption: React.FC<{
-  item: SettingOptionProp;
+  item: SettingNavigationOptionProps;
 }> = ({ item }) => (
   <TouchableOpacity style={styles.optionContainer} onPress={item.onPress}>
     {item.icon && (
@@ -83,7 +125,7 @@ export const SettingNavigationOption: React.FC<{
 );
 
 export const SettingDropdownOption: React.FC<{
-  item: SettingOptionProp;
+  item: SettingDropdownOptionProps;
   backgroundColor: string;
   textColor: string;
 }> = ({ item, backgroundColor, textColor }) => {
@@ -96,7 +138,7 @@ export const SettingDropdownOption: React.FC<{
         </View>
       )}
       <ThemedText style={styles.optionLabel}>{item.label}</ThemedText>
-      <Dropdown
+      {/* <Dropdown
         ref={ref}
         data={item.dropdownOptions || []}
         labelField="label"
@@ -110,13 +152,21 @@ export const SettingDropdownOption: React.FC<{
         containerStyle={[styles.dropdownContent, { backgroundColor }]}
         activeColor={"transparent"}
         disable={item.disabled}
+      /> */}
+      <DropdownMenu
+        options={item.dropdownOptions}
+        selectedValue={item.dropdownValue}
+        onSelect={(selectedItem) => item.onDropdownChange?.(selectedItem)}
+        triggerStyle={styles.dropdown}
+        dropdownItemStyle={styles.dropdownSelectedItem}
+        dropdownItemTextStyle={{ padding: 10 }}
       />
     </View>
   );
 };
 
 export const SettingButtonOption: React.FC<{
-  item: SettingOptionProp;
+  item: SettingButtonOptionProps;
 }> = ({ item }) => (
   <TouchableOpacity
     style={[styles.optionContainer, styles.buttonContainer]}
@@ -130,7 +180,7 @@ export const SettingButtonOption: React.FC<{
 );
 
 export const SettingDateTimeOption: React.FC<{
-  item: SettingOptionProp;
+  item: SettingDateTimeOptionProps;
 }> = ({ item }) => {
   const onDateChange = (_: any, selectedDate?: Date) => {
     if (!selectedDate) return; // Ignore empty values to prevent crashes
@@ -159,7 +209,7 @@ export const SettingDateTimeOption: React.FC<{
 };
 
 export const SettingTextOption: React.FC<{
-  item: SettingOptionProp;
+  item: SettingTextOptionProps;
 }> = ({ item }) => (
   <View style={styles.textOptionContainer}>
     {item.icon && (
@@ -265,13 +315,19 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     flexDirection: "row",
     alignItems: "center",
+    //width: "100%",
+    justifyContent: "space-between",
+    gap: 40,
+    flex: 1,
   },
   dropdown: {
-    borderWidth: 1,
+    //borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 8,
     padding: 10,
-    flex: 0.7,
+    //flex: 1,
+    alignItems: "center",
+    maxWidth: 200,
   },
   dropdownPlaceholder: {
     fontSize: 14,
@@ -279,9 +335,8 @@ const styles = StyleSheet.create({
   dropdownSelectedText: {
     fontSize: 14,
   },
-  dropdownContent: {
-    borderRadius: 8,
-    marginTop: 10,
+  dropdownSelectedItem: {
+    justifyContent: "center",
   },
   buttonContainer: {
     justifyContent: "center",

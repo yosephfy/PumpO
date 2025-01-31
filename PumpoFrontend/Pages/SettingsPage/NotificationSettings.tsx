@@ -3,6 +3,7 @@ import SettingOptionsComponent, {
   SettingOptionGroupProp,
 } from "@/components/OptionsComponent";
 import { useSetting } from "@/hooks/useSettings";
+import { SETTINGS } from "@/Services/SettingTypes";
 
 const NotificationSettings = () => {
   const { value: pushNotifications, updateSetting: setPushNotifications } =
@@ -95,7 +96,8 @@ const NotificationSettings = () => {
           id: "push-1",
           label: "Enable Push Notifications",
           type: "toggle",
-          value: pushNotifications,
+          value:
+            pushNotifications as SETTINGS["notifications"]["pushNotifications"],
           onToggle: (val) => setPushNotifications(val),
         },
       ],
@@ -108,28 +110,31 @@ const NotificationSettings = () => {
           id: "activity-1",
           label: "Likes",
           type: "toggle",
-          value: likesNotifications,
+          value: likesNotifications as SETTINGS["notifications"]["notifyLikes"],
           onToggle: (val) => setLikesNotifications(val),
         },
         {
           id: "activity-2",
           label: "Comments",
           type: "toggle",
-          value: commentsNotifications,
+          value:
+            commentsNotifications as SETTINGS["notifications"]["notifyComments"],
           onToggle: (val) => setCommentsNotifications(val),
         },
         {
           id: "activity-3",
           label: "Shares",
           type: "toggle",
-          value: sharesNotifications,
+          value:
+            sharesNotifications as SETTINGS["notifications"]["notifyShares"],
           onToggle: (val) => setSharesNotifications(val),
         },
         {
           id: "activity-4",
           label: "Bookmarks",
           type: "toggle",
-          value: bookmarksNotifications,
+          value:
+            bookmarksNotifications as SETTINGS["notifications"]["notifyBookmarks"],
           onToggle: (val) => setBookmarksNotifications(val),
         },
       ],
@@ -142,14 +147,16 @@ const NotificationSettings = () => {
           id: "followers-1",
           label: "New Followers",
           type: "toggle",
-          value: followersNotifications,
+          value:
+            followersNotifications as SETTINGS["notifications"]["notifyNewFollowers"],
           onToggle: (val) => setFollowersNotifications(val),
         },
         {
           id: "followers-2",
           label: "Unfollowers",
           type: "toggle",
-          value: unfollowersNotifications,
+          value:
+            unfollowersNotifications as SETTINGS["notifications"]["notifyUnfollowers"],
           onToggle: (val) => setUnfollowersNotifications(val),
         },
       ],
@@ -162,14 +169,16 @@ const NotificationSettings = () => {
           id: "messages-1",
           label: "New Messages",
           type: "toggle",
-          value: newMessagesNotifications,
+          value:
+            newMessagesNotifications as SETTINGS["notifications"]["notifyNewMessages"],
           onToggle: (val) => setNewMessagesNotifications(val),
         },
         {
           id: "messages-2",
           label: "Replies",
           type: "toggle",
-          value: repliesNotifications,
+          value:
+            repliesNotifications as SETTINGS["notifications"]["notifyReplies"],
           onToggle: (val) => setRepliesNotifications(val),
         },
       ],
@@ -182,14 +191,16 @@ const NotificationSettings = () => {
           id: "workout-1",
           label: "New Workout Plans",
           type: "toggle",
-          value: workoutNotifications,
+          value:
+            workoutNotifications as SETTINGS["notifications"]["notifyNewWorkoutPlans"],
           onToggle: (val) => setWorkoutNotifications(val),
         },
         {
           id: "workout-2",
           label: "Fitness Stats Interactions",
           type: "toggle",
-          value: fitnessStatsNotifications,
+          value:
+            fitnessStatsNotifications as SETTINGS["notifications"]["notifyFitnessStatsInteractions"],
           onToggle: (val) => setFitnessStatsNotifications(val),
         },
       ],
@@ -202,14 +213,16 @@ const NotificationSettings = () => {
           id: "tagged-1",
           label: "Tagged in Posts",
           type: "toggle",
-          value: taggedInPostNotifications,
+          value:
+            taggedInPostNotifications as SETTINGS["notifications"]["notifyTaggedInPosts"],
           onToggle: (val) => setTaggedInPostNotifications(val),
         },
         {
           id: "tagged-2",
           label: "Tagged in Workouts",
           type: "toggle",
-          value: taggedInWorkoutNotifications,
+          value:
+            taggedInWorkoutNotifications as SETTINGS["notifications"]["notifyTaggedInWorkouts"],
           onToggle: (val) => setTaggedInWorkoutNotifications(val),
         },
       ],
@@ -234,21 +247,24 @@ const NotificationSettings = () => {
           id: "email-1",
           label: "Activity Updates",
           type: "toggle",
-          value: emailActivityNotifications,
+          value:
+            emailActivityNotifications as SETTINGS["notifications"]["emailActivityUpdates"],
           onToggle: (val) => setEmailActivityNotifications(val),
         },
         {
           id: "email-2",
           label: "Follower Updates",
           type: "toggle",
-          value: emailFollowerNotifications,
+          value:
+            emailFollowerNotifications as SETTINGS["notifications"]["emailFollowerUpdates"],
           onToggle: (val) => setEmailFollowerNotifications(val),
         },
         {
           id: "email-3",
           label: "Account Updates",
           type: "toggle",
-          value: emailAccountNotifications,
+          value:
+            emailAccountNotifications as SETTINGS["notifications"]["emailAccountUpdates"],
           onToggle: (val) => setEmailAccountNotifications(val),
         },
       ],
@@ -261,14 +277,16 @@ const NotificationSettings = () => {
           id: "sound-1",
           label: "Enable Sound",
           type: "toggle",
-          value: soundEnabled,
+          value:
+            soundEnabled as SETTINGS["notifications"]["enableNotificationSound"],
           onToggle: (val) => setSoundEnabled(val),
         },
         {
           id: "sound-2",
           label: "Enable Vibration",
           type: "toggle",
-          value: vibrationEnabled,
+          value:
+            vibrationEnabled as SETTINGS["notifications"]["enableNotificationVibration"],
           onToggle: (val) => setVibrationEnabled(val),
         },
       ],

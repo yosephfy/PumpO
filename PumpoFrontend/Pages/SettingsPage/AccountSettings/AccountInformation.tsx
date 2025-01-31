@@ -68,13 +68,11 @@ const AccountInformation = () => {
           type: "datetime",
           datetimeValue: formatDate(dateOfBirth as SETTING_date),
           onDateTimeChange: (date) => {
-            updateDateOfBirth(
-              JSON.stringify({
-                year: date.getFullYear(),
-                month: date.getMonth(),
-                day: date.getDate(),
-              })
-            );
+            updateDateOfBirth({
+              year: date.getFullYear(),
+              month: date.getMonth(),
+              day: date.getDate(),
+            });
           },
         },
         {
