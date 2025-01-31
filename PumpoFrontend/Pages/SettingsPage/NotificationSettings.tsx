@@ -1,36 +1,74 @@
-import React, { useState } from "react";
 import { StyleSheet, Alert } from "react-native";
 import SettingOptionsComponent, {
   SettingOptionGroupProp,
 } from "@/components/OptionsComponent";
+import { useSetting } from "@/hooks/useSettings";
 
 const NotificationSettings = () => {
-  const [pushNotifications, setPushNotifications] = useState(true);
-  const [likesNotifications, setLikesNotifications] = useState(true);
-  const [commentsNotifications, setCommentsNotifications] = useState(true);
-  const [sharesNotifications, setSharesNotifications] = useState(false);
-  const [bookmarksNotifications, setBookmarksNotifications] = useState(true);
-  const [followersNotifications, setFollowersNotifications] = useState(true);
-  const [unfollowersNotifications, setUnfollowersNotifications] =
-    useState(false);
-  const [newMessagesNotifications, setNewMessagesNotifications] =
-    useState(true);
-  const [repliesNotifications, setRepliesNotifications] = useState(false);
-  const [workoutNotifications, setWorkoutNotifications] = useState(true);
-  const [fitnessStatsNotifications, setFitnessStatsNotifications] =
-    useState(true);
-  const [taggedInPostNotifications, setTaggedInPostNotifications] =
-    useState(true);
-  const [taggedInWorkoutNotifications, setTaggedInWorkoutNotifications] =
-    useState(false);
-  const [emailActivityNotifications, setEmailActivityNotifications] =
-    useState(true);
-  const [emailFollowerNotifications, setEmailFollowerNotifications] =
-    useState(false);
-  const [emailAccountNotifications, setEmailAccountNotifications] =
-    useState(true);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [vibrationEnabled, setVibrationEnabled] = useState(false);
+  const { value: pushNotifications, updateSetting: setPushNotifications } =
+    useSetting("notifications", "pushNotifications");
+  const { value: likesNotifications, updateSetting: setLikesNotifications } =
+    useSetting("notifications", "notifyLikes");
+  const {
+    value: commentsNotifications,
+    updateSetting: setCommentsNotifications,
+  } = useSetting("notifications", "notifyComments");
+  const { value: sharesNotifications, updateSetting: setSharesNotifications } =
+    useSetting("notifications", "notifyShares");
+  const {
+    value: bookmarksNotifications,
+    updateSetting: setBookmarksNotifications,
+  } = useSetting("notifications", "notifyBookmarks");
+  const {
+    value: followersNotifications,
+    updateSetting: setFollowersNotifications,
+  } = useSetting("notifications", "notifyNewFollowers");
+  const {
+    value: unfollowersNotifications,
+    updateSetting: setUnfollowersNotifications,
+  } = useSetting("notifications", "notifyUnfollowers");
+  const {
+    value: newMessagesNotifications,
+    updateSetting: setNewMessagesNotifications,
+  } = useSetting("notifications", "notifyNewMessages");
+  const {
+    value: repliesNotifications,
+    updateSetting: setRepliesNotifications,
+  } = useSetting("notifications", "notifyReplies");
+  const {
+    value: workoutNotifications,
+    updateSetting: setWorkoutNotifications,
+  } = useSetting("notifications", "notifyNewWorkoutPlans");
+  const {
+    value: fitnessStatsNotifications,
+    updateSetting: setFitnessStatsNotifications,
+  } = useSetting("notifications", "notifyFitnessStatsInteractions");
+  const {
+    value: taggedInPostNotifications,
+    updateSetting: setTaggedInPostNotifications,
+  } = useSetting("notifications", "notifyTaggedInPosts");
+  const {
+    value: taggedInWorkoutNotifications,
+    updateSetting: setTaggedInWorkoutNotifications,
+  } = useSetting("notifications", "notifyTaggedInWorkouts");
+  const {
+    value: emailActivityNotifications,
+    updateSetting: setEmailActivityNotifications,
+  } = useSetting("notifications", "emailActivityUpdates");
+  const {
+    value: emailFollowerNotifications,
+    updateSetting: setEmailFollowerNotifications,
+  } = useSetting("notifications", "emailFollowerUpdates");
+  const {
+    value: emailAccountNotifications,
+    updateSetting: setEmailAccountNotifications,
+  } = useSetting("notifications", "emailAccountUpdates");
+  const { value: soundEnabled, updateSetting: setSoundEnabled } = useSetting(
+    "notifications",
+    "enableNotificationSound"
+  );
+  const { value: vibrationEnabled, updateSetting: setVibrationEnabled } =
+    useSetting("notifications", "enableNotificationVibration");
 
   const handleMuteNotifications = () => {
     Alert.alert(
@@ -58,7 +96,7 @@ const NotificationSettings = () => {
           label: "Enable Push Notifications",
           type: "toggle",
           value: pushNotifications,
-          onToggle: () => setPushNotifications((prev) => !prev),
+          onToggle: (val) => setPushNotifications(val),
         },
       ],
     },
@@ -71,28 +109,28 @@ const NotificationSettings = () => {
           label: "Likes",
           type: "toggle",
           value: likesNotifications,
-          onToggle: () => setLikesNotifications((prev) => !prev),
+          onToggle: (val) => setLikesNotifications(val),
         },
         {
           id: "activity-2",
           label: "Comments",
           type: "toggle",
           value: commentsNotifications,
-          onToggle: () => setCommentsNotifications((prev) => !prev),
+          onToggle: (val) => setCommentsNotifications(val),
         },
         {
           id: "activity-3",
           label: "Shares",
           type: "toggle",
           value: sharesNotifications,
-          onToggle: () => setSharesNotifications((prev) => !prev),
+          onToggle: (val) => setSharesNotifications(val),
         },
         {
           id: "activity-4",
           label: "Bookmarks",
           type: "toggle",
           value: bookmarksNotifications,
-          onToggle: () => setBookmarksNotifications((prev) => !prev),
+          onToggle: (val) => setBookmarksNotifications(val),
         },
       ],
     },
@@ -105,14 +143,14 @@ const NotificationSettings = () => {
           label: "New Followers",
           type: "toggle",
           value: followersNotifications,
-          onToggle: () => setFollowersNotifications((prev) => !prev),
+          onToggle: (val) => setFollowersNotifications(val),
         },
         {
           id: "followers-2",
           label: "Unfollowers",
           type: "toggle",
           value: unfollowersNotifications,
-          onToggle: () => setUnfollowersNotifications((prev) => !prev),
+          onToggle: (val) => setUnfollowersNotifications(val),
         },
       ],
     },
@@ -125,14 +163,14 @@ const NotificationSettings = () => {
           label: "New Messages",
           type: "toggle",
           value: newMessagesNotifications,
-          onToggle: () => setNewMessagesNotifications((prev) => !prev),
+          onToggle: (val) => setNewMessagesNotifications(val),
         },
         {
           id: "messages-2",
           label: "Replies",
           type: "toggle",
           value: repliesNotifications,
-          onToggle: () => setRepliesNotifications((prev) => !prev),
+          onToggle: (val) => setRepliesNotifications(val),
         },
       ],
     },
@@ -145,14 +183,14 @@ const NotificationSettings = () => {
           label: "New Workout Plans",
           type: "toggle",
           value: workoutNotifications,
-          onToggle: () => setWorkoutNotifications((prev) => !prev),
+          onToggle: (val) => setWorkoutNotifications(val),
         },
         {
           id: "workout-2",
           label: "Fitness Stats Interactions",
           type: "toggle",
           value: fitnessStatsNotifications,
-          onToggle: () => setFitnessStatsNotifications((prev) => !prev),
+          onToggle: (val) => setFitnessStatsNotifications(val),
         },
       ],
     },
@@ -165,14 +203,14 @@ const NotificationSettings = () => {
           label: "Tagged in Posts",
           type: "toggle",
           value: taggedInPostNotifications,
-          onToggle: () => setTaggedInPostNotifications((prev) => !prev),
+          onToggle: (val) => setTaggedInPostNotifications(val),
         },
         {
           id: "tagged-2",
           label: "Tagged in Workouts",
           type: "toggle",
           value: taggedInWorkoutNotifications,
-          onToggle: () => setTaggedInWorkoutNotifications((prev) => !prev),
+          onToggle: (val) => setTaggedInWorkoutNotifications(val),
         },
       ],
     },
@@ -197,21 +235,21 @@ const NotificationSettings = () => {
           label: "Activity Updates",
           type: "toggle",
           value: emailActivityNotifications,
-          onToggle: () => setEmailActivityNotifications((prev) => !prev),
+          onToggle: (val) => setEmailActivityNotifications(val),
         },
         {
           id: "email-2",
           label: "Follower Updates",
           type: "toggle",
           value: emailFollowerNotifications,
-          onToggle: () => setEmailFollowerNotifications((prev) => !prev),
+          onToggle: (val) => setEmailFollowerNotifications(val),
         },
         {
           id: "email-3",
           label: "Account Updates",
           type: "toggle",
           value: emailAccountNotifications,
-          onToggle: () => setEmailAccountNotifications((prev) => !prev),
+          onToggle: (val) => setEmailAccountNotifications(val),
         },
       ],
     },
@@ -224,14 +262,14 @@ const NotificationSettings = () => {
           label: "Enable Sound",
           type: "toggle",
           value: soundEnabled,
-          onToggle: () => setSoundEnabled((prev) => !prev),
+          onToggle: (val) => setSoundEnabled(val),
         },
         {
           id: "sound-2",
           label: "Enable Vibration",
           type: "toggle",
           value: vibrationEnabled,
-          onToggle: () => setVibrationEnabled((prev) => !prev),
+          onToggle: (val) => setVibrationEnabled(val),
         },
       ],
     },

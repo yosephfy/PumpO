@@ -1,25 +1,60 @@
-import React, { useState } from "react";
+import React from "react";
 import SettingOptionsComponent, {
   SettingOptionGroupProp,
 } from "@/components/OptionsComponent";
-import { router, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
+import { useAuth } from "@/context/AuthContext";
+import { useSetting } from "@/hooks/useSettings"; // Custom hook for fetching/updating settings
+import { SETTING_date, SETTINGS } from "@/Services/SettingTypes";
+import { Alert } from "react-native";
 
 const AccountInformation = () => {
-  const [gender, setGender] = useState("Prefer not to say"); // Example default gender
-  const [twoFactorAuth, setTwoFactorAuth] = useState(false); // Example toggle state
-  const [dateOfBirth, setDateOfBirth] = useState<Date>(new Date(2000, 0, 1)); // Default to Jan 1, 2000
+  const router = useRouter();
+  const { currentUser } = useAuth();
 
-  const accountOptions: SettingOptionGroupProp[] = [
+  // Ensure user ID is available
+  const userId = currentUser?.user_id || "";
+
+  // Retrieve account settings using `useSetting`
+  const { value: gender, updateSetting: updateGender } = useSetting(
+    "account",
+    "gender"
+  );
+
+  const { value: dateOfBirth, updateSetting: updateDateOfBirth } = useSetting(
+    "account",
+    "dateOfBirth"
+  );
+  const { value: accountCreationDate } = useSetting(
+    "account",
+    "accountCreationDate"
+  );
+
+  // Ensure date is properly formatted
+  const formattedDate = (data: string) => {
+    if (!data || data == "null") return new Date(2000, 0, 1);
+    const { day, month, year }: SETTING_date = JSON.parse(
+      data as string
+    ) as SETTING_date;
+    return new Date(year, month, day);
+  };
+
+  const formatDate = (data: SETTING_date) => {
+    if (!data) return new Date(2000, 0, 1);
+    const { year, month, day } = data;
+    return new Date(year, month, day);
+  };
+
+  const accountInfoOptions: SettingOptionGroupProp[] = [
     {
       id: "profile-security",
-
       items: [
         {
           id: "edit-profile",
           icon: "person-outline",
           label: "Edit User Profile",
           type: "navigation",
-          onPress: () => router.push({ pathname: "/(app)/(my_profile)/edit" }), // Redirect to your Edit Profile page
+          onPress: () => router.push({ pathname: "/(app)/(my_profile)/edit" }),
         },
       ],
     },
@@ -31,8 +66,16 @@ const AccountInformation = () => {
           id: "date-of-birth",
           label: "Date of Birth",
           type: "datetime",
-          datetimeValue: dateOfBirth,
-          onDateTimeChange: setDateOfBirth,
+          datetimeValue: formatDate(dateOfBirth as SETTING_date),
+          onDateTimeChange: (date) => {
+            updateDateOfBirth(
+              JSON.stringify({
+                year: date.getFullYear(),
+                month: date.getMonth(),
+                day: date.getDate(),
+              })
+            );
+          },
         },
         {
           id: "gender",
@@ -43,8 +86,8 @@ const AccountInformation = () => {
             { label: "Female", value: "Female" },
             { label: "Prefer not to say", value: "Prefer not to say" },
           ],
-          dropdownValue: gender,
-          onDropdownChange: setGender,
+          dropdownValue: gender as SETTINGS["account"]["gender"],
+          onDropdownChange: (value) => updateGender(value),
         },
       ],
     },
@@ -56,32 +99,35 @@ const AccountInformation = () => {
           id: "account-creation-date",
           label: "Account Creation Date",
           type: "navigation",
-          onPress: () => {}, // Read-only, no action needed
+          onPress: () => {
+            Alert.alert(
+              "Account Creation Date",
+              formatDate(accountCreationDate as SETTING_date).toDateString()
+            );
+          }, // Read-only
         },
         {
           id: "account-id",
           label: "Account ID",
           type: "navigation",
-          onPress: () => {}, // Read-only, no action needed
+          onPress: () => {
+            Alert.alert(
+              "Account ID",
+              currentUser?.user_id.toString() ?? "Not Found!"
+            );
+          }, // Read-only
         },
         {
           id: "connected-accounts",
           label: "Connected Accounts",
           type: "navigation",
-          onPress: () => router.push("/(app)/(settings)/connected-accounts"), // Redirect to Connected Accounts page
-        },
-        {
-          id: "two-factor-auth",
-          label: "Two-Factor Authentication",
-          type: "toggle",
-          value: twoFactorAuth,
-          onToggle: () => setTwoFactorAuth(!twoFactorAuth),
+          onPress: () => router.push("/(app)/(settings)/connected-accounts"),
         },
       ],
     },
   ];
 
-  return <SettingOptionsComponent optionGroups={accountOptions} />;
+  return <SettingOptionsComponent optionGroups={accountInfoOptions} />;
 };
 
 export default AccountInformation;

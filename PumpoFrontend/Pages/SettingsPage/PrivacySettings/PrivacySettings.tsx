@@ -1,36 +1,45 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Switch,
-  TouchableOpacity,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Dropdown } from "react-native-element-dropdown"; // Import Dropdown component
-import { ThemedText } from "@/components/ThemedText";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { ThemedFadedView, ThemedIcon } from "@/components/ThemedView";
-import { router } from "expo-router";
+import React from "react";
 import SettingOptionsComponent, {
   SettingOptionGroupProp,
-  SettingOptionProp,
 } from "@/components/OptionsComponent";
+import { useRouter } from "expo-router";
+import { useSetting } from "@/hooks/useSettings"; // Custom hook for fetching/updating settings
+import { SETTINGS } from "@/Services/SettingTypes";
 
 const PrivacySettings = () => {
-  // States for toggles
-  const [isPrivateAccount, setIsPrivateAccount] = useState(false);
-  const [isProfileVisible, setIsProfileVisible] = useState(true);
-  const [isTaggedProfileVisible, setIsTaggedProfileVisible] = useState(true);
-  const [isActivityStatusVisible, setIsActivityStatusVisible] = useState(true);
+  const router = useRouter();
 
-  // States for dropdown options
-  const [taggingOption, setTaggingOption] = useState("Everyone");
-  const [mentionOption, setMentionOption] = useState("Everyone");
-  const [postVisibilityOption, setPostVisibilityOption] = useState("Everyone");
-  const [storyViewOption, setStoryViewOption] = useState("Everyone");
-  const [storyReplyOption, setStoryReplyOption] = useState("Everyone");
+  // Retrieve privacy settings using `useSetting`
+  const { value: isPrivateAccount, updateSetting: updatePrivateAccount } =
+    useSetting("privacy", "privateAccount");
+
+  const { value: isProfileVisible, updateSetting: updateProfileVisibility } =
+    useSetting("privacy", "showProfileInSearch");
+
+  const { value: isTaggedProfileVisible, updateSetting: updateTaggedProfile } =
+    useSetting("privacy", "showProfileToTaggedUsers");
+
+  const {
+    value: isActivityStatusVisible,
+    updateSetting: updateActivityStatus,
+  } = useSetting("privacy", "showActivityStatus");
+
+  const { value: taggingOption, updateSetting: updateTaggingOption } =
+    useSetting("privacy", "whoCanTagMe");
+
+  const { value: mentionOption, updateSetting: updateMentionOption } =
+    useSetting("privacy", "whoCanMentionMe");
+
+  const { value: postVisibilityOption, updateSetting: updatePostVisibility } =
+    useSetting("privacy", "whoCanSeeMyPosts");
+
+  const { value: storyViewOption, updateSetting: updateStoryView } = useSetting(
+    "privacy",
+    "whoCanViewMyStories"
+  );
+
+  const { value: storyReplyOption, updateSetting: updateStoryReply } =
+    useSetting("privacy", "whoCanReplyToMyStories");
 
   const privacyOptions: SettingOptionGroupProp[] = [
     {
@@ -40,15 +49,16 @@ const PrivacySettings = () => {
           id: "1",
           label: "Private Account",
           type: "toggle",
-          value: isPrivateAccount,
-          onToggle: () => setIsPrivateAccount((prev) => !prev),
+          value: isPrivateAccount as SETTINGS["privacy"]["privateAccount"],
+          onToggle: () => updatePrivateAccount(!isPrivateAccount),
         },
         {
           id: "8",
           label: "Show Activity Status",
           type: "toggle",
-          value: isActivityStatusVisible,
-          onToggle: () => setIsActivityStatusVisible((prev) => !prev),
+          value:
+            isActivityStatusVisible as SETTINGS["privacy"]["showActivityStatus"],
+          onToggle: () => updateActivityStatus(!isActivityStatusVisible),
         },
         {
           id: "2",
@@ -69,15 +79,16 @@ const PrivacySettings = () => {
           id: "5",
           label: "Show Profile in Search",
           type: "toggle",
-          value: isProfileVisible,
-          onToggle: () => setIsProfileVisible((prev) => !prev),
+          value: isProfileVisible as SETTINGS["privacy"]["showProfileInSearch"],
+          onToggle: () => updateProfileVisibility(!isProfileVisible),
         },
         {
           id: "6",
           label: "Show Profile to Tagged Users",
           type: "toggle",
-          value: isTaggedProfileVisible,
-          onToggle: () => setIsTaggedProfileVisible((prev) => !prev),
+          value:
+            isTaggedProfileVisible as SETTINGS["privacy"]["showProfileToTaggedUsers"],
+          onToggle: () => updateTaggedProfile(!isTaggedProfileVisible),
         },
         {
           id: "3",
@@ -88,8 +99,9 @@ const PrivacySettings = () => {
             { label: "Only People I Follow", value: "OnlyPeopleIFollow" },
             { label: "No One", value: "NoOne" },
           ],
-          dropdownValue: taggingOption,
-          onDropdownChange: setTaggingOption,
+          dropdownValue: taggingOption as SETTINGS["privacy"]["whoCanTagMe"],
+          onDropdownChange: (value) =>
+            updateTaggingOption(value as SETTINGS["privacy"]["whoCanTagMe"]),
         },
         {
           id: "4",
@@ -100,10 +112,11 @@ const PrivacySettings = () => {
             { label: "Only People I Follow", value: "OnlyPeopleIFollow" },
             { label: "No One", value: "NoOne" },
           ],
-          dropdownValue: mentionOption,
-          onDropdownChange: setMentionOption,
+          dropdownValue:
+            mentionOption as SETTINGS["privacy"]["whoCanMentionMe"],
+          onDropdownChange: (value) =>
+            updateMentionOption(value as SETTINGS["privacy"]["whoCanTagMe"]),
         },
-
         {
           id: "7",
           label: "Who Can See My Posts",
@@ -113,10 +126,11 @@ const PrivacySettings = () => {
             { label: "Only Followers", value: "OnlyFollowers" },
             { label: "Custom List", value: "CustomList" },
           ],
-          dropdownValue: postVisibilityOption,
-          onDropdownChange: setPostVisibilityOption,
+          dropdownValue:
+            postVisibilityOption as SETTINGS["privacy"]["whoCanSeeMyPosts"],
+          onDropdownChange: (value) =>
+            updatePostVisibility(value as SETTINGS["privacy"]["whoCanTagMe"]),
         },
-
         {
           id: "9",
           label: "Who Can View My Stories",
@@ -126,8 +140,10 @@ const PrivacySettings = () => {
             { label: "Only Followers", value: "OnlyFollowers" },
             { label: "Custom List", value: "CustomList" },
           ],
-          dropdownValue: storyViewOption,
-          onDropdownChange: setStoryViewOption,
+          dropdownValue:
+            storyViewOption as SETTINGS["privacy"]["whoCanViewMyStories"],
+          onDropdownChange: (value) =>
+            updateStoryView(value as SETTINGS["privacy"]["whoCanTagMe"]),
         },
         {
           id: "10",
@@ -138,8 +154,10 @@ const PrivacySettings = () => {
             { label: "Only People I Follow", value: "OnlyPeopleIFollow" },
             { label: "No One", value: "NoOne" },
           ],
-          dropdownValue: storyReplyOption,
-          onDropdownChange: setStoryReplyOption,
+          dropdownValue:
+            storyReplyOption as SETTINGS["privacy"]["whoCanReplyToMyStories"],
+          onDropdownChange: (value) =>
+            updateStoryReply(value as SETTINGS["privacy"]["whoCanTagMe"]),
         },
       ],
     },

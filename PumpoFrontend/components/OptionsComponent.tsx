@@ -132,8 +132,9 @@ export const SettingButtonOption: React.FC<{
 export const SettingDateTimeOption: React.FC<{
   item: SettingOptionProp;
 }> = ({ item }) => {
-  const onDateChange = (_: any, selectedDate: Date | undefined) => {
-    if (selectedDate && item.onDateTimeChange) {
+  const onDateChange = (_: any, selectedDate?: Date) => {
+    if (!selectedDate) return; // Ignore empty values to prevent crashes
+    if (item.onDateTimeChange) {
       item.onDateTimeChange(selectedDate);
     }
   };

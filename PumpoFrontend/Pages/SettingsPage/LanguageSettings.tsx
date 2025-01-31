@@ -1,12 +1,16 @@
-import React, { useState } from "react";
-import { StyleSheet } from "react-native";
 import SettingOptionsComponent, {
   SettingOptionGroupProp,
 } from "@/components/OptionsComponent";
+import { useSetting } from "@/hooks/useSettings";
+import { SETTINGS } from "@/Services/SettingTypes";
+import React from "react";
 
 const LanguageSettings = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState("en"); // Default language is English
-
+  const { value: language, updateSetting: updateLanguage } = useSetting(
+    "language",
+    "appLanguage"
+  );
+  // List of available languages
   const languages = [
     { label: "English", value: "en" },
     { label: "Spanish", value: "es" },
@@ -18,6 +22,7 @@ const LanguageSettings = () => {
     { label: "Arabic", value: "ar" },
   ];
 
+  // Language settings options
   const languageOptions: SettingOptionGroupProp[] = [
     {
       id: "language-settings",
@@ -28,8 +33,8 @@ const LanguageSettings = () => {
           label: "App Language",
           type: "dropdown",
           dropdownOptions: languages,
-          dropdownValue: selectedLanguage,
-          onDropdownChange: (value) => setSelectedLanguage(value),
+          dropdownValue: language as SETTINGS["language"]["appLanguage"],
+          onDropdownChange: updateLanguage,
         },
       ],
     },
@@ -37,11 +42,5 @@ const LanguageSettings = () => {
 
   return <SettingOptionsComponent optionGroups={languageOptions} />;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-});
 
 export default LanguageSettings;

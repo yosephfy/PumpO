@@ -2,15 +2,26 @@ import React, { useState } from "react";
 import SettingOptionsComponent, {
   SettingOptionGroupProp,
 } from "@/components/OptionsComponent";
+import { useSetting } from "@/hooks/useSettings";
+import { SETTINGS } from "@/Services/SettingTypes";
 
 const AccessibilitySettings = () => {
-  // State management for accessibility toggles and dropdowns
-  const [textScaling, setTextScaling] = useState(false);
-  const [highContrastMode, setHighContrastMode] = useState(false);
-  const [reduceMotion, setReduceMotion] = useState(false);
-  const [screenReaderSupport, setScreenReaderSupport] = useState(true);
-  const [keyboardNavigation, setKeyboardNavigation] = useState(false);
-  const [preferredFontSize, setPreferredFontSize] = useState("Medium");
+  const { value: keyboardNavigation, updateSetting: setKeyboardNavigation } =
+    useSetting("accessibility", "enableKeyboardNavigation");
+  const { value: textScaling, updateSetting: setTextScaling } = useSetting(
+    "accessibility",
+    "textScaling"
+  );
+  const { value: highContrastMode, updateSetting: setHighContrastMode } =
+    useSetting("accessibility", "highContrastMode");
+  const { value: reduceMotion, updateSetting: setReduceMotion } = useSetting(
+    "accessibility",
+    "reduceMotion"
+  );
+  const { value: enableScreenReader, updateSetting: setScreenReaderSupport } =
+    useSetting("accessibility", "enableScreenReader");
+  const { value: preferredFontSize, updateSetting: setPreferredFontSize } =
+    useSetting("accessibility", "preferredFontSize");
 
   // Accessibility settings groups
   const accessibilityOptions: SettingOptionGroupProp[] = [
@@ -22,14 +33,15 @@ const AccessibilitySettings = () => {
           id: "text-scaling",
           label: "Enable Text Scaling",
           type: "toggle",
-          value: textScaling,
-          onToggle: () => setTextScaling(!textScaling),
+          value: textScaling as SETTINGS["accessibility"]["textScaling"],
+          onToggle: (val) => setTextScaling(val),
         },
         {
           id: "high-contrast-mode",
           label: "Enable High Contrast Mode",
           type: "toggle",
-          value: highContrastMode,
+          value:
+            highContrastMode as SETTINGS["accessibility"]["highContrastMode"],
           onToggle: () => setHighContrastMode(!highContrastMode),
         },
       ],
@@ -42,7 +54,7 @@ const AccessibilitySettings = () => {
           id: "reduce-motion",
           label: "Reduce Motion",
           type: "toggle",
-          value: reduceMotion,
+          value: reduceMotion as SETTINGS["accessibility"]["reduceMotion"],
           onToggle: () => setReduceMotion(!reduceMotion),
         },
       ],
@@ -55,8 +67,9 @@ const AccessibilitySettings = () => {
           id: "enable-screen-reader",
           label: "Enable Screen Reader Support",
           type: "toggle",
-          value: screenReaderSupport,
-          onToggle: () => setScreenReaderSupport(!screenReaderSupport),
+          value:
+            enableScreenReader as SETTINGS["accessibility"]["reduceMotion"],
+          onToggle: () => setScreenReaderSupport(!enableScreenReader),
         },
       ],
     },
@@ -68,7 +81,8 @@ const AccessibilitySettings = () => {
           id: "enable-keyboard-navigation",
           label: "Enable Keyboard Navigation",
           type: "toggle",
-          value: keyboardNavigation,
+          value:
+            keyboardNavigation as SETTINGS["accessibility"]["enableKeyboardNavigation"],
           onToggle: () => setKeyboardNavigation(!keyboardNavigation),
         },
       ],
@@ -87,8 +101,12 @@ const AccessibilitySettings = () => {
             { label: "Large", value: "Large" },
             { label: "Extra Large", value: "Extra Large" },
           ],
-          dropdownValue: preferredFontSize,
-          onDropdownChange: setPreferredFontSize,
+          dropdownValue:
+            preferredFontSize as SETTINGS["accessibility"]["preferredFontSize"],
+          onDropdownChange: (val) =>
+            setPreferredFontSize(
+              val as SETTINGS["accessibility"]["preferredFontSize"]
+            ),
         },
       ],
     },

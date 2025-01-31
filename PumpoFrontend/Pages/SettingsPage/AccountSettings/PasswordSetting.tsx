@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import SettingOptionsComponent, {
   SettingOptionGroupProp,
 } from "@/components/OptionsComponent";
 import { useRouter } from "expo-router";
+import { useSetting } from "@/hooks/useSettings"; // Make sure to place your hook in a proper folder
+import { SETTING_date, SETTINGS } from "@/Services/SettingTypes";
 
 const PasswordSetting = () => {
   const router = useRouter();
-
-  const [is2FAEnabled, setIs2FAEnabled] = useState(false);
-  const [passwordExpiryReminder, setPasswordExpiryReminder] = useState(false);
-  const [recoveryMethod, setRecoveryMethod] = useState("email"); // Default recovery method
-  const lastChangedDate = new Date(2023, 10, 1); // Example last changed date
+  const { value: is2FAEnabled, updateSetting: update2FA } = useSetting(
+    "security",
+    "enable2FA"
+  );
+  const { value: passwordExpiryReminder, updateSetting: updateExpiryReminder } =
+    useSetting("security", "passwordExpiryReminder");
+  const { value: recoveryMethod, updateSetting: updateRecoveryMethod } =
+    useSetting("security", "passwordRecoveryMethod");
+  const { value: lastChangedDate } = useSetting(
+    "security",
+    "lastPasswordChanged"
+  );
 
   const optionGroups: SettingOptionGroupProp[] = [
     {
@@ -22,15 +31,15 @@ const PasswordSetting = () => {
           label: "Change Password",
           type: "navigation",
           icon: "key-outline",
-          onPress: () => {},
+          onPress: () => router.push("/(app)/(settings)/change-password"),
         },
         {
           id: "enable-2fa",
           label: "Two-Factor Authentication (2FA)",
           type: "toggle",
-          value: is2FAEnabled,
+          value: is2FAEnabled as SETTINGS["security"]["enable2FA"],
           icon: "lock-closed-outline",
-          onToggle: () => setIs2FAEnabled((prev) => !prev),
+          onToggle: (val) => update2FA(val),
         },
         {
           id: "password-recovery",
@@ -38,28 +47,40 @@ const PasswordSetting = () => {
           type: "dropdown",
           icon: "shield-checkmark-outline",
           dropdownOptions: [
-            { label: "Email", value: "email" },
-            { label: "SMS", value: "sms" },
-            { label: "Security Questions", value: "security" },
+            { label: "Email", value: "Email" },
+            { label: "SMS", value: "SMS" },
+            { label: "Security Questions", value: "Security Questions" },
           ],
-          dropdownValue: recoveryMethod,
-          onDropdownChange: (value) => setRecoveryMethod(value),
+          dropdownValue:
+            recoveryMethod as SETTINGS["security"]["passwordRecoveryMethod"],
+          onDropdownChange: (value) =>
+            updateRecoveryMethod(
+              value as SETTINGS["security"]["passwordRecoveryMethod"]
+            ),
         },
         {
           id: "password-expiry-reminder",
           label: "Password Expiry Reminder",
           type: "toggle",
-          value: passwordExpiryReminder,
+          value:
+            passwordExpiryReminder as SETTINGS["security"]["passwordExpiryReminder"],
           icon: "time-outline",
-          onToggle: () => setPasswordExpiryReminder((prev) => !prev),
+          onToggle: () => updateExpiryReminder(!passwordExpiryReminder),
         },
         {
           id: "last-changed",
           label: "Last Changed",
           type: "datetime",
           icon: "calendar-outline",
-          datetimeValue: lastChangedDate,
-          onDateTimeChange: () => {}, // No action since it's read-only
+          datetimeValue: (() => {
+            if (!lastChangedDate) return new Date();
+            const { day, month, year }: SETTING_date =
+              lastChangedDate as SETTINGS["security"]["lastPasswordChanged"];
+
+            return new Date(year, month, day);
+          })(),
+
+          onDateTimeChange: () => {}, // Read-only, no changes
           disabled: true,
         },
       ],

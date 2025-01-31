@@ -1,22 +1,48 @@
-import React, { useState } from "react";
 import SettingOptionsComponent, {
   SettingOptionGroupProp,
 } from "@/components/OptionsComponent";
+import { useSetting } from "@/hooks/useSettings";
+import { SETTINGS } from "@/Services/SettingTypes";
 
 const InteractionsSettings = () => {
   // State management for toggle switches and dropdowns
-  const [allowComments, setAllowComments] = useState("Everyone");
-  const [enableCommentModeration, setEnableCommentModeration] = useState(false);
-  const [allowLikes, setAllowLikes] = useState(true);
-  const [allowReactions, setAllowReactions] = useState(true);
-  const [whoCanMessageMe, setWhoCanMessageMe] = useState("Everyone");
-  const [allowTagging, setAllowTagging] = useState(true);
-  const [reviewTags, setReviewTags] = useState(false);
-  const [whoCanMentionMe, setWhoCanMentionMe] = useState("Everyone");
-  const [allowReshares, setAllowReshares] = useState(true);
-  const [notifyReshares, setNotifyReshares] = useState(true);
-  const [enableAnalytics, setEnableAnalytics] = useState(true);
-  const [hideInteractionCounts, setHideInteractionCounts] = useState(false);
+  const { value: allowComments, updateSetting: setAllowComments } = useSetting(
+    "interactions",
+    "whoCanComment"
+  );
+  const {
+    value: enableCommentModeration,
+    updateSetting: setEnableCommentModeration,
+  } = useSetting("interactions", "enableCommentModeration");
+  const { value: allowLikes, updateSetting: setAllowLikes } = useSetting(
+    "interactions",
+    "allowLikes"
+  );
+  const { value: allowReactions, updateSetting: setAllowReactions } =
+    useSetting("interactions", "allowReactions");
+  const { value: whoCanMessageMe, updateSetting: setWhoCanMessageMe } =
+    useSetting("interactions", "whoCanMessageMe");
+  const { value: allowTagging, updateSetting: setAllowTagging } = useSetting(
+    "interactions",
+    "allowTagging"
+  );
+  const { value: reviewTags, updateSetting: setReviewTags } = useSetting(
+    "interactions",
+    "reviewTagsBeforeAppearance"
+  );
+
+  const { value: allowReshares, updateSetting: setAllowReshares } = useSetting(
+    "interactions",
+    "allowReshares"
+  );
+  const { value: notifyReshares, updateSetting: setNotifyReshares } =
+    useSetting("interactions", "notifyOnReshares");
+  const { value: enableAnalytics, updateSetting: setEnableAnalytics } =
+    useSetting("interactions", "enableAnalytics");
+  const {
+    value: hideInteractionCounts,
+    updateSetting: setHideInteractionCounts,
+  } = useSetting("interactions", "hideInteractionCounts");
 
   // Settings groups
   const interactionOptions: SettingOptionGroupProp[] = [
@@ -34,14 +60,17 @@ const InteractionsSettings = () => {
             { label: "Custom List", value: "Custom List" },
             { label: "No One", value: "No One" },
           ],
-          dropdownValue: allowComments,
-          onDropdownChange: setAllowComments,
+          dropdownValue:
+            allowComments as SETTINGS["interactions"]["whoCanComment"],
+          onDropdownChange: (val) =>
+            setAllowComments(val as SETTINGS["interactions"]["whoCanComment"]),
         },
         {
           id: "enable-comment-moderation",
           label: "Enable Comment Moderation",
           type: "toggle",
-          value: enableCommentModeration,
+          value:
+            enableCommentModeration as SETTINGS["interactions"]["enableCommentModeration"],
           onToggle: () => setEnableCommentModeration(!enableCommentModeration),
         },
         {
@@ -60,14 +89,14 @@ const InteractionsSettings = () => {
           id: "allow-likes",
           label: "Allow Likes on My Posts",
           type: "toggle",
-          value: allowLikes,
+          value: allowLikes as SETTINGS["interactions"]["allowLikes"],
           onToggle: () => setAllowLikes(!allowLikes),
         },
         {
           id: "allow-reactions",
           label: "Allow Reactions on My Posts",
           type: "toggle",
-          value: allowReactions,
+          value: allowReactions as SETTINGS["interactions"]["allowReactions"],
           onToggle: () => setAllowReactions(!allowReactions),
         },
       ],
@@ -85,8 +114,12 @@ const InteractionsSettings = () => {
             { label: "Only Followers", value: "Only Followers" },
             { label: "No One", value: "No One" },
           ],
-          dropdownValue: whoCanMessageMe,
-          onDropdownChange: setWhoCanMessageMe,
+          dropdownValue:
+            whoCanMessageMe as SETTINGS["interactions"]["whoCanMessageMe"],
+          onDropdownChange: (val) =>
+            setWhoCanMessageMe(
+              val as SETTINGS["interactions"]["whoCanMessageMe"]
+            ),
         },
         {
           id: "message-requests",
@@ -104,36 +137,20 @@ const InteractionsSettings = () => {
           id: "allow-tagging",
           label: "Allow Tagging",
           type: "toggle",
-          value: allowTagging,
+          value: allowTagging as SETTINGS["interactions"]["allowTagging"],
           onToggle: () => setAllowTagging(!allowTagging),
         },
         {
           id: "review-tags",
           label: "Review Tags Before They Appear",
           type: "toggle",
-          value: reviewTags,
+          value:
+            reviewTags as SETTINGS["interactions"]["reviewTagsBeforeAppearance"],
           onToggle: () => setReviewTags(!reviewTags),
         },
       ],
     },
-    {
-      id: "mentions",
-      title: "Mentions",
-      items: [
-        {
-          id: "who-can-mention",
-          label: "Who Can Mention Me",
-          type: "dropdown",
-          dropdownOptions: [
-            { label: "Everyone", value: "Everyone" },
-            { label: "Only People I Follow", value: "Only People I Follow" },
-            { label: "No One", value: "No One" },
-          ],
-          dropdownValue: whoCanMentionMe,
-          onDropdownChange: setWhoCanMentionMe,
-        },
-      ],
-    },
+
     {
       id: "reshares",
       title: "Reshares",
@@ -142,14 +159,14 @@ const InteractionsSettings = () => {
           id: "allow-reshares",
           label: "Allow Reshares of My Posts",
           type: "toggle",
-          value: allowReshares,
+          value: allowReshares as SETTINGS["interactions"]["allowReshares"],
           onToggle: () => setAllowReshares(!allowReshares),
         },
         {
           id: "notify-reshares",
           label: "Notify When My Post Is Reshared",
           type: "toggle",
-          value: notifyReshares,
+          value: notifyReshares as SETTINGS["interactions"]["notifyOnReshares"],
           onToggle: () => setNotifyReshares(!notifyReshares),
         },
       ],
@@ -162,14 +179,15 @@ const InteractionsSettings = () => {
           id: "enable-analytics",
           label: "Enable Interaction Analytics",
           type: "toggle",
-          value: enableAnalytics,
+          value: enableAnalytics as SETTINGS["interactions"]["enableAnalytics"],
           onToggle: () => setEnableAnalytics(!enableAnalytics),
         },
         {
           id: "hide-interaction-counts",
           label: "Hide Interaction Counts",
           type: "toggle",
-          value: hideInteractionCounts,
+          value:
+            hideInteractionCounts as SETTINGS["interactions"]["hideInteractionCounts"],
           onToggle: () => setHideInteractionCounts(!hideInteractionCounts),
         },
       ],

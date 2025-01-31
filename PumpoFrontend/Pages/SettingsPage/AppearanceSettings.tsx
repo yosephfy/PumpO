@@ -1,21 +1,21 @@
 import SettingOptionsComponent, {
   SettingOptionGroupProp,
-  SettingOptionProp,
 } from "@/components/OptionsComponent";
-import { ThemedText } from "@/components/ThemedText";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import React, { useState } from "react";
-import { View, Text, StyleSheet, FlatList, Switch } from "react-native";
-import { Dropdown } from "react-native-element-dropdown";
+import { useSetting } from "@/hooks/useSettings";
+import { SETTINGS } from "@/Services/SettingTypes";
 
 const AppearanceSettings = () => {
   // States for toggles and dropdowns
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [fontSize, setFontSize] = useState("Medium");
-  const [accentColor, setAccentColor] = useState("Blue");
-  const [theme, setTheme] = useState("System Default");
-  const [isHighContrast, setIsHighContrast] = useState(false);
-  const [animationEnabled, setAnimationEnabled] = useState(true);
+  const { value: fontSize, updateSetting: setFontSize } = useSetting(
+    "appearance",
+    "fontSize"
+  );
+  const { value: theme, updateSetting: setTheme } = useSetting(
+    "appearance",
+    "theme"
+  );
+  const { value: animationEnabled, updateSetting: setAnimationEnabled } =
+    useSetting("appearance", "animationEnabled");
 
   // List of appearance settings options
   const appearanceOptions: SettingOptionGroupProp[] = [
@@ -23,11 +23,17 @@ const AppearanceSettings = () => {
       id: "1",
       items: [
         {
-          id: "1",
-          label: "Dark Mode",
-          type: "toggle",
-          value: isDarkMode,
-          onToggle: () => setIsDarkMode((prev) => !prev),
+          id: "4",
+          label: "Theme",
+          type: "dropdown",
+          dropdownOptions: [
+            { label: "Light", value: "Light" },
+            { label: "Dark", value: "Dark" },
+            { label: "System Default", value: "System Default" },
+          ],
+          dropdownValue: theme as SETTINGS["appearance"]["theme"],
+          onDropdownChange: (val) =>
+            setTheme(val as SETTINGS["appearance"]["theme"]),
         },
         {
           id: "2",
@@ -38,47 +44,17 @@ const AppearanceSettings = () => {
             { label: "Medium", value: "Medium" },
             { label: "Large", value: "Large" },
           ],
-          dropdownValue: fontSize,
-          onDropdownChange: setFontSize,
+          dropdownValue: fontSize as SETTINGS["appearance"]["fontSize"],
+          onDropdownChange: (val) =>
+            setFontSize(val as SETTINGS["appearance"]["fontSize"]),
         },
-        {
-          id: "3",
-          label: "Accent Color",
-          type: "dropdown",
-          dropdownOptions: [
-            { label: "Blue", value: "Blue" },
-            { label: "Red", value: "Red" },
-            { label: "Green", value: "Green" },
-            { label: "Purple", value: "Purple" },
-          ],
-          dropdownValue: accentColor,
-          onDropdownChange: setAccentColor,
-        },
-        {
-          id: "4",
-          label: "Theme",
-          type: "dropdown",
-          dropdownOptions: [
-            { label: "Light", value: "Light" },
-            { label: "Dark", value: "Dark" },
-            { label: "System Default", value: "System Default" },
-          ],
-          dropdownValue: theme,
-          onDropdownChange: setTheme,
-        },
-        {
-          id: "5",
-          label: "High Contrast Mode",
-          type: "toggle",
-          value: isHighContrast,
-          onToggle: () => setIsHighContrast((prev) => !prev),
-        },
+
         {
           id: "6",
           label: "Animation Effects",
           type: "toggle",
-          value: animationEnabled,
-          onToggle: () => setAnimationEnabled((prev) => !prev),
+          value: animationEnabled as SETTINGS["appearance"]["animationEnabled"],
+          onToggle: (val) => setAnimationEnabled(val),
         },
       ],
     },

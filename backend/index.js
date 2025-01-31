@@ -18,6 +18,7 @@ import storiesRoutes from "./routes/stories.js";
 import userRoutes from "./routes/users.js";
 import exerciseRoutes from "./routes/ExercisesRouter.js";
 import workoutsRoutes from "./routes/WorkoutsRouter.js";
+import settingRouter from "./routes/SettingsRouter.js";
 
 /////
 import messagesRouter from "./routes/MessagesRouter.js";
@@ -58,6 +59,7 @@ app.use("/app/posts", postsRoutes);
 app.use("/app/messages", messagesRouter);
 app.use("/app/exercises", exerciseRoutes);
 app.use("/app/workouts", workoutsRoutes);
+app.use("/app/settings", settingRouter);
 /////////////////////////////////////
 
 app.listen(8080, () => {
