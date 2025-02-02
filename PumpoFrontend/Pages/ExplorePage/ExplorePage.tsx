@@ -3,7 +3,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -13,14 +13,24 @@ import {
   View,
 } from "react-native";
 
-const ExplorePage = () => {
+const ExplorePage = ({ queryItem }: { queryItem?: string }) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("People");
+  const [searchQuery, setSearchQuery] = useState(queryItem || "");
 
   const handleSearch = (query: string) => {
     // Hypothetical search function
     console.log(`Searching for: ${query}`);
+    setSearchQuery(query);
   };
+
+  // Automatically search for default query if queryItem is undefined
+  useEffect(() => {
+    if (!queryItem) {
+      const defaultQuery = "Trending"; // You can modify this based on your needs
+      handleSearch(defaultQuery);
+    }
+  }, [queryItem]);
 
   const renderResults = () => {
     switch (activeTab) {
@@ -55,6 +65,7 @@ const ExplorePage = () => {
             style={{
               flex: 1,
             }}
+            initialValue={searchQuery} // Pass the updated query to SearchBar
           />
         </View>
 
@@ -91,14 +102,11 @@ const ExplorePage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: "#fff",
   },
   topActionContainer: {
     flexDirection: "row",
-    //borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
-
   backButton: {
     marginLeft: 10,
     justifyContent: "center",
@@ -110,10 +118,8 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     justifyContent: "space-around",
-    //borderBottomWidth: 1,
     borderBottomColor: "#ddd",
     paddingTop: 10,
-    //backgroundColor: "#fff",
   },
   tab: {
     paddingVertical: 5,
@@ -125,7 +131,6 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 14,
-    //color: "#888",
   },
   activeTabText: {
     color: "#007BFF",
@@ -137,7 +142,6 @@ const styles = StyleSheet.create({
   },
   resultsText: {
     fontSize: 16,
-    //color: "#333",
     marginBottom: 10,
   },
 });

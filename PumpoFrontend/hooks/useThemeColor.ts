@@ -3,14 +3,24 @@
  * https://docs.expo.dev/guides/color-schemes/
  */
 
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Colors } from "@/constants/Colors";
+import { useDeviceSettings } from "@/context/SettingContext";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
   colorName: keyof typeof Colors.light & keyof typeof Colors.dark
 ) {
-  const theme = useColorScheme() ?? 'light';
+  const systemTheme = useColorScheme() ?? "light";
+
+  const { deviceSettings, loading } = useDeviceSettings();
+  const theme =
+    !loading && deviceSettings.theme
+      ? deviceSettings.theme == "system"
+        ? systemTheme
+        : deviceSettings.theme
+      : systemTheme;
+
   const colorFromProps = props[theme];
 
   if (colorFromProps) {

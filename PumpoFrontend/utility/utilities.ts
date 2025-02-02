@@ -78,7 +78,7 @@ export function parseStringArray(input: string): string[] {
 }
 
 type ParsedSegment = {
-  type: "text" | "hashtag" | "mention" | "custom";
+  type: "text" | "hashtag" | "mention" | "url" | "custom";
   value: string;
 };
 
@@ -101,6 +101,11 @@ export function parseSpecialString(
   const defaultPatterns = [
     { type: "hashtag", regex: /#[a-zA-Z0-9_]+/ },
     { type: "mention", regex: /@[a-zA-Z0-9_]+/ },
+    {
+      type: "url",
+      regex:
+        /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/,
+    },
   ];
 
   const patterns = config?.customPatterns

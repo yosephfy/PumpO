@@ -1,9 +1,12 @@
+import { useAuth } from "@/context/AuthContext";
 import FeedPage from "@/Pages/FeedPage/FeedPage";
-import { LazyLoadPosts } from "@/Services/postServices";
+import { LazyLoadPosts, PersonalizedFeed } from "@/Services/postServices";
 import React, { useEffect, useState } from "react";
 import { RefreshControl } from "react-native";
 
 const MainFeedPage: React.FC = () => {
+  const { currentUser } = useAuth();
+
   const [posts, setPosts] = useState<DT_Post[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -13,8 +16,9 @@ const MainFeedPage: React.FC = () => {
     try {
       if (!refresh) setLoading(true);
       else setRefreshing(true);
-
-      const postData: DT_Post[] = await LazyLoadPosts({
+      if (!currentUser) return;
+      const postData: DT_Post[] = await PersonalizedFeed({
+        userId: currentUser.user_id,
         page: pageToFetch,
         limit: 10,
       });

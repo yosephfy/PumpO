@@ -14,14 +14,16 @@ type SearchBarProps = {
   onSearch: (query: string) => void; // Function to handle search
   onChangeText?: (query: string) => void;
   style?: StyleProp<ViewStyle>;
+  initialValue?: string;
 };
 
 const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
   style,
   onChangeText,
+  initialValue,
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialValue || "");
 
   const handleClearSearch = () => {
     setSearchQuery("");

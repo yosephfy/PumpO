@@ -228,14 +228,12 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
         </View>
         {/* Post Details */}
         <View style={styles.detailsContainer}>
-          <Text style={styles.captionText}>
-            <CollapsibleText
-              text={post.description}
-              maxWords={15}
-              style={styles.captionText}
-              allowMarkup
-            />
-          </Text>
+          <CollapsibleText
+            text={post.description}
+            maxWords={15}
+            style={styles.captionText}
+            allowMarkup
+          />
           <Text style={styles.timestampText}>
             {timeAgo(post.created_at).long}
           </Text>

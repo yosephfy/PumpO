@@ -1,6 +1,6 @@
 // Appearance Settings
 export interface SETTING_appearance {
-  theme: "Light" | "Dark" | "System Default";
+  theme: "light" | "dark" | "system";
   darkMode: boolean;
   fontSize: "Small" | "Medium" | "Large";
   animationEnabled: boolean;

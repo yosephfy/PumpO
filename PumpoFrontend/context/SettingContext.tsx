@@ -1,3 +1,4 @@
+import { SETTINGS } from "@/Services/SettingTypes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, {
   createContext,
@@ -8,8 +9,8 @@ import React, {
 } from "react";
 
 interface SettingsContextType {
-  settings: Record<string, any>; // Dictionary of settings
-  updateSetting: (key: string, value: any) => Promise<void>;
+  deviceSettings: Partial<defaultSettingType>; // Dictionary of settings
+  updateDeviceSetting: (key: string, value: any) => Promise<void>;
   resetSettings: () => Promise<void>; // Optional: Reset to default settings
   loading: boolean; // To indicate if settings are being loaded
 }
@@ -18,17 +19,25 @@ const SettingsContext = createContext<SettingsContextType | undefined>(
   undefined
 );
 
+interface defaultSettingType {
+  theme: SETTINGS["appearance"]["theme"];
+  language: string;
+  units: "metric" | "imperial";
+  pushNotification: boolean;
+}
+
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
-  const [settings, setSettings] = useState<Record<string, any>>({});
+  const [deviceSettings, setSettings] = useState<Partial<defaultSettingType>>(
+    {}
+  );
   const [loading, setLoading] = useState(true);
 
   // Default settings (you can modify these)
-  const defaultSettings = {
+  const defaultSettings: defaultSettingType = {
     theme: "light",
     language: "en",
     units: "metric", // Options: metric or imperial
-    notificationsEnabled: true,
-    dataSavingMode: false,
+    pushNotification: true,
   };
 
   // Load settings from AsyncStorage or use defaults
@@ -53,9 +62,9 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Update a specific setting
-  const updateSetting = async (key: string, value: any) => {
+  const updateDeviceSetting = async (key: string, value: any) => {
     try {
-      const updatedSettings = { ...settings, [key]: value };
+      const updatedSettings = { ...deviceSettings, [key]: value };
       setSettings(updatedSettings);
       await AsyncStorage.setItem(
         "appSettings",
@@ -81,7 +90,12 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <SettingsContext.Provider
-      value={{ settings, updateSetting, resetSettings, loading }}
+      value={{
+        deviceSettings,
+        updateDeviceSetting,
+        resetSettings,
+        loading,
+      }}
     >
       {children}
     </SettingsContext.Provider>
@@ -89,10 +103,10 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
 };
 
 // Custom hook for using the SettingsContext
-export const useSettings = () => {
+export const useDeviceSettings = () => {
   const context = useContext(SettingsContext);
   if (!context) {
-    throw new Error("useSettings must be used within a SettingsProvider");
+    throw new Error("useDeviceSettings must be used within a SettingsProvider");
   }
   return context;
 };

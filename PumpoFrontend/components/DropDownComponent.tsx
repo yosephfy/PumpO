@@ -194,7 +194,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{}}>
       {/* Trigger */}
       <TouchableOpacity
         ref={triggerRef}

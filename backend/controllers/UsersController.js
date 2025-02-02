@@ -150,6 +150,20 @@ export const getUserById = (req, res) => {
   });
 };
 
+// Fetch a single user by username
+export const getUserByUsername = (req, res) => {
+  const { username } = req.params;
+
+  const query =
+    "SELECT user_id, username, email, account_type, profile_picture, bio FROM users WHERE username = ?";
+  db.query(query, [username], (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length === 0) return res.status(404).json("User not found!");
+
+    return res.json(data[0]);
+  });
+};
+
 // Update user details
 export const updateUser = (req, res) => {
   const { userId } = req.params;

@@ -100,13 +100,13 @@ const Comment = ({
               {timeAgo(comment.created_at).short || "Just now"}
             </ThemedText>
           </ThemedText>
-          <ThemedText
+
+          <ThemedSpecialText
+            text={comment.content}
             darkColor="#aaa"
             lightColor="#333"
             style={styles.commentText}
-          >
-            <ThemedSpecialText text={comment.content} />
-          </ThemedText>
+          />
         </View>
         <View style={styles.commentActions}>
           <ToggleIcon

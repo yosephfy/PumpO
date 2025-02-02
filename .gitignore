@@ -60,3 +60,4 @@ Icon?
 # Expo cache files
 /PumpOFrontend/.cache/
 /PumpOFrontend/.packager-cache/
+.DS_Store

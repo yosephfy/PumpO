@@ -1,6 +1,7 @@
 import SettingOptionsComponent, {
   SettingOptionGroupProp,
 } from "@/components/OptionsComponent";
+import { useDeviceSettings } from "@/context/SettingContext";
 import { useSetting } from "@/hooks/useSettings";
 import { SETTINGS } from "@/Services/SettingTypes";
 
@@ -10,10 +11,7 @@ const AppearanceSettings = () => {
     "appearance",
     "fontSize"
   );
-  const { value: theme, updateSetting: setTheme } = useSetting(
-    "appearance",
-    "theme"
-  );
+  const { deviceSettings, updateDeviceSetting } = useDeviceSettings();
   const { value: animationEnabled, updateSetting: setAnimationEnabled } =
     useSetting("appearance", "animationEnabled");
 
@@ -27,13 +25,14 @@ const AppearanceSettings = () => {
           label: "Theme",
           type: "dropdown",
           dropdownOptions: [
-            { label: "Light", value: "Light" },
-            { label: "Dark", value: "Dark" },
-            { label: "System Default", value: "System Default" },
+            { label: "Light", value: "light" },
+            { label: "Dark", value: "dark" },
+            { label: "System Default", value: "system" },
           ],
-          dropdownValue: theme as SETTINGS["appearance"]["theme"],
-          onDropdownChange: (val) =>
-            setTheme(val as SETTINGS["appearance"]["theme"]),
+          dropdownValue: deviceSettings[
+            "theme"
+          ] as SETTINGS["appearance"]["theme"],
+          onDropdownChange: (val) => updateDeviceSetting("theme", val),
         },
         {
           id: "2",

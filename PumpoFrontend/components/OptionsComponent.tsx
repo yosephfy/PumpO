@@ -94,12 +94,20 @@ export const SettingToggleOption: React.FC<{
   item: SettingToggleOptionProps;
 }> = ({ item }) => (
   <View style={styles.optionContainer}>
-    {item.icon && (
-      <View style={styles.iconContainer}>
-        <ThemedIcon name={item.icon} size={24} />
-      </View>
-    )}
-    <ThemedText style={styles.optionLabel}>{item.label}</ThemedText>
+    <View
+      style={{
+        alignItems: "center",
+        flexDirection: "row",
+        flex: 1,
+      }}
+    >
+      {item.icon && (
+        <View style={styles.iconContainer}>
+          <ThemedIcon name={item.icon} size={24} />
+        </View>
+      )}
+      <ThemedText style={styles.optionLabel}>{item.label}</ThemedText>
+    </View>
     <Switch
       value={item.value}
       onValueChange={item.onToggle}
@@ -114,12 +122,20 @@ export const SettingNavigationOption: React.FC<{
   item: SettingNavigationOptionProps;
 }> = ({ item }) => (
   <TouchableOpacity style={styles.optionContainer} onPress={item.onPress}>
-    {item.icon && (
-      <View style={styles.iconContainer}>
-        <ThemedIcon name={item.icon} size={24} />
-      </View>
-    )}
-    <ThemedText style={styles.optionLabel}>{item.label}</ThemedText>
+    <View
+      style={{
+        alignItems: "center",
+        flexDirection: "row",
+        flex: 1,
+      }}
+    >
+      {item.icon && (
+        <View style={styles.iconContainer}>
+          <ThemedIcon name={item.icon} size={24} />
+        </View>
+      )}
+      <ThemedText style={styles.optionLabel}>{item.label}</ThemedText>
+    </View>
     <Ionicons name="chevron-forward-outline" size={20} color="#ccc" />
   </TouchableOpacity>
 );
@@ -132,12 +148,20 @@ export const SettingDropdownOption: React.FC<{
   const ref = useRef<IDropdownRef>(null);
   return (
     <View style={styles.dropdownContainer}>
-      {item.icon && (
-        <View style={styles.iconContainer}>
-          <ThemedIcon name={item.icon} size={24} />
-        </View>
-      )}
-      <ThemedText style={styles.optionLabel}>{item.label}</ThemedText>
+      <View
+        style={{
+          alignItems: "center",
+          flexDirection: "row",
+          flex: 1,
+        }}
+      >
+        {item.icon && (
+          <View style={styles.iconContainer}>
+            <ThemedIcon name={item.icon} size={24} />
+          </View>
+        )}
+        <ThemedText style={styles.optionLabel}>{item.label}</ThemedText>
+      </View>
       {/* <Dropdown
         ref={ref}
         data={item.dropdownOptions || []}
@@ -191,12 +215,20 @@ export const SettingDateTimeOption: React.FC<{
 
   return (
     <View style={styles.optionContainer}>
-      {item.icon && (
-        <View style={styles.iconContainer}>
-          <ThemedIcon name={item.icon} size={24} />
-        </View>
-      )}
-      <ThemedText style={styles.optionLabel}>{item.label}</ThemedText>
+      <View
+        style={{
+          alignItems: "center",
+          flexDirection: "row",
+          flex: 1,
+        }}
+      >
+        {item.icon && (
+          <View style={styles.iconContainer}>
+            <ThemedIcon name={item.icon} size={24} />
+          </View>
+        )}
+        <ThemedText style={styles.optionLabel}>{item.label}</ThemedText>
+      </View>
       <DateTimePicker
         value={item.datetimeValue || new Date(2000, 0, 1)}
         mode={item.mode || "date"}
@@ -316,9 +348,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     //width: "100%",
+
     justifyContent: "space-between",
     gap: 40,
-    flex: 1,
+    //flex: 1,
   },
   dropdown: {
     //borderWidth: 1,
@@ -327,7 +360,9 @@ const styles = StyleSheet.create({
     padding: 10,
     //flex: 1,
     alignItems: "center",
-    maxWidth: 200,
+    maxWidth: 300,
+    minWidth: "40%",
+    //backgroundColor: "pink",
   },
   dropdownPlaceholder: {
     fontSize: 14,

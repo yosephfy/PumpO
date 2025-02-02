@@ -80,6 +80,21 @@ export const LazyLoadPosts = async (params: {
   }
 };
 
+// Personalized Feed
+export const PersonalizedFeed = async (params: {
+  userId?: string;
+  page: number;
+  limit: number;
+}) => {
+  try {
+    const response: DT_Post[] = await getRequest("/feed/user-feed", params);
+    return response;
+  } catch (error: any) {
+    console.error("Error lazy loading posts:", error.response || error);
+    throw new Error(error.response?.data?.message || "Failed to load posts");
+  }
+};
+
 // Count posts by user
 export const CountPostsByUser = async (userId: string) => {
   try {

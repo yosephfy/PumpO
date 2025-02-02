@@ -19,6 +19,7 @@ import userRoutes from "./routes/users.js";
 import exerciseRoutes from "./routes/ExercisesRouter.js";
 import workoutsRoutes from "./routes/WorkoutsRouter.js";
 import settingRouter from "./routes/SettingsRouter.js";
+import feedRouter from "./routes/FeedRouter.js";
 
 /////
 import messagesRouter from "./routes/MessagesRouter.js";
@@ -60,6 +61,7 @@ app.use("/app/messages", messagesRouter);
 app.use("/app/exercises", exerciseRoutes);
 app.use("/app/workouts", workoutsRoutes);
 app.use("/app/settings", settingRouter);
+app.use("/app/feed", feedRouter);
 /////////////////////////////////////
 
 app.listen(8080, () => {
