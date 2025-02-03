@@ -17,11 +17,10 @@ const PhotoPost = ({ post }: { post: DT_Photo }) => {
 const styles = StyleSheet.create({
   postContent: {
     width: "100%",
-    height: 300,
   },
   postImage: {
-    width: "100%",
-    height: "100%",
+    //width: "100%",
+    aspectRatio: 1,
   },
 });
 
