@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   FlatList,
   FlatListProps,
@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   Switch,
   Dimensions,
+  Modal,
 } from "react-native";
 import { Dropdown, IDropdownRef } from "react-native-element-dropdown";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ThemedFadedView, ThemedIcon } from "./ThemedView";
-import { ThemedText } from "./ThemedText";
+import { ThemedText, ThemedTextInput } from "./ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
@@ -67,6 +68,18 @@ export type SettingTextOptionProps = SettingOptionBase & {
   type: "text";
 };
 
+/** 🔹 Text Input Type */
+export type SettingTextInputOptionProps = {
+  id: string;
+  label: string;
+  type: "textinput";
+  value?: string | null;
+  placeholder?: string;
+  icon?: keyof typeof Ionicons.glyphMap;
+  onSave: (value: string | null) => void;
+  paragraphMode?: boolean;
+};
+
 /** 🔹 Union of All Setting Types */
 export type SettingOptionProp =
   | SettingToggleOptionProps
@@ -74,7 +87,8 @@ export type SettingOptionProp =
   | SettingNavigationOptionProps
   | SettingButtonOptionProps
   | SettingDateTimeOptionProps
-  | SettingTextOptionProps;
+  | SettingTextOptionProps
+  | SettingTextInputOptionProps;
 
 export type SettingOptionGroupProp = {
   id: string;
@@ -253,6 +267,71 @@ export const SettingTextOption: React.FC<{
   </View>
 );
 
+export const SettingTextInputOption: React.FC<{
+  item: SettingTextInputOptionProps;
+}> = ({ item }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [inputValue, setInputValue] = useState(item.value);
+
+  const handleSave = () => {
+    item.onSave(inputValue || null);
+    setModalVisible(false);
+  };
+
+  return (
+    <>
+      <TouchableOpacity
+        style={styles.optionContainer}
+        onPress={() => setModalVisible(true)}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+          {item.icon && (
+            <View style={styles.iconContainer}>
+              <ThemedIcon name={item.icon} size={24} />
+            </View>
+          )}
+          <ThemedText style={styles.optionLabel}>{item.label}</ThemedText>
+        </View>
+        <View style={{ flex: 1, alignItems: "flex-end" }}>
+          {item.value ? (
+            <ThemedText style={styles.textValue} numberOfLines={1}>
+              {item.value}
+            </ThemedText>
+          ) : (
+            <ThemedText lightColor="#bbb" darkColor="#666" numberOfLines={1}>
+              {item.placeholder ?? "Enter Here..."}
+            </ThemedText>
+          )}
+        </View>
+      </TouchableOpacity>
+
+      {/* Text Input Modal */}
+      <Modal visible={modalVisible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <ThemedFadedView style={styles.modalContainer}>
+            <ThemedText style={styles.modalTitle}>{item.label}</ThemedText>
+            <ThemedTextInput
+              style={styles.input}
+              value={inputValue || undefined}
+              onChangeText={setInputValue}
+              placeholder={item.placeholder ?? "Enter new value..."}
+              multiline={item.paragraphMode}
+            />
+            <View style={styles.modalActions}>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <ThemedText style={styles.cancelText}>Cancel</ThemedText>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleSave}>
+                <ThemedText style={styles.saveText}>Save</ThemedText>
+              </TouchableOpacity>
+            </View>
+          </ThemedFadedView>
+        </View>
+      </Modal>
+    </>
+  );
+};
+
 // Main OptionsComponent
 const SettingOptionsComponent: React.FC<ReusableOptionsListProps> = ({
   optionGroups,
@@ -282,6 +361,8 @@ const SettingOptionsComponent: React.FC<ReusableOptionsListProps> = ({
         return <SettingDateTimeOption item={item} />;
       case "text":
         return <SettingTextOption item={item} />;
+      case "textinput":
+        return <SettingTextInputOption item={item} />;
       default:
         return null;
     }
@@ -388,6 +469,48 @@ const styles = StyleSheet.create({
     marginRight: 15,
     borderRadius: 20,
     padding: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContainer: {
+    width: "80%",
+    padding: 20,
+    //backgroundColor: "#fff",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  input: {
+    width: "100%",
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    fontSize: 16,
+    marginBottom: 15,
+  },
+  modalActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  cancelText: {
+    fontSize: 16,
+    color: "red",
+  },
+  saveText: {
+    fontSize: 16,
+    color: "#007BFF",
+    fontWeight: "bold",
   },
 });
 

@@ -1,31 +1,33 @@
-import React, { useState, useEffect, useRef } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
-  View,
+  CameraType,
+  CameraView,
+  FlashMode,
+  useCameraPermissions,
+} from "expo-camera";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  Alert,
+  Button,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Button,
-  Alert,
+  View,
 } from "react-native";
-import {
-  CameraView,
-  CameraType,
-  useCameraPermissions,
-  FlashMode,
-} from "expo-camera";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { router } from "expo-router";
 import { ThemedView } from "@/components/ThemedView";
+interface CreateMediaProps {
+  onSubmit: (data: any) => void;
+}
 
-const CreateMedia: React.FC = () => {
-  const [facing, setFacing] = useState<CameraType>("back"); // Camera direction
-  const [flashMode, setFlashMode] = useState<FlashMode>("off"); // Flash mode
-  const [permission, requestPermission] = useCameraPermissions(); // Permissions hook
-  const cameraRef = useRef<CameraView | null>(null); // Reference to the camera
+const CreateMedia: React.FC<CreateMediaProps> = ({ onSubmit }) => {
+  const [facing, setFacing] = useState<CameraType>("back");
+  const [flashMode, setFlashMode] = useState<FlashMode>("off");
+  const [permission, requestPermission] = useCameraPermissions();
+  const cameraRef = React.useRef<CameraView | null>(null);
+  const router = useRouter();
 
-  // Ensure permissions are granted
-  useEffect(() => {
+  React.useEffect(() => {
     (async () => {
       const { granted } = await requestPermission();
       if (!granted) {
@@ -38,15 +40,13 @@ const CreateMedia: React.FC = () => {
   }, []);
 
   if (!permission) {
-    // Permissions are still loading
     return <View />;
   }
 
   if (!permission.granted) {
-    // Permissions are not granted
     return (
-      <View style={styles.container}>
-        <Text style={styles.message}>
+      <View style={mediaStyles.container}>
+        <Text style={mediaStyles.message}>
           We need your permission to show the camera
         </Text>
         <Button onPress={requestPermission} title="Grant Permission" />
@@ -54,24 +54,22 @@ const CreateMedia: React.FC = () => {
     );
   }
 
-  // Toggle the camera direction
   const toggleCameraFacing = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   };
 
-  // Toggle flash mode
   const toggleFlashMode = () => {
     setFlashMode((current) => (current === "off" ? "on" : "off"));
   };
 
-  // Capture an image
   const captureImage = async () => {
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync();
         console.log("Photo captured:", photo?.uri);
         Alert.alert("Photo Captured", `Photo URI: ${photo?.uri}`);
-        // You can navigate to a preview screen or save the photo here
+        // Call onSubmit with the captured photo URI.
+        onSubmit(photo?.uri);
       } catch (error) {
         Alert.alert("Error", "Failed to capture photo.");
       }
@@ -80,28 +78,29 @@ const CreateMedia: React.FC = () => {
     }
   };
 
-  // Navigate to Gallery View (Dummy Example)
   const openGallery = () => {
     Alert.alert("Gallery", "Open your gallery or file picker here.");
-    // You can replace this with your gallery component/navigation logic.
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={mediaStyles.container}>
       <CameraView
-        style={styles.camera}
+        style={mediaStyles.camera}
         facing={facing}
         flash={flashMode}
-        ref={cameraRef} // Attach the reference
+        ref={cameraRef}
       >
-        <View style={styles.topControls}>
+        <View style={mediaStyles.topControls}>
           <TouchableOpacity
-            onPress={() => router.replace("/(app)")}
-            style={styles.iconButton}
+            onPress={() => router.back()}
+            style={mediaStyles.iconButton}
           >
             <Ionicons name="close-outline" size={40} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={toggleFlashMode} style={styles.iconButton}>
+          <TouchableOpacity
+            onPress={toggleFlashMode}
+            style={mediaStyles.iconButton}
+          >
             <Ionicons
               name={flashMode === "off" ? "flash-off-outline" : "flash"}
               size={30}
@@ -109,19 +108,22 @@ const CreateMedia: React.FC = () => {
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.bottomControls}>
-          <TouchableOpacity onPress={openGallery} style={styles.iconButton}>
+        <View style={mediaStyles.bottomControls}>
+          <TouchableOpacity
+            onPress={openGallery}
+            style={mediaStyles.iconButton}
+          >
             <Ionicons name="images-outline" size={30} color="white" />
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.captureButton}
-            onPress={captureImage} // Capture button functionality
+            style={mediaStyles.captureButton}
+            onPress={captureImage}
           >
-            {/* Capture button */}
+            {/* You can design your capture button here */}
           </TouchableOpacity>
           <TouchableOpacity
             onPress={toggleCameraFacing}
-            style={styles.iconButton}
+            style={mediaStyles.iconButton}
           >
             <Ionicons name="camera-reverse-outline" size={30} color="white" />
           </TouchableOpacity>
@@ -131,10 +133,13 @@ const CreateMedia: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+export default CreateMedia;
+
+const mediaStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+    zIndex: 10,
   },
   camera: {
     flex: 1,
@@ -173,5 +178,3 @@ const styles = StyleSheet.create({
     color: "white",
   },
 });
-
-export default CreateMedia;

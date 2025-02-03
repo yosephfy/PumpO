@@ -7,6 +7,7 @@ import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
 import { useAuth } from "@/context/AuthContext";
 import React, { useState } from "react";
 import {
+  Dimensions,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -90,6 +91,18 @@ const CommentPage = ({ post_id }: { post_id: string }) => {
               />
             )}
             keyExtractor={(item) => item.comment_id}
+            ListEmptyComponent={() => (
+              <View
+                style={{
+                  flex: 1,
+                  position: "absolute",
+                  top: Math.abs(Dimensions.get("screen").height - 300) / 2,
+                  alignSelf: "center",
+                }}
+              >
+                <ThemedText>No Comments Yet!</ThemedText>
+              </View>
+            )}
             showsVerticalScrollIndicator={false}
             style={styles.commentsList}
           />

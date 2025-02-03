@@ -69,8 +69,6 @@ function RootStacks() {
         options={{
           headerShown: false,
           title: "Create",
-          headerBackButtonDisplayMode: "minimal",
-          presentation: "containedModal",
         }}
       />
       <Stack.Screen

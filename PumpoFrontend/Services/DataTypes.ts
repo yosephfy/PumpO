@@ -46,14 +46,14 @@ type DT_ProfilePage = {
   posts?: any;
 };
 
-type DT_Photo = { order: number; photo_id: string; media_url: string };
+type DT_Photo = { order: number; photo_id?: string; media_url: string };
 type DT_Video = {
   order: number;
-  video_id: string;
+  video_id?: string;
   media_url: string;
   thumbnail_url?: string;
 };
-type DT_Text = { order: number; text_id: string; content: string };
+type DT_Text = { order: number; text_id?: string; content: string };
 type DT_Workout = any;
 
 type DT_Post_Content = {
@@ -62,6 +62,8 @@ type DT_Post_Content = {
   texts: DT_Text[] | undefined;
   workouts: DT_Workout[] | undefined;
 };
+
+type DT_PostType = "text" | "photo" | "video" | "workout";
 
 type DT_Post = {
   post_id: string;

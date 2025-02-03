@@ -10,6 +10,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { ThemedTextInput } from "./ThemedText";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 type EditableInputProps = {
   value: string;
@@ -21,6 +22,7 @@ type EditableInputProps = {
   iconColor?: string;
   autoFocus?: boolean;
   paragraphMode?: boolean;
+  unlocked?: boolean;
 };
 
 const EditableInput: React.FC<EditableInputProps> = ({
@@ -33,10 +35,14 @@ const EditableInput: React.FC<EditableInputProps> = ({
   iconColor = "#007BFF",
   autoFocus = true,
   paragraphMode = false,
+  unlocked,
 }) => {
-  const [isEditable, setIsEditable] = useState(false);
+  const [isEditable, setIsEditable] = useState(unlocked);
   const inputRef = useRef<TextInput>(null);
-
+  const borderColor = useThemeColor(
+    { light: "#ddd", dark: "#444" },
+    "background"
+  );
   const handleEditToggle = () => {
     setIsEditable((prev) => !prev);
     if (!isEditable && autoFocus) {
@@ -47,7 +53,7 @@ const EditableInput: React.FC<EditableInputProps> = ({
   };
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View style={[styles.container, containerStyle, { borderColor }]}>
       <ThemedTextInput
         ref={inputRef}
         style={[
@@ -78,7 +84,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     borderWidth: 1,
-    borderColor: "#ddd",
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 15,
