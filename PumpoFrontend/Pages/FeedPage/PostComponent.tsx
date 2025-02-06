@@ -132,6 +132,11 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
     fetchInteractions();
   };
 
+  const handleClickProfile = (user_id: string) => {
+    router.setParams({});
+    router.push({ pathname: "/(app)/(profile)", params: { user_id } });
+  };
+
   const postOptionFunctions = {
     handleClickReport: () => {},
     handleClickSavePost: () => {},
@@ -163,12 +168,7 @@ const PostComponent = ({ post }: { post: DT_Post }) => {
             <ProfilePicture
               imageUrl={userProfile?.profile_picture || ""}
               size={40}
-              onPress={() =>
-                router.push({
-                  pathname: "/(app)/(profile)",
-                  params: { user_id: userProfile?.user_id },
-                })
-              }
+              onPress={() => handleClickProfile(userProfile.user_id)}
             />
           </View>
           <ThemedText type="subtitle" style={styles.username}>

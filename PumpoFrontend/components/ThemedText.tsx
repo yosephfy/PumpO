@@ -5,6 +5,9 @@ import {
   TextInput,
   type TextInputProps,
   StyleSheet,
+  View,
+  StyleProp,
+  ViewStyle,
 } from "react-native";
 
 import { useThemeColor } from "@/hooks/useThemeColor";
@@ -28,6 +31,7 @@ export type ThemedTextInputProps = TextInputProps & {
   borderWidth?: number;
   borderLightColor?: string;
   borderDarkColor?: string;
+  maxLengthShowLabel?: boolean;
   type?:
     | "default"
     | "faded"
@@ -69,6 +73,9 @@ export const ThemedTextInput = forwardRef<TextInput, ThemedTextInputProps>(
       borderWidth = 0,
       borderDarkColor = lightColor,
       borderLightColor = darkColor,
+      maxLengthShowLabel = false,
+      maxLength,
+      value,
       type = "default",
       ...rest
     },
@@ -79,22 +86,34 @@ export const ThemedTextInput = forwardRef<TextInput, ThemedTextInputProps>(
       { light: borderLightColor, dark: borderDarkColor },
       "text"
     );
+
     return (
-      <TextInput
-        ref={ref}
-        style={[
-          { color },
-          type === "faded" ? styles.faded : undefined,
-          type === "default" ? styles.default : undefined,
-          type === "title" ? styles.title : undefined,
-          type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
-          type === "subtitle" ? styles.subtitle : undefined,
-          type === "link" ? styles.link : undefined,
-          { borderWidth, borderColor },
-          style,
-        ]}
-        {...rest}
-      />
+      <View style={{ width: "100%", height: "100%", flex: 1 }}>
+        <TextInput
+          ref={ref}
+          style={[
+            { color },
+            type === "faded" ? styles.faded : undefined,
+            type === "default" ? styles.default : undefined,
+            type === "title" ? styles.title : undefined,
+            type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
+            type === "subtitle" ? styles.subtitle : undefined,
+            type === "link" ? styles.link : undefined,
+            { borderWidth, borderColor },
+            style,
+          ]}
+          maxLength={maxLength}
+          value={value}
+          {...rest}
+        />
+        {maxLengthShowLabel && (
+          <View style={{ position: "absolute", bottom: 30, right: 20 }}>
+            <ThemedText>
+              {maxLength ? value?.length || 0 : ""}/{maxLength}
+            </ThemedText>
+          </View>
+        )}
+      </View>
     );
   }
 );

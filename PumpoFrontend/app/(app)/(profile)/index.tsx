@@ -8,8 +8,8 @@ const CurrentUserProfile = () => {
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    if (user_id == currentUser?.user_id) {
-      router.replace({ pathname: "/(app)/(my_profile)" });
+    if (user_id === currentUser?.user_id) {
+      router.replace({ pathname: "/(app)/(my_profile)", params: { user_id } });
     }
   }, [user_id, currentUser]);
 

@@ -18,12 +18,12 @@ type DT_Followers = {
 type DT_FitnessProfile = {
   profile_id: string;
   user_id: string;
-  weight?: number;
-  height?: number;
-  body_fat_percentage?: number;
-  seasonal_status?: string;
-  created_at?: string;
-  updated_at?: string;
+  weight: number;
+  height: number;
+  body_fat_percentage: number;
+  seasonal_status: "Bulking" | "Maintaining" | "Cutting";
+  created_at: string;
+  updated_at: string;
 };
 type DT_Achievement = {
   name: string;

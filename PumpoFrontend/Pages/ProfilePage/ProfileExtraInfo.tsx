@@ -1,20 +1,21 @@
+import { UpdateUserFitnessProfile } from "@/Services/userServices";
+import Carousel from "@/components/Carousel";
+import SettingOptionsComponent, {
+  SettingOptionGroupProp,
+} from "@/components/OptionsComponent";
+import PopupCard from "@/components/PopupCard";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
+  StyleProp,
   StyleSheet,
-  Text,
-  TextInput,
   TouchableOpacity,
   View,
-  StyleProp,
   ViewStyle,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import Carousel from "@/components/Carousel";
-import PopupCard from "@/components/PopupCard";
-import { useRouter } from "expo-router";
-import { UpdateUserFitnessProfile } from "@/Services/userServices";
-import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
-import { ThemedText, ThemedTextInput } from "@/components/ThemedText";
 
 const ProfileExtraInfo = ({
   data,
@@ -25,7 +26,6 @@ const ProfileExtraInfo = ({
 }) => {
   const { fitness_profile, achievements } = data;
 
-  // Fitness Metrics Component
   const FitnessMetrics = () => {
     const router = useRouter();
     const [unit, setUnit] = useState<"metric" | "imperial">("metric");
@@ -34,13 +34,12 @@ const ProfileExtraInfo = ({
     const [bodyFat, setBodyFat] = useState<number>(
       fitness_profile.body_fat_percentage || 0
     );
-    const [seasonalStatus, setSeasonalStatus] = useState<string>(
-      fitness_profile.seasonal_status || ""
-    );
-    const seasonalStatusList = ["Bulking", "Maintaining", "Cutting"];
+    const [seasonalStatus, setSeasonalStatus] = useState<
+      DT_FitnessProfile["seasonal_status"]
+    >(fitness_profile.seasonal_status || "");
 
     const handleSave = () => {
-      const updatedProfile: DT_FitnessProfile = {
+      const updatedProfile: Partial<DT_FitnessProfile> = {
         height,
         weight,
         body_fat_percentage: bodyFat,
@@ -51,6 +50,53 @@ const ProfileExtraInfo = ({
       UpdateUserFitnessProfile(fitness_profile.profile_id, updatedProfile);
       router.dismissTo("/(app)/(my_profile)");
     };
+
+    const FitnessPrompts: SettingOptionGroupProp[] = [
+      {
+        id: "",
+        items: [
+          {
+            id: "1",
+            label: `Height (${unit === "metric" ? "cm" : "ft"})`,
+            type: "textinput",
+            value: height.toString(),
+            placeholder: "169cm",
+            onSave: (val) => setHeight(parseFloat(val || "") || 0),
+          },
+          {
+            id: "2",
+            label: `Weight (${unit === "metric" ? "kg" : "lbs"})`,
+            type: "textinput",
+            value: weight.toString(),
+            placeholder: "60kg",
+            onSave: (val) => setWeight(parseFloat(val || "") || 0),
+          },
+          {
+            id: "3",
+            label: "BodyFat Percent (%)",
+            type: "textinput",
+            value: bodyFat.toString(),
+            placeholder: "25%",
+            onSave: (val) => setBodyFat(parseFloat(val || "") || 0),
+          },
+          {
+            id: "4",
+            label: "Seasonal Status",
+            type: "dropdown",
+            dropdownOptions: [
+              { value: "Bulking", label: "Bulking" },
+              { value: "Maintaining", label: "Maintaining" },
+              { value: "Cutting", label: "Cutting" },
+            ] as {
+              value: DT_FitnessProfile["seasonal_status"];
+              label: string;
+            }[],
+            dropdownValue: seasonalStatus,
+            onDropdownChange: (val: any) => setSeasonalStatus(val),
+          },
+        ],
+      },
+    ];
 
     const options = (
       <ThemedView style={styles.popupContainer}>
@@ -87,64 +133,7 @@ const ProfileExtraInfo = ({
           </TouchableOpacity>
         </View>
 
-        <View style={styles.inputGroup}>
-          <ThemedText style={styles.label}>
-            Height ({unit === "metric" ? "cm" : "in"}):
-          </ThemedText>
-          <ThemedTextInput
-            style={styles.input}
-            keyboardType="numeric"
-            value={height.toString()}
-            onChangeText={(value) => setHeight(parseFloat(value) || 0)}
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <ThemedText style={styles.label}>
-            Weight ({unit === "metric" ? "kg" : "lb"}):
-          </ThemedText>
-          <ThemedTextInput
-            style={styles.input}
-            keyboardType="numeric"
-            value={weight.toString()}
-            onChangeText={(value) => setWeight(parseFloat(value) || 0)}
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <ThemedText style={styles.label}>Body Fat Percentage (%):</ThemedText>
-          <ThemedTextInput
-            style={styles.input}
-            keyboardType="numeric"
-            value={bodyFat.toString()}
-            onChangeText={(value) => setBodyFat(parseFloat(value) || 0)}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <ThemedText style={styles.label}>Seasonal Status:</ThemedText>
-          <View style={styles.accountTypeContainer}>
-            {seasonalStatusList.map((type) => (
-              <TouchableOpacity
-                key={type}
-                style={[
-                  styles.seasonalStatusButton,
-                  seasonalStatus === type &&
-                    styles.selectedSeasonalStatusButton,
-                ]}
-                onPress={() => setSeasonalStatus(type)}
-              >
-                <ThemedText
-                  style={[
-                    styles.seasonalStatusText,
-                    seasonalStatus === type &&
-                      styles.selectedSeasonalStatusText,
-                  ]}
-                >
-                  {type}
-                </ThemedText>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        <SettingOptionsComponent optionGroups={FitnessPrompts} />
         <TouchableOpacity onPress={handleSave} style={styles.optionsSaveButton}>
           <ThemedText style={styles.optionsSaveButtonLabel}>Save</ThemedText>
         </TouchableOpacity>
@@ -179,7 +168,6 @@ const ProfileExtraInfo = ({
     );
   };
 
-  // Achievements Component
   const Achievements = () => {
     return (
       <EditableFitnessComponent
@@ -235,7 +223,11 @@ const EditableFitnessComponent = ({
           </TouchableOpacity>
         </ThemedView>
       )}
-      <PopupCard visible={popped} onClose={() => setPopped(false)}>
+      <PopupCard
+        visible={popped}
+        onClose={() => setPopped(false)}
+        style={{ width: "95%" }}
+      >
         {popupChildren}
       </PopupCard>
     </ThemedView>
@@ -245,17 +237,12 @@ const EditableFitnessComponent = ({
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 10,
-    //borderBottomWidth: 1,
-    //borderTopWidth: 1,
-    //borderColor: "#ddd",
-    //backgroundColor: "#f9f9f9",
   },
   carouselContainer: {},
   itemContainer: {
     width: "85%",
     height: 75,
     justifyContent: "space-around",
-    //backgroundColor: "white",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#999",
@@ -266,7 +253,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     width: 30,
     height: 30,
-    //backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1.5,
@@ -276,7 +262,6 @@ const styles = StyleSheet.create({
   },
   metricsContainer: {
     flexDirection: "row",
-    //backgroundColor: "white",
   },
   metricItem: {
     flexDirection: "row",
@@ -285,7 +270,6 @@ const styles = StyleSheet.create({
   metricText: {
     fontSize: 14,
     marginLeft: 8,
-    //color: "#333",
   },
   achievementsContainer: {
     justifyContent: "center",
@@ -294,22 +278,19 @@ const styles = StyleSheet.create({
   achievement: {
     flexDirection: "row",
     alignItems: "center",
-    //marginBottom: 4,
   },
   achievementText: {
     fontSize: 14,
-    //color: "#555",
   },
   progressText: {
     fontSize: 12,
     width: 35,
     marginRight: 8,
     textAlign: "right",
-    //color: "#888",
   },
-
   popupContainer: {
     paddingTop: 30,
+    gap: 10,
   },
   unitSelector: {
     flexDirection: "row",
@@ -324,58 +305,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   selectedUnitButton: {
-    //backgroundColor: "#007BFF",
     borderColor: "#007BFF",
   },
   unitText: {
     fontSize: 16,
-    //color: "#333",
   },
   selectedUnitText: {
     fontSize: 16,
-    //color: "#fff",
   },
-  inputGroup: {
-    marginBottom: 30,
-  },
-  label: {
-    fontSize: 14,
-    //color: "#333",
-    marginBottom: 5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
-  },
-  accountTypeContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "flex-start",
-  },
-  seasonalStatusButton: {
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 20,
-    marginRight: 10,
-    marginBottom: 10,
-  },
-  selectedSeasonalStatusButton: {
-    backgroundColor: "#007BFF",
-    borderColor: "#007BFF",
-  },
-  seasonalStatusText: {
-    fontSize: 12,
-    //color: "#333",
-  },
-  selectedSeasonalStatusText: {
-    color: "#fff",
-  },
-
   optionsSaveButton: {
     backgroundColor: "#007BFF",
     padding: 10,

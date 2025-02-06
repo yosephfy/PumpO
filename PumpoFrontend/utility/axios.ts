@@ -3,8 +3,8 @@ import axios from "axios";
 // Create an Axios instance with predefined configuration
 const api = axios.create({
   //baseURL: "http://192.168.1.171:8080/app/",
-  //baseURL: "http://localhost:8080/app/",
-  baseURL: "https://a8f5-129-2-89-156.ngrok-free.app/app",
+  baseURL: "http://localhost:8080/app/",
+  //baseURL: "https://a8f5-129-2-89-156.ngrok-free.app/app",
   withCredentials: true,
   headers: {
     Accept: "application/json",

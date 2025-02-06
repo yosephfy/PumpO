@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   searchInput: {
-    flex: 1,
+    //flex: 1,
     height: 40,
     paddingHorizontal: 15,
     fontSize: 14,

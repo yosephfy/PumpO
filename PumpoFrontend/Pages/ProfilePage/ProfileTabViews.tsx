@@ -1,6 +1,13 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
 export const PostsTab = ({
   posts,
@@ -48,7 +55,13 @@ export const PostsTab = ({
             source={{
               uri: firstContent.media_url,
             }}
+            defaultSource={{ uri: require("@/assets/images/favicon.png") }}
             style={styles.postImage}
+            onError={(e) =>
+              e.currentTarget.setNativeProps({
+                style: styles.postImageError,
+              })
+            }
           />
         );
       } else if (firstContent.type === "video") {
@@ -57,7 +70,13 @@ export const PostsTab = ({
             source={{
               uri: firstContent.thumbnail_url,
             }}
+            defaultSource={{ uri: require("@/assets/images/favicon.png") }}
             style={styles.postImage}
+            onError={(e) =>
+              e.currentTarget.setNativeProps({
+                style: styles.postImageError,
+              })
+            }
           />
         );
       } else if (firstContent.type === "text") {
@@ -172,6 +191,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 2,
+  },
+  postImageError: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 2,
+    backgroundColor: "rgba(128,128,128,0.2)",
   },
   workoutImage: {
     width: "100%",

@@ -482,6 +482,8 @@ const styles = StyleSheet.create({
     //backgroundColor: "#fff",
     borderRadius: 10,
     alignItems: "center",
+    maxHeight: 150,
+    flex: 1,
   },
   modalTitle: {
     fontSize: 18,
@@ -497,6 +499,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: 16,
     marginBottom: 15,
+    //flex: 1,
   },
   modalActions: {
     flexDirection: "row",

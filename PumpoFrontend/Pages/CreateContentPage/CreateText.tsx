@@ -35,6 +35,7 @@ const CreateText: React.FC<{ onSubmit: (data: any) => void }> = ({
       <SafeAreaView style={{ flex: 1, width: "100%", height: "100%" }}>
         <KeyboardAvoidingView
           style={{ flex: 1, width: "100%", height: "100%" }}
+          behavior="padding"
         >
           <View style={styles.headerContainer}>
             <ThemedText style={styles.title}>Create</ThemedText>
@@ -53,21 +54,18 @@ const CreateText: React.FC<{ onSubmit: (data: any) => void }> = ({
               </TouchableOpacity>
             </View>
           </View>
-
-          <ThemedTextInput
-            style={styles.input}
-            placeholder="Share your thoughts..."
-            value={text}
-            onChangeText={setText}
-            multiline
-            maxLength={maxTextLength}
-            borderDarkColor="#444"
-            borderLightColor="#ddd"
-          />
-          <View style={styles.characterLength}>
-            <ThemedText>
-              {maxTextLength - text.length}/{maxTextLength}
-            </ThemedText>
+          <View style={{ flex: 1, marginBottom: 30 }}>
+            <ThemedTextInput
+              style={styles.input}
+              placeholder="Share your thoughts..."
+              value={text}
+              onChangeText={setText}
+              multiline
+              maxLength={maxTextLength}
+              maxLengthShowLabel
+              borderDarkColor="#444"
+              borderLightColor="#ddd"
+            />
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -121,5 +119,5 @@ const styles = StyleSheet.create({
     borderColor: "tomato",
   },
   addButtonText: { color: "#fff", fontWeight: "bold" },
-  characterLength: { position: "absolute", bottom: 30, right: 10 },
+  characterLength: { position: "fixed", bottom: 50, left: "70%" },
 });
