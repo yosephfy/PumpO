@@ -78,7 +78,7 @@ export function parseStringArray(input: string): string[] {
 }
 
 type ParsedSegment = {
-  type: "text" | "hashtag" | "mention" | "url" | "custom";
+  type: "text" | "hashtag" | "mention" | "url" | "custom" | "separator";
   value: string;
 };
 
@@ -91,6 +91,7 @@ type MapConfig<T> = {
   defaultMapFunction: (segment: ParsedSegment) => T;
   customMapFunctions?: { [key: string]: (segment: ParsedSegment) => T };
 };
+
 export function parseSpecialString(
   input: string,
   config?: ParseConfig
@@ -152,9 +153,19 @@ export function parseSpecialString(
     return segments;
   }
 
-  const segments: ParsedSegment[] = input
-    .split(" ")
-    .flatMap((word) => processWord(word));
+  const segments: ParsedSegment[] = [];
+  const wordsWithSeparators = input.split(/(\s+)/); // Split and retain spaces, newlines, and tabs
+
+  wordsWithSeparators.forEach((word) => {
+    if (/^\s+$/.test(word)) {
+      segments.push({
+        type: "separator",
+        value: word,
+      });
+    } else {
+      segments.push(...processWord(word));
+    }
+  });
 
   const mapSegments = <T>(mapConfig: MapConfig<T>): T[] => {
     return segments.map((segment) => {

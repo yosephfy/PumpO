@@ -7,6 +7,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  SafeAreaView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,42 +19,107 @@ import {
   FlashMode,
 } from "expo-camera";
 // Assume you have a themed view component (or replace with a normal View)
-import { ThemedView } from "@/components/ThemedView";
+import { ThemedFadedView, ThemedView } from "@/components/ThemedView";
 import { PostsContext } from "@/context/PostContext";
+import { ThemedText, ThemedTextInput } from "@/components/ThemedText";
+import { useThemeColor } from "@/hooks/useThemeColor";
 const CreateText: React.FC<{ onSubmit: (data: any) => void }> = ({
   onSubmit,
 }) => {
   const [text, setText] = useState("");
+  const maxTextLength = 2000;
   const router = useRouter();
+
   return (
-    <View style={genericStyles.container}>
-      <Text style={genericStyles.title}>Create Text Post</Text>
-      <TextInput
-        style={genericStyles.input}
-        placeholder="Enter text..."
-        value={text}
-        onChangeText={setText}
-      />
-      <Button title="Submit" onPress={() => onSubmit(text)} />
-      <Button title="Cancel" onPress={() => router.back()} />
-    </View>
+    <ThemedFadedView style={styles.container}>
+      <SafeAreaView style={{ flex: 1, width: "100%", height: "100%" }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1, width: "100%", height: "100%" }}
+        >
+          <View style={styles.headerContainer}>
+            <ThemedText style={styles.title}>Create</ThemedText>
+            <View style={styles.headerButtonContainer}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => router.back()}
+              >
+                <ThemedText style={styles.cancelButtonText}>Cancel</ThemedText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => onSubmit(text)}
+              >
+                <ThemedText style={styles.addButtonText}>Add</ThemedText>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <ThemedTextInput
+            style={styles.input}
+            placeholder="Share your thoughts..."
+            value={text}
+            onChangeText={setText}
+            multiline
+            maxLength={maxTextLength}
+            borderDarkColor="#444"
+            borderLightColor="#ddd"
+          />
+          <View style={styles.characterLength}>
+            <ThemedText>
+              {maxTextLength - text.length}/{maxTextLength}
+            </ThemedText>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ThemedFadedView>
   );
 };
 export default CreateText;
-const genericStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  headerButtonContainer: { flexDirection: "row", gap: 15, marginRight: 10 },
+  title: { fontSize: 24, fontWeight: "bold" },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    //borderColor: "#ccc",
     width: "100%",
     padding: 10,
     borderRadius: 8,
     marginBottom: 20,
+    minHeight: 200,
+    flex: 1,
   },
+  addButton: {
+    backgroundColor: "#2196F3",
+    padding: 7,
+    borderRadius: 5,
+    width: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#2196F3",
+  },
+  cancelButtonText: { color: "tomato", fontWeight: "bold" },
+  cancelButton: {
+    backgroundColor: "transparent",
+    padding: 7,
+    borderRadius: 5,
+    width: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "tomato",
+  },
+  addButtonText: { color: "#fff", fontWeight: "bold" },
+  characterLength: { position: "absolute", bottom: 30, right: 10 },
 });

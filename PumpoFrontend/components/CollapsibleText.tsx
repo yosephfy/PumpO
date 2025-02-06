@@ -1,83 +1,76 @@
 import React, { useState } from "react";
 import {
-  StyleProp,
+  View,
   StyleSheet,
-  Text,
+  StyleProp,
   TextStyle,
   TouchableOpacity,
 } from "react-native";
-import { ThemedText } from "./ThemedText";
 import { ThemedSpecialText } from "./ThemedSpecialText";
+import { ThemedText } from "./ThemedText";
+import { parseSpecialString } from "@/utility/utilities";
 
-type CollapsibleTextProps = {
-  text: string | undefined | null;
+export type CollapsibleTextProps = {
+  text?: string | null;
   maxWords: number;
   style?: StyleProp<TextStyle>;
   allowMarkup?: boolean;
 };
 
 const CollapsibleText: React.FC<CollapsibleTextProps> = ({
-  text,
+  text = "",
   maxWords,
   style,
   allowMarkup = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const toggleText = () => setIsExpanded(!isExpanded);
 
-  const toggleText = () => {
-    setIsExpanded(!isExpanded);
-  };
+  const { segments } = parseSpecialString(text || "");
 
-  const true_text = text ? text : "";
-  const truncatedText = true_text.split(" ").slice(0, maxWords).join(" ");
-  const shouldShowMore = true_text.split(" ").length > maxWords;
+  const truncatedText = segments
+    .slice(0, isExpanded ? segments.length + 1 : maxWords)
+    .map((s) => s.value)
+    .join("");
+  const shouldShowMore = (text || "").split(/\s+/).length > maxWords;
 
   return (
     <TouchableOpacity onPress={toggleText}>
       {allowMarkup ? (
-        <>
-          {isExpanded ? (
-            <ThemedSpecialText
-              text={true_text}
-              textStyle={[styles.text, style]}
-            />
-          ) : (
-            <>
-              <ThemedSpecialText
-                text={truncatedText}
-                textStyle={[styles.text, style]}
-              />
-              {true_text.split(" ").length > maxWords && (
-                <Text style={styles.showMoreLessText}>
-                  {isExpanded ? " ...Show Less" : "...Show More"}
-                </Text>
-              )}
-            </>
-          )}
-        </>
-      ) : (
-        <ThemedText style={[styles.text, style]}>
-          {isExpanded ? text : truncatedText}
-          {true_text.split(" ").length > maxWords && (
-            <Text style={styles.showMoreLessText}>
+        <View style={styles.container}>
+          <ThemedSpecialText text={truncatedText} style={[style]} />
+          {shouldShowMore && (
+            <ThemedText style={styles.showMoreLessText}>
               {isExpanded ? " ...Show Less" : "...Show More"}
-            </Text>
+            </ThemedText>
           )}
-        </ThemedText>
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <ThemedText style={[styles.text, style]}>{truncatedText}</ThemedText>
+          {shouldShowMore && (
+            <ThemedText style={styles.showMoreLessText}>
+              {isExpanded ? " ...Show Less" : "...Show More"}
+            </ThemedText>
+          )}
+        </View>
       )}
     </TouchableOpacity>
   );
 };
 
+export default CollapsibleText;
+
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
   text: {
     fontSize: 12,
-    //color: "#333",
   },
   showMoreLessText: {
     fontSize: 12,
     color: "#007BFF",
   },
 });
-
-export default CollapsibleText;

@@ -17,7 +17,7 @@ import {
   GetUserProfile,
 } from "@/Services/userServices";
 import { GetWorkoutPlansByUser } from "@/Services/workoutServices";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,

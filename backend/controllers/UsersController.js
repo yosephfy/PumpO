@@ -158,7 +158,7 @@ export const getUserByUsername = (req, res) => {
     "SELECT user_id, username, email, account_type, profile_picture, bio FROM users WHERE username = ?";
   db.query(query, [username], (err, data) => {
     if (err) return res.status(500).json(err);
-    if (data.length === 0) return res.status(404).json("User not found!");
+    //if (data.length === 0) return res.status(404).json("User not found!");
 
     return res.json(data[0]);
   });

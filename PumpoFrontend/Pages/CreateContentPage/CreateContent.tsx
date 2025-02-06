@@ -29,6 +29,8 @@ import { CreatePost } from "@/Services/postServices";
 import { useAuth } from "@/context/AuthContext";
 import EditableInput from "@/components/EditableInput";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { parseSpecialString } from "@/utility/utilities";
+import { GetUserProfilesByUsernameList } from "@/Services/userServices";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -94,14 +96,20 @@ const PostTypeModal = ({
 
 export default function CreateContent() {
   const { currentUser } = useAuth();
-  const { posts } = useContext(PostsContext);
+  const { posts, addPost, removePost } = useContext(PostsContext);
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
 
   // Render a preview for each post with some styling.
   const renderPostPreview = ({ item: post }: { item: any }) => {
+    let elem = (
+      <View key={post.id} style={styles.postCard}>
+        <Text style={styles.postTitle}>{post.type.toUpperCase()} POST</Text>
+        <Text style={styles.postContent}>{post.content}</Text>
+      </View>
+    );
     if (post.type === "video" || post.type === "photo") {
-      return (
+      elem = (
         <Image
           source={{
             uri: post.content,
@@ -110,7 +118,7 @@ export default function CreateContent() {
         />
       );
     } else if (post.type === "text") {
-      return (
+      elem = (
         <ThemedView style={styles.postCard} lightColor="#888">
           <ThemedFadedView style={styles.postsTextTab}>
             <ThemedText style={styles.postsTextTabLabel} numberOfLines={3}>
@@ -121,9 +129,27 @@ export default function CreateContent() {
       );
     }
     return (
-      <View key={post.id} style={styles.postCard}>
-        <Text style={styles.postTitle}>{post.type.toUpperCase()} POST</Text>
-        <Text style={styles.postContent}>{post.content}</Text>
+      <View>
+        {elem}
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            right: 5,
+            top: -10,
+          }}
+          onPress={() => removePost(post)}
+        >
+          <ThemedView
+            style={{
+              padding: 5,
+              borderRadius: 100,
+              borderColor: "tomato",
+              borderWidth: 2,
+            }}
+          >
+            <ThemedIcon name="trash-outline" size={24} color="tomato" />
+          </ThemedView>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -184,13 +210,20 @@ export default function CreateContent() {
   }
 
   const handleSubmitPost = async () => {
-    let submission: DT_Post_Content = groupPostsByType(posts);
+    if (posts.length === 0) return;
+    const submission: DT_Post_Content = groupPostsByType(posts);
+    const taggedUsernames = parseSpecialString(description || "")
+      .segments.filter((x) => x.type === "mention")
+      .map((x) => x.value.replace("@", ""))
+      .concat(taggedFriends);
 
+    const taggedUserIds = await GetUserProfilesByUsernameList(taggedUsernames);
     if (currentUser)
       await CreatePost({
         user_id: currentUser.user_id,
         content: submission,
         description: description || undefined,
+        tagged_users: taggedUserIds.filter((x) => x).map((x) => x.user_id),
       });
   };
 
@@ -223,9 +256,9 @@ export default function CreateContent() {
           label: "Who can see my posts",
           type: "dropdown",
           dropdownOptions: [
-            { label: "Public", value: "Public" },
-            { label: "Friends Only", value: "Friends Only" },
-            { label: "Only Me", value: "Only Me" },
+            { label: "Public", value: "public" },
+            { label: "Friends Only", value: "friends" },
+            { label: "Draft", value: "draft" },
           ],
           dropdownValue: privacy,
           onDropdownChange: (value) => setPrivacy(value),
@@ -240,6 +273,7 @@ export default function CreateContent() {
           id: "schedule-post",
           label: "Schedule post",
           type: "datetime",
+          mode: "datetime",
           datetimeValue: scheduledDate,
           onDateTimeChange: (date) => setScheduledDate(date),
         },

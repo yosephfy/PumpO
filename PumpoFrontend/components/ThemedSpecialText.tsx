@@ -1,5 +1,12 @@
 import React from "react";
-import { View, StyleSheet, StyleProp, TextStyle, Alert } from "react-native";
+import {
+  View,
+  StyleSheet,
+  StyleProp,
+  TextStyle,
+  Alert,
+  Text,
+} from "react-native";
 import { ThemedText, type ThemedTextProps } from "./ThemedText";
 import { parseSpecialString } from "@/utility/utilities";
 import { router } from "expo-router";
@@ -8,7 +15,13 @@ import {
   GetUserProfileByUsername,
 } from "@/Services/userServices";
 
-export type SpecialTextType = "text" | "hashtag" | "mention" | "url" | "custom";
+export type SpecialTextType =
+  | "text"
+  | "hashtag"
+  | "mention"
+  | "url"
+  | "custom"
+  | "separator";
 
 export type ThemedSpecialTextProps = {
   text?: string | null;
@@ -59,8 +72,9 @@ export const ThemedSpecialText: React.FC<ThemedSpecialTextProps> = ({
   const { segments } = parseSpecialString(text || "");
 
   return (
-    <View style={styles.container}>
+    <Text style={styles.container}>
       {segments.map(({ type, value }, index) => {
+        //if (value.match(/\n/g)) return <Text style={{}}></Text>;
         let onPress: (() => void) | undefined;
 
         // Assign specific press handlers based on type
@@ -84,19 +98,18 @@ export const ThemedSpecialText: React.FC<ThemedSpecialTextProps> = ({
         return (
           <ThemedText
             key={index}
-            style={textStyle}
+            style={[textStyle]}
             {...themedTextProps}
             {...stylesByType[type]}
             type={onPress ? "link" : themedTextProps.type}
             onPress={onPress}
             suppressHighlighting={type === "text"}
             {...rest}
-          >
-            {value + " "}
-          </ThemedText>
+            children={`${value}`}
+          />
         );
       })}
-    </View>
+    </Text>
   );
 };
 

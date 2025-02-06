@@ -308,6 +308,7 @@ const styles = StyleSheet.create({
   },
   captionText: {
     marginBottom: 5,
+    fontSize: 14,
   },
   commentsText: {
     color: "gray",

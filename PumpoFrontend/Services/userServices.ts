@@ -18,15 +18,30 @@ export const GetUserProfile = async (userId: string) => {
   }
 };
 
-// Fetch a user's profile by user ID
-export const GetUserProfileByUsername = async (userId: string) => {
+// Fetch a user's profile by username
+export const GetUserProfileByUsername = async (username: string) => {
   try {
-    const response = await getRequest(`/users/username/${userId}`);
+    const response = await getRequest(`/users/username/${username}`);
     return response; // Assuming the API returns user profile data
   } catch (error: any) {
     console.error("Error fetching user profile:", error.response || error);
     return undefined;
   }
+};
+
+// Fetch a user's profile by username
+export const GetUserProfilesByUsernameList = async (usernames: string[]) => {
+  const p = usernames.map((x) => {
+    try {
+      const response = getRequest(`/users/username/${x}`);
+      return response;
+    } finally {
+      return undefined;
+    }
+  });
+  const users = await Promise.all(p);
+
+  return users;
 };
 // Fetch all users
 export const GetAllUsers = async () => {
