@@ -6,7 +6,7 @@ import {
   TextStyle,
   TouchableOpacity,
 } from "react-native";
-import { ThemedSpecialText } from "./ThemedSpecialText";
+import { MarkdownText } from "./MarkdownText";
 import { ThemedText } from "./ThemedText";
 import { parseSpecialString } from "@/utility/utilities";
 
@@ -38,7 +38,7 @@ const CollapsibleText: React.FC<CollapsibleTextProps> = ({
     <TouchableOpacity onPress={toggleText}>
       {allowMarkup ? (
         <View style={styles.container}>
-          <ThemedSpecialText text={truncatedText} style={[style]} />
+          <MarkdownText text={truncatedText} style={[style]} />
           {shouldShowMore && (
             <ThemedText style={styles.showMoreLessText}>
               {isExpanded ? " ...Show Less" : "...Show More"}

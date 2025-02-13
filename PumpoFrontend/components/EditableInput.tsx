@@ -35,7 +35,7 @@ const EditableInput: React.FC<EditableInputProps> = ({
   iconColor = "#007BFF",
   autoFocus = true,
   paragraphMode = false,
-  unlocked,
+  unlocked = false,
 }) => {
   const [isEditable, setIsEditable] = useState(unlocked);
   const inputRef = useRef<TextInput>(null);
@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
     //backgroundColor: "#f9f9f9",
   },
   input: {
-    flex: 1,
+    //flex: 1,
+    paddingRight: 15,
     paddingVertical: 8,
     fontSize: 14,
   },
@@ -105,7 +106,11 @@ const styles = StyleSheet.create({
     color: "#888",
   },
   iconContainer: {
-    marginVertical: 10,
+    //marginVertical: 10,
+    //backgroundColor: "pink",
+    position: "absolute",
+    right: 8,
+    top: 8,
   },
 });
 

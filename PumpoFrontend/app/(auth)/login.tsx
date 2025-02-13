@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 16,
     borderRadius: 4,
+    flex: 0,
   },
   buttonContainers: {
     justifyContent: "center",

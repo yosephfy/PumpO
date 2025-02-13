@@ -161,6 +161,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     height: "100%",
+    marginBottom: 40,
   },
   workoutsContainer: {
     flexDirection: "row",

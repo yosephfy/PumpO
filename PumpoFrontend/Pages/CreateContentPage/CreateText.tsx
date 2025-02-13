@@ -54,7 +54,7 @@ const CreateText: React.FC<{ onSubmit: (data: any) => void }> = ({
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{ flex: 1, marginBottom: 30 }}>
+          <View style={{ height: "100%", flex: 1, marginBottom: 30 }}>
             <ThemedTextInput
               style={styles.input}
               placeholder="Share your thoughts..."
@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     marginBottom: 20,
-    minHeight: 200,
-    flex: 1,
+    height: "95%",
+    //flex: 1,
   },
   addButton: {
     backgroundColor: "#2196F3",

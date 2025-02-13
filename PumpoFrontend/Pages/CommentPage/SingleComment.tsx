@@ -1,5 +1,5 @@
 import ProfilePicture from "@/components/ProfilePicture";
-import { ThemedSpecialText } from "@/components/ThemedSpecialText";
+import { MarkdownText } from "@/components/MarkdownText";
 import { ThemedText } from "@/components/ThemedText";
 import ToggleIcon from "@/components/ToggleIcon";
 import { useAuth } from "@/context/AuthContext";
@@ -101,7 +101,7 @@ const Comment = ({
             </ThemedText>
           </ThemedText>
 
-          <ThemedSpecialText
+          <MarkdownText
             text={comment.content}
             darkColor="#aaa"
             lightColor="#333"

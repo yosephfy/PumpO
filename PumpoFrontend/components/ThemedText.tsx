@@ -88,7 +88,7 @@ export const ThemedTextInput = forwardRef<TextInput, ThemedTextInputProps>(
     );
 
     return (
-      <View style={{ width: "100%", height: "100%", flex: 1 }}>
+      <View style={{ width: "100%" }}>
         <TextInput
           ref={ref}
           style={[

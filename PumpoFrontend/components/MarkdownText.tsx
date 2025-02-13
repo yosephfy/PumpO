@@ -15,7 +15,7 @@ import {
   GetUserProfileByUsername,
 } from "@/Services/userServices";
 
-export type SpecialTextType =
+export type MarkdownTextType =
   | "text"
   | "hashtag"
   | "mention"
@@ -23,11 +23,11 @@ export type SpecialTextType =
   | "custom"
   | "separator";
 
-export type ThemedSpecialTextProps = {
+export type MarkdownTextProps = {
   text?: string | null;
   themedTextProps?: ThemedTextProps;
   textStyle?: StyleProp<TextStyle>;
-  stylesByType?: Partial<Record<SpecialTextType, Partial<ThemedTextProps>>>;
+  stylesByType?: Partial<Record<MarkdownTextType, Partial<ThemedTextProps>>>;
 } & ThemedTextProps;
 
 // Handlers for different types
@@ -62,7 +62,7 @@ const handleCustomPress = (customText: string) => {
   //router.push({ pathname: "/(custom)", params: { value: customText } });
 };
 
-export const ThemedSpecialText: React.FC<ThemedSpecialTextProps> = ({
+export const MarkdownText: React.FC<MarkdownTextProps> = ({
   text = "",
   themedTextProps = {},
   stylesByType = {},

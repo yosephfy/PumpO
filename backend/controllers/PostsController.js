@@ -633,3 +633,76 @@ export const getPulseFeed = (req, res) => {
     }
   );
 };
+
+export const fetchIncludedMedia = async (posts, res) => {
+  const fetchContentPromises = posts.map((post) => {
+    return new Promise((resolve, reject) => {
+      const content = post.content || {};
+
+      const photoPromises = (content.photos || []).map((photo) => {
+        return new Promise((resolve, reject) => {
+          db.query(
+            `SELECT * FROM Photos WHERE photo_id = ?`,
+            [photo.id],
+            (err, data) => {
+              if (err) reject(err);
+              else resolve({ ...data[0], order: photo.order });
+            }
+          );
+        });
+      });
+
+      const videoPromises = (content.videos || []).map((video) => {
+        return new Promise((resolve, reject) => {
+          db.query(
+            `SELECT * FROM Videos WHERE video_id = ?`,
+            [video.id],
+            (err, data) => {
+              if (err) reject(err);
+              else resolve({ ...data[0], order: video.order });
+            }
+          );
+        });
+      });
+
+      const textPromises = (content.texts || []).map((text) => {
+        return new Promise((resolve, reject) => {
+          db.query(
+            `SELECT * FROM Texts WHERE text_id = ?`,
+            [text.id],
+            (err, data) => {
+              if (err) reject(err);
+              else resolve({ ...data[0], order: text.order });
+            }
+          );
+        });
+      });
+
+      Promise.all([
+        Promise.all(photoPromises),
+        Promise.all(videoPromises),
+        Promise.all(textPromises),
+      ])
+        .then(([photos, videos, texts]) => {
+          post.content = {
+            photos,
+            videos,
+            texts,
+          };
+          resolve(post);
+        })
+        .catch((err) => {
+          console.error("Error resolving content for post:", post.post_id, err); // Log specific post error
+          reject(err);
+        });
+    });
+  });
+
+  try {
+    const postsWithContent = await Promise.all(fetchContentPromises);
+    return postsWithContent;
+  } catch (err_4) {
+    console.error("Error processing posts content:", err_4); // Log detailed processing error
+    return undefined;
+  }
+};
